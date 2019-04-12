@@ -25,7 +25,7 @@ public class routes {
 	public ModelAndView index(HttpServletRequest rq)
 	{
 		ViewApp vi=new ViewApp(rq);
-		vi.addView("head");
+		vi.addView("header");
 		vi.addView("home");
 		ModelAndView mav = new ModelAndView(vi.render());
 		return mav;
