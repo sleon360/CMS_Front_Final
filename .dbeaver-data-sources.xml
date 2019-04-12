@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data-sources>
+	<data-source id="microsoft-169cafa0c9b-6f2b54351747d3c2" provider="sqlserver" driver="microsoft" name="MS SQL Server - cms360" save-password="true" read-only="false">
+		<connection host="192.241.186.100" port="1433" server="" database="cms360" url="jdbc:sqlserver://;serverName=192.241.186.100;databaseName=cms360" user="sa" password="HwEHLFVCQFJWRFZe9g==" type="dev">
+			<property name="trustServerCertificate" value="true"/>
+			<provider-property name="@dbeaver-authentication@" value="SQL_SERVER_PASSWORD"/>
+			<provider-property name="@dbeaver-show-all-schemas@" value="false"/>
+		</connection>
+	</data-source>
+	<data-source id="mysql8-169de22b673-475954d4b00dbb0c" provider="mysql" driver="mysql8" name="MySQL 8+ - 165.227.109.246" save-password="true" read-only="false">
+		<connection host="165.227.109.246" port="3306" server="" database="" url="jdbc:mysql://165.227.109.246:3306/" user="root" password="F11QJhMVHBMEQwU/QxdGASUVUxMTRUcrdXFHBBdk5A==" type="dev"/>
+	</data-source>
+	<filters/>
+</data-sources>
