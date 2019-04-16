@@ -42,6 +42,7 @@ public class routes {
 		ViewApp vi=new ViewApp(rq);
 		vi.addView("head");
 		vi.addView("home");
+		vi.addView("footer");
 		
 		ModelAndView mav = new ModelAndView(vi.render());
 		this.setHeaderx(mav);
@@ -140,6 +141,7 @@ public class routes {
 		vi.addView("head");
 		//vi.addView("home");
 		vi.addView("index");
+		vi.addView("footer");
 		
 		ModelAndView mav = new ModelAndView(vi.render());
 		mav.addObject("banners", Emudata.getBanners());
@@ -222,6 +224,7 @@ public class routes {
 		vi.addView("head");
 		vi.addView("HEADER_CATEGORIAS");
 		vi.addView("CATEGORIAS");
+		vi.addView("footer");
 		
 		ModelAndView mav = new ModelAndView(vi.render());
 		mav.addObject("menuurl", scmenuurl);
