@@ -128,7 +128,17 @@ public class Scinformacionsubmenu {
 	public void setEstado(int estado) {
 		this.estado = estado;
 	}
-	
+
+	public List<String> getCondicioneslista() {
+		return condicioneslista;
+	}
+
+	public void setCondicioneslista(List<String> condicioneslista) {
+		this.condicioneslista = condicioneslista;
+	}
+	public void addCondicioneslista(String condiciones) {
+		this.condicioneslista.add(condiciones);
+	}
 	
 	
 }

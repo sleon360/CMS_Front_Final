@@ -3,7 +3,14 @@ package com.appcms.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.HtmlUtils;
 
 import com.appcms.entity.Banner;
@@ -21,11 +28,15 @@ import com.appcms.entity.UserCartola;
 import com.appcms.entity.UserCartolaMovimiento;
 import com.appcms.entity.UserGusto;
 import com.appcms.entity.UserInscripcion;
+import com.appcms.entity.ViewEntity;
+import com.appcms.security.RestAuthentication;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
 
 public class Emudata {
+	
+	public static String serverIp = "http://localhost:9080";
 	
 	public static List<Menutop> getmenuHeader() {
 
@@ -72,6 +83,8 @@ public class Emudata {
 
 		return menuscotia;
 	}
+	
+	
 
 	
 	public static List<Scmenu> getmenuCategorias() {
@@ -115,9 +128,6 @@ public class Emudata {
 		List<Scsubmenu> msubmenu5 = new ArrayList<>();		
 		msubmenu5.add(new Scsubmenu("acercascotia",1,"Acerca de Scoticlub","/acercascotia","#ec121f","hover-red-bg","#ec121f",9,"/resource/images/info.png","/resource/sections/ayuda.jpg","","","2018-12-11 18:15:04","2019-02-13 20:39:54",1));
 		msubmenu5.add(new Scsubmenu("preguntasfrecuentes",1,"Preguntas Frecuentes","/preguntasfrecuentes","#039fd3","hover-blue-bg","#039fd3",9,"/resource/images/question.png",	"/resource/sections/FAQ.jpg","","","2018-12-11 18:15:04","2019-02-13 20:39:54",1));
-		
-//		msubmenu5.add(new Scsubmenu("acercascotia","Acerca de Scoticlub", "index"));
-//		msubmenu5.add(new Scsubmenu("preguntasfrecuentes","Preguntas Frecuentes", "index"));
 		menuscotia.add(new Scmenu("ayuda","Ayuda", "/categoria/ayuda", msubmenu5));
 
 		
@@ -130,6 +140,23 @@ public class Emudata {
 		msubmenu6.add(new Scsubmenu("transferir",1,"Transferir","/transferir","#008080","hover-green-bg","#008080",24,"/resource/images/givemoney.png","/resource/sections/cartola.jpg","","","2018-12-11 18:15:04","2019-02-13 20:39:54",1,true));
 		
 		
+//		StringBuilder sb = new StringBuilder("");
+//		HttpServletRequest rqx = null;
+//		HttpHeaders headers = new HttpHeaders();
+//		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+//
+//		RestAuthentication xrestAuthentication = new RestAuthentication();
+//        System.out.println(xrestAuthentication.getTOKENONE()+" 666666666666666666666666666666666666666");
+//		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+//
+//		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
+//		RestTemplate restTemplate = new RestTemplate();
+//		ResponseEntity<Scmenu> response = restTemplate.exchange(Emudata.serverIp+"/cmsrest/get/scmenu", HttpMethod.GET, httpEntity, Scmenu.class);
+//		if (response.getStatusCodeValue() == 200) {			
+//			System.out.println(response.getBody() +"--------------------------------------------------");
+//		} else {
+//			System.out.println("no resp");
+//		}
 		
 		
 		

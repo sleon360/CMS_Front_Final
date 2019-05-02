@@ -3,33 +3,36 @@ package com.appcms.entity;
 import java.util.List;
 
 public class Scmenu {
+
 	int id;
 	String nombre;
-	public String strIndex;
+	String strIndex;
 	String color;
 	int tipo;
 	String link;
 	String fecha_creacion;
 	String fecha_modificacion;
 	int estado;
-	public List<Scsubmenu> submenues = null;
 	boolean visibleTop = true;
 	boolean visibleOnlyLogin = false;
 	boolean userElement = false;
-	
+
+	private List<Scsubmenu> submenues;
+
 	public Scmenu() {
 		super();
 		this.id = 0;
 	}
-	
-	public Scmenu(String strIndex,String nombre, String link, List<Scsubmenu> submenues) {
+
+	public Scmenu(String strIndex, String nombre, String link, List<Scsubmenu> submenues) {
 		super();
 		this.strIndex = strIndex;
 		this.nombre = nombre;
 		this.link = link;
 		this.submenues = submenues;
 	}
-	public Scmenu(String strIndex,String nombre, String link, List<Scsubmenu> submenues, boolean visibleTop) {
+
+	public Scmenu(String strIndex, String nombre, String link, List<Scsubmenu> submenues, boolean visibleTop) {
 		super();
 		this.strIndex = strIndex;
 		this.nombre = nombre;
@@ -38,11 +41,11 @@ public class Scmenu {
 		this.visibleTop = visibleTop;
 	}
 
-	public Scmenu(String strIndex,int id, String nombre, String color, int tipo, String link, String fecha_creacion,
+	public Scmenu(String strIndex, int id, String nombre, String color, int tipo, String link, String fecha_creacion,
 			String fecha_modificacion, int estado, List<Scsubmenu> submenues) {
 		super();
 		this.strIndex = strIndex;
-		this.id = id;
+		 this.id = id;
 		this.nombre = nombre;
 		this.color = color;
 		this.tipo = tipo;
@@ -61,57 +64,66 @@ public class Scmenu {
 		this.strIndex = strIndex;
 	}
 
-	public List<Scsubmenu> getSubmenues() {
-		return submenues;
-	}
-	public void setSubmenues(List<Scsubmenu> submenues) {
-		this.submenues = submenues;
-	}
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	public String getNombre() {
 		return nombre;
 	}
+
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
+
 	public String getColor() {
 		return color;
 	}
+
 	public void setColor(String color) {
 		this.color = color;
 	}
+
 	public int getTipo() {
 		return tipo;
 	}
+
 	public void setTipo(int tipo) {
 		this.tipo = tipo;
 	}
+
 	public String getLink() {
 		return link;
 	}
+
 	public void setLink(String link) {
 		this.link = link;
 	}
+
 	public String getFecha_creacion() {
 		return fecha_creacion;
 	}
+
 	public void setFecha_creacion(String fecha_creacion) {
 		this.fecha_creacion = fecha_creacion;
 	}
+
 	public String getFecha_modificacion() {
 		return fecha_modificacion;
 	}
+
 	public void setFecha_modificacion(String fecha_modificacion) {
 		this.fecha_modificacion = fecha_modificacion;
 	}
+
 	public int getEstado() {
 		return estado;
 	}
+
 	public void setEstado(int estado) {
 		this.estado = estado;
 	}
@@ -138,6 +150,14 @@ public class Scmenu {
 
 	public void setUserElement(boolean userElement) {
 		this.userElement = userElement;
+	}
+
+	public List<Scsubmenu> getSubmenues() {
+		return this.submenues;
+	}
+
+	public void setSubmenues(List<Scsubmenu> submenues) {
+		this.submenues = submenues;
 	}
 	
 
