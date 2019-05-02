@@ -24,6 +24,7 @@ import org.springframework.web.util.NestedServletException;
 import com.appcms.entity.CanjeProducto;
 import com.appcms.entity.Scmenu;
 import com.appcms.entity.Scsubmenu;
+import com.appcms.model.DataServer;
 import com.appcms.model.Emudata;
 import com.cms.views.ViewApp;
 
@@ -45,15 +46,27 @@ public class routes {
 		vi.addView("footer");
 		
 		ModelAndView mav = new ModelAndView(vi.render());
-		this.setHeaderx(mav);
+		this.setHeaderx(mav,rq);
 		return mav;
 	}
-	public void setHeaderx(ModelAndView mav) {
-		mav.addObject("menuesHeader", Emudata.getmenuCategorias());
-		mav.addObject("usuario", Emudata.getUsusario());
-		// mav.addObject("usuario",Emudata.getUsusarioOff());
-	}
+
+//	public void setHeaderx(ModelAndView mav) {
+//
+//		mav.addObject("menuesHeader", Emudata.getmenuCategorias());
+//
+//		mav.addObject("usuario", Emudata.getUsusario());
+//
+//	}
+	public void setHeaderx(ModelAndView mav,HttpServletRequest rq) {
 	
+		
+		DataServer dtserver = new DataServer(rq);
+		mav.addObject("menuesHeader", dtserver.loadScmenu());
+//		mav.addObject("menuesHeader", Emudata.getmenuCategorias());
+	
+		mav.addObject("usuario", Emudata.getUsusario());
+//		 mav.addObject("usuario",Emudata.getUsusarioOff());
+	}
 	
 	
 	@RequestMapping("/test")
@@ -145,7 +158,8 @@ public class routes {
 		
 		ModelAndView mav = new ModelAndView(vi.render());
 		mav.addObject("banners", Emudata.getBanners());
-		this.setHeaderx(mav);
+		this.setHeaderx(mav,rq);
+
 		return mav;
 	}
 	@GetMapping("/categoria/{menu}/{submenu}")
@@ -154,11 +168,14 @@ public class routes {
 		//ModelAndView mav = new ModelAndView("categorias");
 		ViewApp vi=new ViewApp(rq);
 		
+		DataServer dtserver = new DataServer(rq);
+		
 		Scmenu scmenuurl = new Scmenu();
 		Scsubmenu scmenuurlsub = new Scsubmenu();
+		
 
 		List<Scmenu> categiriasmenu = new ArrayList<>();
-		categiriasmenu = Emudata.getmenuCategorias();
+		categiriasmenu = dtserver.loadScmenu();// Emudata.getmenuCategorias();
 
 		for (Scmenu menusel : categiriasmenu) // buscamos el menu que seleccionó
 		{
@@ -185,7 +202,7 @@ public class routes {
 		switch (scmenuurlsub.getTipo()) {
 		case 1: // information
 			System.out.println("Tipo 1"); // TIPO INFORMACION
-			scmenuurlsub.informationsubmenu = Emudata.getInformatiotest();
+			scmenuurlsub.informationsubmenu = dtserver.loadInformatioSub(scmenuurlsub.getId());// Emudata.getInformatiotest();
 			break;
 		case 2:
 			System.out.println("Tipo 2"); // TIPO PRODUCTO CON LIKE
@@ -230,14 +247,14 @@ public class routes {
 		mav.addObject("menuurl", scmenuurl);
 		mav.addObject("submenuurl", scmenuurlsub);
 
-		this.setHeaderx(mav);
+		this.setHeaderx(mav,rq);
 
 		return mav;
 	}
 
 	@GetMapping("/categoria/{menu}/{submenu}/productos/{categoria}")
 	public ModelAndView menuProductoCategoria(@PathVariable("menu") String menu,
-			@PathVariable("submenu") String submenu, @PathVariable("categoria") String categoria)
+			@PathVariable("submenu") String submenu, @PathVariable("categoria") String categoria,HttpServletRequest rq)
 			throws UnsupportedEncodingException {
 		ModelAndView mav = new ModelAndView("categorias");
 
@@ -298,14 +315,14 @@ public class routes {
 		mav.addObject("menuurl", scmenuurl);
 		mav.addObject("submenuurl", scmenuurlsub);
 		mav.addObject("csrf_token", csrf_token);
-		this.setHeaderx(mav);
+		this.setHeaderx(mav,rq);
 
 		return mav;
 	} 
 
 	@GetMapping("/categoria/{menu}/{submenu}/detalle/{producto}")
 	public ModelAndView menuDetalleProducto(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu,
-			@PathVariable("producto") String producto) throws UnsupportedEncodingException {
+			@PathVariable("producto") String producto,HttpServletRequest rq) throws UnsupportedEncodingException {
 		ModelAndView mav = new ModelAndView("canjes");
 
 		Scmenu scmenuurl = new Scmenu();
@@ -342,14 +359,14 @@ public class routes {
 		mav.addObject("menuurl", scmenuurl);
 		mav.addObject("submenuurl", scmenuurlsub);
 
-		this.setHeaderx(mav);
+		this.setHeaderx(mav,rq);
 
 		return mav;
 	}
 
 	@PostMapping("/categoria/{menu}/{submenu}/canje/")
 	public ModelAndView menuCanje(@ModelAttribute("producto") CanjeProducto producto, @PathVariable("menu") String menu,
-			@PathVariable("submenu") String submenu) {
+			@PathVariable("submenu") String submenu,HttpServletRequest rq) {
 		ModelAndView mav = new ModelAndView("canjes");
 
 		Scmenu scmenuurl = new Scmenu();
@@ -439,13 +456,13 @@ public class routes {
 		mav.addObject("menuurl", scmenuurl);
 		mav.addObject("submenuurl", scmenuurlsub);
 
-		this.setHeaderx(mav);
+		this.setHeaderx(mav,rq);
 
 		return mav;
 	}
 
 	@GetMapping("/user/{menu}/{submenu}")
-	public ModelAndView menuUser(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu)
+	public ModelAndView menuUser(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu,HttpServletRequest rq)
 			throws UnsupportedEncodingException {
 		ModelAndView mav = new ModelAndView("user");
 
@@ -507,7 +524,7 @@ public class routes {
 		mav.addObject("menuurl", scmenuurl);
 		mav.addObject("submenuurl", scmenuurlsub);
 
-		this.setHeaderx(mav);
+		this.setHeaderx(mav,rq);
 
 		return mav;
 	}
