@@ -206,15 +206,15 @@ public class routes {
 			break;
 		case 2:
 			System.out.println("Tipo 2"); // TIPO PRODUCTO CON LIKE
-			scmenuurlsub.productosLikeLista = Emudata.getProductosLikeTest();
+			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId());//Emudata.getProductosLikeTest();
 			break;
 		case 3:
 			System.out.println("Tipo 3"); // TIPO CON CUPON
-			scmenuurlsub.productosLikeLista = Emudata.getProductosiNFOTest();
+			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId());//Emudata.getProductosiNFOTest();
 			break;
 		case 4:
 			System.out.println("Tipo 4"); // TIPO PRODUCTO E-COMERCE
-			scmenuurlsub.productosLikeLista = Emudata.getProductoseEcomerceTest();
+			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId());//Emudata.getProductoseEcomerceTest();
 			break;
 		case 5:
 			System.out.println("Tipo 5"); // TIPO CANJE CON CATEGORIAS

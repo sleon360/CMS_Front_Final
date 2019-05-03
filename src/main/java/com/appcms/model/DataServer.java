@@ -11,6 +11,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import com.appcms.entity.ProductoTipoLike;
 import com.appcms.entity.Scinformacionsubmenu;
 import com.appcms.entity.Scmenu;
 import com.appcms.security.RestAuthentication;
@@ -61,7 +62,7 @@ public class DataServer {
 //		headers.setContentType(MediaType.APPLICATION_JSON);
 
 		RestAuthentication xrestAuthentication = new RestAuthentication();
-		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
+		System.out.println(xrestAuthentication.getTOKENONE() + " loadInformatioSub");
 		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
@@ -73,7 +74,7 @@ public class DataServer {
 		if (xresponse.getStatusCodeValue() == 200) {
 
 			Scinformacionsubmenu information = xresponse.getBody();
-			System.out.println("requestxn: "+information.getJson_condiciones());  
+//			System.out.println("requestxn: "+information.getJson_condiciones());  
 			String json = information.getJson_condiciones();
 			JsonArray jsonObject = new JsonParser().parse(json).getAsJsonArray();
 
@@ -91,5 +92,32 @@ public class DataServer {
 		}
 
 	}
+	
+	public List<ProductoTipoLike> loadProductosLike(int idsubmenu) {
+
+		HttpHeaders headers = new HttpHeaders();
+
+		RestAuthentication xrestAuthentication = new RestAuthentication();
+		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
+		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
+		RestTemplate restTemplate = new RestTemplate();
+
+		String url = urlServer + "/cmsrest/get/productosSubmenu/" + idsubmenu;
+
+		ResponseEntity<List<ProductoTipoLike>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+				new ParameterizedTypeReference<List<ProductoTipoLike>>() {
+				});
+
+        System.out.println("requestxn: "+xresponse.getBody());   
+
+		if (xresponse.getStatusCodeValue() == 200) {
+			return xresponse.getBody();
+		} else {
+			return null;
+		}
+
+	}
+	
 
 }
