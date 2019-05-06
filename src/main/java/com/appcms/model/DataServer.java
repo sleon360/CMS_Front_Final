@@ -1,5 +1,6 @@
 package com.appcms.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import com.appcms.entity.ProductoCategoria;
 import com.appcms.entity.ProductoTipoLike;
 import com.appcms.entity.Scinformacionsubmenu;
 import com.appcms.entity.Scmenu;
@@ -144,6 +146,27 @@ public class DataServer {
 			return null;
 		}
 
+	}
+	
+	public static List<ProductoCategoria> loadCateProductosFromCategoria(String strIndexCategoria) {
+		 List<ProductoCategoria> catelist =  new ArrayList<>();
+		 catelist = Emudata.getCategoriasProductosTest();
+		 
+		 List<ProductoCategoria> catelistResult =  new ArrayList<>();
+		 
+		 for (ProductoCategoria catesel : catelist) //buscamos el menu que seleccionó
+			{ 
+				if(catesel.getStrIndex().equalsIgnoreCase(strIndexCategoria) ) {			
+					
+					catesel.productosList = Emudata.getProductoseEcomerceTest();
+					
+					catelistResult.add(catesel); // se encuentra la categoria y se inserta					
+					
+					break;
+				}
+			}
+		 
+		 return catelistResult;
 	}
 
 }
