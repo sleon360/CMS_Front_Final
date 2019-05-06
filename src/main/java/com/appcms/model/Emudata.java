@@ -3,14 +3,6 @@ package com.appcms.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.HtmlUtils;
 
 import com.appcms.entity.Banner;
@@ -28,8 +20,6 @@ import com.appcms.entity.UserCartola;
 import com.appcms.entity.UserCartolaMovimiento;
 import com.appcms.entity.UserGusto;
 import com.appcms.entity.UserInscripcion;
-import com.appcms.entity.ViewEntity;
-import com.appcms.security.RestAuthentication;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
@@ -394,9 +384,9 @@ public class Emudata {
 		 catelist.add( new UserInscripcion("Samsung Galaxy S8+ Black.", 6000, "XXXX-XXXX-XXXX-1460", 123, "20/02/2018", "13/06/2018") );
 		 catelist.add( new UserInscripcion("Grandes Tiendas", 19000, "XXXX-XXXX-XXXX-1460", 123, "20/02/2018", "13/06/2018") );
 		 catelist.add( new UserInscripcion("Grandes Tiendas", 19000, "XXXX-XXXX-XXXX-1460", 123, "20/02/2018", "13/06/2018") );
-		 catelist.add( new UserInscripcion("Grandes Tiendas", 19000, "XXXX-XXXX-XXXX-1460", 123, "20/02/2018", "13/06/2018") );
-		 catelist.add( new UserInscripcion("Grandes Tiendas", 19000, "XXXX-XXXX-XXXX-1460", 123, "20/02/2018", "13/06/2018") );
-		 catelist.add( new UserInscripcion("Grandes Tiendas", 19000, "XXXX-XXXX-XXXX-1460", 123, "20/02/2018", "13/06/2018") );
+//		 catelist.add( new UserInscripcion("Grandes Tiendas", 19000, "XXXX-XXXX-XXXX-1460", 123, "20/02/2018", "13/06/2018") );
+//		 catelist.add( new UserInscripcion("Grandes Tiendas", 19000, "XXXX-XXXX-XXXX-1460", 123, "20/02/2018", "13/06/2018") );
+//		 catelist.add( new UserInscripcion("Grandes Tiendas", 19000, "XXXX-XXXX-XXXX-1460", 123, "20/02/2018", "13/06/2018") );
 
 		 return catelist;
 	}

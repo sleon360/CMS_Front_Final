@@ -256,13 +256,22 @@ public class routes {
 	public ModelAndView menuProductoCategoria(@PathVariable("menu") String menu,
 			@PathVariable("submenu") String submenu, @PathVariable("categoria") String categoria,HttpServletRequest rq)
 			throws UnsupportedEncodingException {
-		ModelAndView mav = new ModelAndView("categorias");
-
+//		ModelAndView mav = new ModelAndView("categorias");
+		ViewApp vi=new ViewApp(rq);
+		
+		DataServer dtserver = new DataServer(rq);
+		
+		vi.addView("head");
+		vi.addView("HEADER_CATEGORIAS");
+		vi.addView("CATEGORIAS");
+		vi.addView("footer");		
+		ModelAndView mav = new ModelAndView(vi.render());
+		
 		Scmenu scmenuurl = new Scmenu();
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 
 		List<Scmenu> categiriasmenu = new ArrayList<>();
-		categiriasmenu = Emudata.getmenuCategorias();
+		categiriasmenu = dtserver.loadScmenu();// Emudata.getmenuCategorias();
 
 		for (Scmenu menusel : categiriasmenu) // buscamos el menu que seleccionó
 		{
@@ -312,9 +321,15 @@ public class routes {
 			return new ModelAndView("redirect:/");
 		}
 
+//		mav.addObject("menuurl", scmenuurl);
+//		mav.addObject("submenuurl", scmenuurlsub);
+//		mav.addObject("csrf_token", csrf_token);
+//		this.setHeaderx(mav,rq);
+		
 		mav.addObject("menuurl", scmenuurl);
 		mav.addObject("submenuurl", scmenuurlsub);
 		mav.addObject("csrf_token", csrf_token);
+		
 		this.setHeaderx(mav,rq);
 
 		return mav;
@@ -322,14 +337,23 @@ public class routes {
 
 	@GetMapping("/categoria/{menu}/{submenu}/detalle/{producto}")
 	public ModelAndView menuDetalleProducto(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu,
-			@PathVariable("producto") String producto,HttpServletRequest rq) throws UnsupportedEncodingException {
-		ModelAndView mav = new ModelAndView("canjes");
-
+			@PathVariable("producto") int producto,HttpServletRequest rq) throws UnsupportedEncodingException {
+//		ModelAndView mav = new ModelAndView("canjes");
+		ViewApp vi=new ViewApp(rq);
+		
+		DataServer dtserver = new DataServer(rq);
+		
+		vi.addView("HEAD");
+		vi.addView("HEADER_CATEGORIAS");
+		vi.addView("CANJES");
+		vi.addView("FOOTER");		
+		ModelAndView mav = new ModelAndView(vi.render());
+		
 		Scmenu scmenuurl = new Scmenu();
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 
 		List<Scmenu> categiriasmenu = new ArrayList<>();
-		categiriasmenu = Emudata.getmenuCategorias();
+		categiriasmenu = dtserver.loadScmenu();// Emudata.getmenuCategorias();
 
 		for (Scmenu menusel : categiriasmenu) // buscamos el menu que seleccionó
 		{
@@ -353,11 +377,14 @@ public class routes {
 			return new ModelAndView("redirect:/");
 		}
 
-		scmenuurlsub.productosLikeLista = Emudata.getProductoSearch(producto);
+		scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto); //Emudata.getProductoSearch(producto);
 
-		mav.addObject("csrf_token", csrf_token);
+//		mav.addObject("csrf_token", csrf_token);
+//		mav.addObject("menuurl", scmenuurl);
+//		mav.addObject("submenuurl", scmenuurlsub);
 		mav.addObject("menuurl", scmenuurl);
 		mav.addObject("submenuurl", scmenuurlsub);
+		mav.addObject("csrf_token", csrf_token);
 
 		this.setHeaderx(mav,rq);
 
@@ -367,13 +394,22 @@ public class routes {
 	@PostMapping("/categoria/{menu}/{submenu}/canje/")
 	public ModelAndView menuCanje(@ModelAttribute("producto") CanjeProducto producto, @PathVariable("menu") String menu,
 			@PathVariable("submenu") String submenu,HttpServletRequest rq) {
-		ModelAndView mav = new ModelAndView("canjes");
-
+//		ModelAndView mav = new ModelAndView("canjes");
+ViewApp vi=new ViewApp(rq);
+		
+		DataServer dtserver = new DataServer(rq);
+		
+		vi.addView("HEAD");
+		vi.addView("HEADER_CATEGORIAS");
+		vi.addView("CANJES");
+		vi.addView("FOOTER");		
+		ModelAndView mav = new ModelAndView(vi.render());
+		
 		Scmenu scmenuurl = new Scmenu();
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 
 		List<Scmenu> categiriasmenu = new ArrayList<>();
-		categiriasmenu = Emudata.getmenuCategorias();
+		categiriasmenu = dtserver.loadScmenu();// Emudata.getmenuCategorias();
 
 		for (Scmenu menusel : categiriasmenu) // buscamos el menu que seleccionó
 		{
@@ -452,9 +488,9 @@ public class routes {
 			System.out.println("Seccion fuera de menu");
 			return new ModelAndView("redirect:/");
 		}
-		mav.addObject("csrf_token", csrf_token);
 		mav.addObject("menuurl", scmenuurl);
 		mav.addObject("submenuurl", scmenuurlsub);
+		mav.addObject("csrf_token", csrf_token);
 
 		this.setHeaderx(mav,rq);
 
