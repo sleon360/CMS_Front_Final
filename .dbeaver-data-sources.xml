@@ -12,6 +12,7 @@
 					<container name="dbo">
 						<entity name="SCSUBMENU" description="NOMBRE"/>
 						<entity name="SCMENU" description="NOMBRE"/>
+						<entity name="PRODUCTOCATEGORIA" description="STRINDEX"/>
 					</container>
 				</container>
 			</container>

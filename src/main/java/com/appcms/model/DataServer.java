@@ -1,6 +1,5 @@
 package com.appcms.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -148,25 +147,31 @@ public class DataServer {
 
 	}
 	
-	public static List<ProductoCategoria> loadCateProductosFromCategoria(String strIndexCategoria) {
-		 List<ProductoCategoria> catelist =  new ArrayList<>();
-		 catelist = Emudata.getCategoriasProductosTest();
-		 
-		 List<ProductoCategoria> catelistResult =  new ArrayList<>();
-		 
-		 for (ProductoCategoria catesel : catelist) //buscamos el menu que seleccionó
-			{ 
-				if(catesel.getStrIndex().equalsIgnoreCase(strIndexCategoria) ) {			
-					
-					catesel.productosList = Emudata.getProductoseEcomerceTest();
-					
-					catelistResult.add(catesel); // se encuentra la categoria y se inserta					
-					
-					break;
-				}
-			}
-		 
-		 return catelistResult;
+	public List<ProductoCategoria> loadCateProductosFromCategoria(int idsubmenu) {
+		
+		
+		HttpHeaders headers = new HttpHeaders();
+
+		RestAuthentication xrestAuthentication = new RestAuthentication();
+		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
+		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
+		RestTemplate restTemplate = new RestTemplate();
+
+		String url = urlServer + "/cmsrest/get/productoCategoria/" + idsubmenu;
+
+		ResponseEntity<List<ProductoCategoria>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+				new ParameterizedTypeReference<List<ProductoCategoria>>() {
+				});
+
+        System.out.println("requestxn: "+xresponse.getBody());   
+
+		if (xresponse.getStatusCodeValue() == 200) {
+			return xresponse.getBody();
+		} else {
+			return null;
+		}
+		
 	}
 
 }

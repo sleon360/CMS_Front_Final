@@ -218,11 +218,11 @@ public class routes {
 			break;
 		case 5:
 			System.out.println("Tipo 5"); // TIPO CANJE CON CATEGORIAS
-			scmenuurlsub.categoriaProductoLista = Emudata.getCategoriasProductosTest();
+			scmenuurlsub.categoriaProductoLista =   dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId());//Emudata.getCategoriasProductosTest();
 			break;
 		case 6:
 			System.out.println("Tipo 6"); // TIPO CANJE CON CATEGORIAS PARA FORMULARIO
-			scmenuurlsub.categoriaProductoLista = Emudata.getCategoriasProductosTestTipo6();
+			scmenuurlsub.categoriaProductoLista = dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId());//Emudata.getCategoriasProductosTestTipo6();
 			break;
 		case 7:
 			System.out.println("Tipo 7"); // TIPO CANJE CASHBACK
@@ -462,8 +462,8 @@ ViewApp vi=new ViewApp(rq);
 				mav.addObject("canjeExito", true);
 			} else {
 				producto.setActionx("finish");
-			}
-			scmenuurlsub.productosLikeLista = Emudata.getProductoSearchById(producto.getIdProducto());
+			}//dtserver.loadProductosDetalle(scmenuurlsub.getId());//
+			scmenuurlsub.productosLikeLista = Emudata.getProductoSearchById(producto.getIdProducto());//dtserver.loadProductosDetalle(scmenuurlsub.getId());//Emudata.getProductoSearchById(producto.getIdProducto());//
 			mav.addObject("producto", producto);
 
 			break;
@@ -474,13 +474,13 @@ ViewApp vi=new ViewApp(rq);
 				producto.setActionx("finish");
 			}
 			
-			scmenuurlsub.productosLikeLista = Emudata.getProductoSearchById(producto.getIdProducto());
+			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto());//Emudata.getProductoSearchById(producto.getIdProducto());
 			mav.addObject("producto", producto);
 			break;
 		case 7: // TIPO CANJE CASHBACK
 			break;
 		case 8: // TIPO CANJE DESCUENTOS
-			scmenuurlsub.productosLikeLista = Emudata.getProductoSearchById(producto.getIdProducto());
+			scmenuurlsub.productosLikeLista = Emudata.getProductoSearchById(producto.getIdProducto());//dtserver.loadProductosDetalle(scmenuurlsub.getId());//Emudata.getProductoSearchById(producto.getIdProducto());
 			mav.addObject("producto", producto);
 			mav.addObject("canjeExito", true);
 			break;
