@@ -13,6 +13,15 @@
 						<entity name="SCSUBMENU" description="NOMBRE"/>
 						<entity name="SCMENU" description="NOMBRE"/>
 						<entity name="PRODUCTOCATEGORIA" description="STRINDEX"/>
+						<entity name="PRODUCTOTIPOLIKE" description="NOMBRE"/>
+						<entity name="TIPO_SUBMENU">
+							<constraint name="PRIMARY" type="VIRTUAL KEY">
+								<attribute name="ID_TIPO"/>
+								<attribute name="nombre_tipo"/>
+								<attribute name="descripcion_tipo"/>
+								<attribute name="activo"/>
+							</constraint>
+						</entity>
 					</container>
 				</container>
 			</container>

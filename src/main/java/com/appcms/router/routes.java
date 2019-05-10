@@ -218,7 +218,7 @@ public class routes {
 			break;
 		case 5:
 			System.out.println("Tipo 5"); // TIPO CANJE CON CATEGORIAS
-			scmenuurlsub.categoriaProductoLista =   dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId());//Emudata.getCategoriasProductosTest();
+			scmenuurlsub.categoriaProductoLista = dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId());//Emudata.getCategoriasProductosTest();//  
 			break;
 		case 6:
 			System.out.println("Tipo 6"); // TIPO CANJE CON CATEGORIAS PARA FORMULARIO
@@ -299,15 +299,15 @@ public class routes {
 											// CATEGORIAPRODUCTOS ASOCIADA
 		case 5:
 			System.out.println("Tipo 5"); // TIPO CANJE CON CATEGORIAS
-			scmenuurlsub.categoriaProductoLista = Emudata.getCateProductosFromCategoria(categoria);
+			scmenuurlsub.categoriaProductoLista = dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(),categoria);//Emudata.getCateProductosFromCategoria(categoria);
 			mav.addObject("verProductosCategoria", true);
 			break;
 
 		case 6:
 			System.out.println("Tipo 6"); // TIPO CANJE CON CATEGORIAS FORMULARIO
-			//se pasa la categoria para seleccionar el primer producto de ella, deberia siempre tener 1 producto MAXIMO por categoria tipo fomrulario
+			//se pasa la categoria para seleccionar el primer producto de ella, deberia siempre tener 1 producto MAXIMO por categoria tipo formulario
 			
-			scmenuurlsub.productosLikeLista = Emudata.getProductosLikeTest();
+			scmenuurlsub.productosLikeLista =  dtserver.loadProductosLikeSubmenuCategoria(scmenuurlsub.getId(),categoria);//Emudata.getProductosLikeTest();
 			mav.addObject("producto", new CanjeProducto());
 			mav.addObject("verProductosCategoria", true);
 			break;

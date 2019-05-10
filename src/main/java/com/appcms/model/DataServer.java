@@ -121,6 +121,32 @@ public class DataServer {
 
 	}
 	
+	public List<ProductoTipoLike> loadProductosLikeSubmenuCategoria(int idsubmenu, String categoria) {
+
+		HttpHeaders headers = new HttpHeaders();
+
+		RestAuthentication xrestAuthentication = new RestAuthentication();
+		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
+		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
+		RestTemplate restTemplate = new RestTemplate();
+
+		String url = urlServer + "/cmsrest/get/productosSubmenuCategoria/" + categoria + "/" + idsubmenu;
+
+		ResponseEntity<List<ProductoTipoLike>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+				new ParameterizedTypeReference<List<ProductoTipoLike>>() {
+				});
+
+        System.out.println("requestxn: "+xresponse.getBody());   
+
+		if (xresponse.getStatusCodeValue() == 200) {
+			return xresponse.getBody();
+		} else {
+			return null;
+		}
+
+	}
+	
 	public List<ProductoTipoLike> loadProductosDetalle(int idproducto) {
 
 		HttpHeaders headers = new HttpHeaders();
@@ -173,5 +199,36 @@ public class DataServer {
 		}
 		
 	}
+	
+	public List<ProductoCategoria> loadproductoCategoriaConProductos(int idsubmenu, String categoria) {
+		
+		
+		HttpHeaders headers = new HttpHeaders();
+
+		RestAuthentication xrestAuthentication = new RestAuthentication();
+		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
+		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
+		RestTemplate restTemplate = new RestTemplate();
+
+		String url = urlServer + "/cmsrest/get/productoCategoriaConProductos/" + categoria + "/" + idsubmenu;
+
+		ResponseEntity<List<ProductoCategoria>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+				new ParameterizedTypeReference<List<ProductoCategoria>>() {
+				});
+
+        System.out.println("requestxn: "+xresponse.getBody());   
+
+		if (xresponse.getStatusCodeValue() == 200) {
+			return xresponse.getBody();
+		} else {
+			return null;
+		}
+		
+	}
+	
+	
+	
+	
 
 }
