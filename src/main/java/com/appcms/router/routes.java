@@ -156,8 +156,10 @@ public class routes {
 		vi.addView("index");
 		vi.addView("footer");
 		
+		DataServer dtserver = new DataServer(rq);
+		
 		ModelAndView mav = new ModelAndView(vi.render());
-		mav.addObject("banners", Emudata.getBanners());
+		mav.addObject("banners",dtserver.loadBannerAll()); //Emudata.getBanners()
 		this.setHeaderx(mav,rq);
 
 		return mav;
@@ -394,8 +396,8 @@ public class routes {
 	@PostMapping("/categoria/{menu}/{submenu}/canje/")
 	public ModelAndView menuCanje(@ModelAttribute("producto") CanjeProducto producto, @PathVariable("menu") String menu,
 			@PathVariable("submenu") String submenu,HttpServletRequest rq) {
-//		ModelAndView mav = new ModelAndView("canjes");
-ViewApp vi=new ViewApp(rq);
+		//		ModelAndView mav = new ModelAndView("canjes");
+		ViewApp vi=new ViewApp(rq);
 		
 		DataServer dtserver = new DataServer(rq);
 		
@@ -463,7 +465,7 @@ ViewApp vi=new ViewApp(rq);
 			} else {
 				producto.setActionx("finish");
 			}//dtserver.loadProductosDetalle(scmenuurlsub.getId());//
-			scmenuurlsub.productosLikeLista = Emudata.getProductoSearchById(producto.getIdProducto());//dtserver.loadProductosDetalle(scmenuurlsub.getId());//Emudata.getProductoSearchById(producto.getIdProducto());//
+			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto());//Emudata.getProductoSearchById(producto.getIdProducto());//dtserver.loadProductosDetalle(scmenuurlsub.getId());//Emudata.getProductoSearchById(producto.getIdProducto());//
 			mav.addObject("producto", producto);
 
 			break;
@@ -500,8 +502,18 @@ ViewApp vi=new ViewApp(rq);
 	@GetMapping("/user/{menu}/{submenu}")
 	public ModelAndView menuUser(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu,HttpServletRequest rq)
 			throws UnsupportedEncodingException {
-		ModelAndView mav = new ModelAndView("user");
-
+//		ModelAndView mav = new ModelAndView("user");
+		ViewApp vi=new ViewApp(rq);
+		
+		DataServer dtserver = new DataServer(rq);
+		
+		vi.addView("HEAD");
+		vi.addView("HEADER_CATEGORIAS");
+//		vi.addView("USER");
+		
+//		ModelAndView mav = new ModelAndView(vi.render());
+		ModelAndView mav = new ModelAndView(vi.render());
+		
 		Scmenu scmenuurl = new Scmenu();
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 
@@ -533,36 +545,60 @@ ViewApp vi=new ViewApp(rq);
 		switch (scmenuurlsub.getTipo()) {
 		case 20: // information
 			System.out.println("Tipo 20"); // TIPO MI CARTOLA
+			vi.addView("MI-CARTOLA");
+			vi.addView("FOOTER");
+			mav = new ModelAndView(vi.render());
 			mav.addObject("cartola", Emudata.getUserCartola());
 			break;
 		case 21: // information
 			System.out.println("Tipo 21"); // TIPO INSCRIPCCION
+			vi.addView("mis-inscripciones");
+			vi.addView("FOOTER");
+			mav = new ModelAndView(vi.render());
 			mav.addObject("inscripciones", Emudata.getInscripciones());
 			break;
 		case 22: // information
 			System.out.println("Tipo 22"); // TIPO MIS CUPONES
+			vi.addView("mis-cupones");
+			vi.addView("FOOTER");
+			mav = new ModelAndView(vi.render());
 			scmenuurlsub.informationsubmenu = Emudata.getInformatiotest();
 			break;
 		case 23: // information
 			System.out.println("Tipo 23"); // TIPO MIS GUSTOS
+			vi.addView("mis-preferencias");
+			vi.addView("FOOTER");
+			mav = new ModelAndView(vi.render());
 			mav.addObject("gustos", Emudata.getGustos());
 			mav.addObject("gustosUser", Emudata.getGustos());
 			break;
 		case 24: // information
 			System.out.println("Tipo 24"); // TIPO TRANSFERIR
 			scmenuurlsub.informationsubmenu = Emudata.getInformatiotest();
+			vi.addView("transfiere-scotiapesos");
+			vi.addView("FOOTER");
+			mav = new ModelAndView(vi.render());
 			break;
 		default:
 			System.out.println("Seccion fuera de menu");
 			return new ModelAndView("redirect:/");
 		}
 
+//		mav.addObject("menuurl", scmenuurl);
+//		mav.addObject("submenuurl", scmenuurlsub);
+//
+//		this.setHeaderx(mav,rq);
+//
+//		return mav;
+		
+		
 		mav.addObject("menuurl", scmenuurl);
 		mav.addObject("submenuurl", scmenuurlsub);
 
 		this.setHeaderx(mav,rq);
 
 		return mav;
+		
 	}
 	
 	

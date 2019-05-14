@@ -24,7 +24,7 @@ public class CustomerRolesInterceptor extends HandlerInterceptorAdapter {
  public void postHandle(HttpServletRequest request, HttpServletResponse response, 
 		Object object, ModelAndView model)
 		throws Exception {
-	System.out.println("postROLES");
+//	System.out.println("postROLES");
 
  }
 
@@ -32,6 +32,6 @@ public class CustomerRolesInterceptor extends HandlerInterceptorAdapter {
  public void afterCompletion(HttpServletRequest request, HttpServletResponse response, 
 		Object object, Exception arg3)
 		throws Exception {
-	System.out.println("afterRoles");
+//	System.out.println("afterRoles");
  }
 }
