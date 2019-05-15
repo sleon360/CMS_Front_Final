@@ -34,7 +34,7 @@ public class ViewApp {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         
         RestAuthentication xrestAuthentication =new RestAuthentication();
-        System.out.println(xrestAuthentication.getTOKENONE()+" 666666666666666666666666666666666666666");
+//        System.out.println(xrestAuthentication.getTOKENONE()+" 666666666666666666666666666666666666666");
         headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
       
         HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
