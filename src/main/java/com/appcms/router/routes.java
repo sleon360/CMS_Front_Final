@@ -22,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.NestedServletException;
 
 import com.appcms.entity.CanjeProducto;
+import com.appcms.entity.Information;
 import com.appcms.entity.Scmenu;
 import com.appcms.entity.Scsubmenu;
 import com.appcms.model.DataServer;
@@ -602,7 +603,32 @@ public class routes {
 	}
 	
 	
-	
+	@GetMapping("/information/{nombreInformation}")
+	public ModelAndView getinformation(@PathVariable("nombreInformation") String nombreInformation,HttpServletRequest rq)
+			throws UnsupportedEncodingException {
+//		ModelAndView mav = new ModelAndView("user");
+		ViewApp vi=new ViewApp(rq);
+		
+		DataServer dtserver = new DataServer(rq);
+		
+		vi.addView("HEAD");
+		vi.addView("INFORMATION");
+		vi.addView("FOOTER");
+
+		ModelAndView mav = new ModelAndView(vi.render());
+		
+		Information informationhtml = new Information();
+		
+		informationhtml = dtserver.loadInformationByName(nombreInformation);
+
+
+		mav.addObject("informationhtml", informationhtml);
+
+		this.setHeaderx(mav,rq);
+
+		return mav;
+		
+	}
 	
 	
 	

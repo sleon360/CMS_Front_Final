@@ -281,7 +281,30 @@ public class DataServer {
 
 	}
 	
+	public Information loadInformationByName(String idsubmenu) {
+
+		HttpHeaders headers = new HttpHeaders();
+
+		RestAuthentication xrestAuthentication = new RestAuthentication();
+//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
+		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
+		RestTemplate restTemplate = new RestTemplate();
+
+		String url = urlServer + "/cmsrest/get/informationByName/"+idsubmenu;
+
 	
+		ResponseEntity<Information> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,Information.class);
+
+        System.out.println("requestxn: "+xresponse.getBody());   
+
+		if (xresponse.getStatusCodeValue() == 200) {
+			return xresponse.getBody();
+		} else {
+			return null;
+		}
+
+	}
 	
 
 }
