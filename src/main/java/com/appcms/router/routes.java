@@ -70,11 +70,11 @@ public class routes {
 	}
 	
 	
-	@RequestMapping("/test")
-	public String groovy()
-	{
-		return "index";
-	}
+//	@RequestMapping("/test")
+//	public String groovy()
+//	{
+//		return "index";
+//	}
 	
 	@RequestMapping("/404")
 	public ModelAndView notfound(HttpServletRequest rq)
