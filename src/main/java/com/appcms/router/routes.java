@@ -178,7 +178,9 @@ public class routes {
 		
 
 		List<Scmenu> categiriasmenu = new ArrayList<>();
-		categiriasmenu = dtserver.loadScmenu();// Emudata.getmenuCategorias();
+			categiriasmenu = dtserver.loadScmenu();// Emudata.getmenuCategorias();	
+
+
 
 		for (Scmenu menusel : categiriasmenu) // buscamos el menu que seleccionó
 		{
@@ -187,15 +189,22 @@ public class routes {
 				break;
 			}
 		}
-		if (scmenuurl != null) {
-			for (Scsubmenu scmenuurlsubtemp : scmenuurl.getSubmenues()) // buscamos el submenu que seleccionó
-			{
-				if (scmenuurlsubtemp.getStrIndex().equalsIgnoreCase(submenu)) {
-					scmenuurlsub = scmenuurlsubtemp;
-					break;
+		
+		try {	
+			if (scmenuurl != null) {
+				for (Scsubmenu scmenuurlsubtemp : scmenuurl.getSubmenues()) // buscamos el submenu que seleccionó
+				{
+					if (scmenuurlsubtemp.getStrIndex().equalsIgnoreCase(submenu)) {
+						scmenuurlsub = scmenuurlsubtemp;
+						break;
+					}
 				}
-			}
+			}			
+		}catch (Exception e) {
+			return new ModelAndView("redirect:/");
 		}
+		
+		
 
 		if (scmenuurlsub.getId() == 0) {
 			System.out.println("Seccion no encontrada");
@@ -283,14 +292,18 @@ public class routes {
 				break;
 			}
 		}
-		if (scmenuurl != null) {
-			for (Scsubmenu scmenuurlsubtemp : scmenuurl.getSubmenues()) // buscamos el submenu que seleccionó
-			{
-				if (scmenuurlsubtemp.getStrIndex().equalsIgnoreCase(submenu)) {
-					scmenuurlsub = scmenuurlsubtemp;
-					break;
+		try {	
+			if (scmenuurl != null) {
+				for (Scsubmenu scmenuurlsubtemp : scmenuurl.getSubmenues()) // buscamos el submenu que seleccionó
+				{
+					if (scmenuurlsubtemp.getStrIndex().equalsIgnoreCase(submenu)) {
+						scmenuurlsub = scmenuurlsubtemp;
+						break;
+					}
 				}
-			} 
+			}			
+		}catch (Exception e) {
+			return new ModelAndView("redirect:/");
 		}
 
 		if (scmenuurlsub.getId() == 0) {
@@ -365,14 +378,18 @@ public class routes {
 				break;
 			}
 		}
-		if (scmenuurl != null) {
-			for (Scsubmenu scmenuurlsubtemp : scmenuurl.getSubmenues()) // buscamos el submenu que seleccionó
-			{
-				if (scmenuurlsubtemp.getStrIndex().equalsIgnoreCase(submenu)) {
-					scmenuurlsub = scmenuurlsubtemp;
-					break;
+		try {	
+			if (scmenuurl != null) {
+				for (Scsubmenu scmenuurlsubtemp : scmenuurl.getSubmenues()) // buscamos el submenu que seleccionó
+				{
+					if (scmenuurlsubtemp.getStrIndex().equalsIgnoreCase(submenu)) {
+						scmenuurlsub = scmenuurlsubtemp;
+						break;
+					}
 				}
-			}
+			}			
+		}catch (Exception e) {
+			return new ModelAndView("redirect:/");
 		}
 
 		if (scmenuurlsub.getId() == 0) {
@@ -421,14 +438,18 @@ public class routes {
 				break;
 			}
 		}
-		if (scmenuurl != null) {
-			for (Scsubmenu scmenuurlsubtemp : scmenuurl.getSubmenues()) // buscamos el submenu que seleccionó
-			{
-				if (scmenuurlsubtemp.getStrIndex().equalsIgnoreCase(submenu)) {
-					scmenuurlsub = scmenuurlsubtemp;
-					break;
+		try {	
+			if (scmenuurl != null) {
+				for (Scsubmenu scmenuurlsubtemp : scmenuurl.getSubmenues()) // buscamos el submenu que seleccionó
+				{
+					if (scmenuurlsubtemp.getStrIndex().equalsIgnoreCase(submenu)) {
+						scmenuurlsub = scmenuurlsubtemp;
+						break;
+					}
 				}
-			}
+			}			
+		}catch (Exception e) {
+			return new ModelAndView("redirect:/");
 		}
 
 		if (scmenuurlsub.getId() == 0) {
@@ -528,14 +549,18 @@ public class routes {
 				break;
 			}
 		}
-		if (scmenuurl != null) {
-			for (Scsubmenu scmenuurlsubtemp : scmenuurl.getSubmenues()) // buscamos el submenu que seleccionó
-			{
-				if (scmenuurlsubtemp.getStrIndex().equalsIgnoreCase(submenu)) {
-					scmenuurlsub = scmenuurlsubtemp;
-					break;
+		try {	
+			if (scmenuurl != null) {
+				for (Scsubmenu scmenuurlsubtemp : scmenuurl.getSubmenues()) // buscamos el submenu que seleccionó
+				{
+					if (scmenuurlsubtemp.getStrIndex().equalsIgnoreCase(submenu)) {
+						scmenuurlsub = scmenuurlsubtemp;
+						break;
+					}
 				}
-			}
+			}			
+		}catch (Exception e) {
+			return new ModelAndView("redirect:/");
 		}
 
 		if (scmenuurlsub.getId() == 0) {
