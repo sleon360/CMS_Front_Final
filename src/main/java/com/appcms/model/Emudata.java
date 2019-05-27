@@ -171,7 +171,7 @@ public class Emudata {
 	}
 	
 	public static Scotiauser getUsusario() {
-		Scotiauser usuario = new Scotiauser(1, "177824577", "Fabian", "Gaete", "fgaete@afiniti.cl","1");		
+		Scotiauser usuario = new Scotiauser(2, "177824577", "Fabian", "Gaete", "fgaete@afiniti.cl","1");		
 		return usuario;
 	}
 	public static Scotiauser getUsusarioOff() {

@@ -22,8 +22,11 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.NestedServletException;
 
 import com.appcms.entity.CanjeProducto;
+import com.appcms.entity.CustomerReward;
 import com.appcms.entity.Information;
+import com.appcms.entity.ProductoTipoLike;
 import com.appcms.entity.Scmenu;
+import com.appcms.entity.Scotiauser;
 import com.appcms.entity.Scsubmenu;
 import com.appcms.model.DataServer;
 import com.appcms.model.Emudata;
@@ -479,6 +482,47 @@ public class routes {
 			break;
 		case 4: // TIPO PRODUCTO E-COMERCE
 			// efectuar canje, datos en objeto "producto"
+			
+			//	OBTENEMOS EL PRODUCTO
+			
+			try {
+				System.out.println("id prod:"+producto.getIdProducto());
+				ProductoTipoLike detalleProducto = dtserver.loadProductoById(producto.getIdProducto());
+				System.out.println("detalle:"+detalleProducto.getId());
+				int idPruductoCanje = detalleProducto.getId();
+				if(idPruductoCanje == 0 || producto.getCantidad() < 0) {
+					System.out.println("no producto");
+					return new ModelAndView("redirect:/");
+				}else {
+					
+					 String descipcionAbono = "Canje: "+detalleProducto.getNombre();
+					 
+					 int totalPuntos = detalleProducto.getPrecio() * producto.getCantidad();
+					 
+					 
+					 Scotiauser usuario = Emudata.getUsusario();
+					CustomerReward movimientoActual  = new CustomerReward( usuario.getId_cliente(), 0, descipcionAbono, totalPuntos,
+							"27-05-2019", "27-05-2019", 0, 0, 1,1);				
+					
+					boolean agregado = dtserver.setReward(movimientoActual);
+					if(agregado) {
+						System.out.println("Movimiento agregado");
+					}else {
+						System.out.println("Movimiento no agregado");
+					}
+					
+					
+				}
+				
+			}
+			catch(Exception ex) {
+				System.out.println("canjeex: "+ex.getMessage());
+			}
+			
+			
+			
+//			System.out.println("canje: "+producto.getIdProducto());
+			
 			mav.addObject("canjeExito", true);
 			break;
 		case 5: // TIPO CANJE CON CATEGORIAS

@@ -22,10 +22,41 @@ public class ProductoTipoLike {
 	String tutulo_direcciones;
 	public List<FormatoDetalle> detalles = null;
 	public List<FormatoDetalle> direcciones = null;
+	String codigo;
 
 	public ProductoTipoLike() {
 		super();
 	}
+	
+	
+	
+
+	public ProductoTipoLike(int id, String nombre, String titulo, String subtitulo, String imagen,
+			String porcentajeInfo, String direccionTxt1, String direccionTxt2, String direccionTxt3, int like,
+			int precio, int equiPesos, String fecha_creacion, String fecha_fin, String titulo_detalles,
+			String tutulo_direcciones, String codigo) {
+		super();
+		this.id = id;
+		this.nombre = nombre;
+		this.titulo = titulo;
+		this.subtitulo = subtitulo;
+		this.imagen = imagen;
+		this.porcentajeInfo = porcentajeInfo;
+		this.direccionTxt1 = direccionTxt1;
+		this.direccionTxt2 = direccionTxt2;
+		this.direccionTxt3 = direccionTxt3;
+		this.like = like;
+		this.precio = precio;
+		this.equiPesos = equiPesos;
+		this.fecha_creacion = fecha_creacion;
+		this.fecha_fin = fecha_fin;
+		this.titulo_detalles = titulo_detalles;
+		this.tutulo_direcciones = tutulo_direcciones;
+		this.codigo = codigo;
+	}
+
+
+
 
 	public ProductoTipoLike(int id, String nombre, String titulo, String subtitulo, String imagen,
 			String porcentajeInfo, String direccionTxt1, String direccionTxt2, String direccionTxt3, int like) { // CONSTRUCTOR TIPO 2
@@ -240,6 +271,30 @@ public class ProductoTipoLike {
 
 	public void setEquiPesos(int equiPesos) {
 		this.equiPesos = equiPesos;
+	}
+
+	public List<FormatoDetalle> getDetalles() {
+		return detalles;
+	}
+
+	public void setDetalles(List<FormatoDetalle> detalles) {
+		this.detalles = detalles;
+	}
+
+	public List<FormatoDetalle> getDirecciones() {
+		return direcciones;
+	}
+
+	public void setDirecciones(List<FormatoDetalle> direcciones) {
+		this.direcciones = direcciones;
+	}
+
+	public String getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
 	}
 	
 
