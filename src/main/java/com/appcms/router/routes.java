@@ -3,6 +3,7 @@ package com.appcms.router;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -483,40 +484,42 @@ public class routes {
 		case 4: // TIPO PRODUCTO E-COMERCE
 			// efectuar canje, datos en objeto "producto"
 			
-			//	OBTENEMOS EL PRODUCTO
+			
 			
 			try {
-				System.out.println("id prod:"+producto.getIdProducto());
+				// OBTENEMOS EL PRODUCTO
 				ProductoTipoLike detalleProducto = dtserver.loadProductoById(producto.getIdProducto());
-				System.out.println("detalle:"+detalleProducto.getId());
 				int idPruductoCanje = detalleProducto.getId();
-				if(idPruductoCanje == 0 || producto.getCantidad() < 0) {
+
+				// PRODUCTO DISPONIBLE (NO FUNCIONA)
+				if (idPruductoCanje == 0 || producto.getCantidad() < 0) {
 					System.out.println("no producto");
 					return new ModelAndView("redirect:/");
-				}else {
+				} else {
+
+					String descipcionAbono = "Canje: " + detalleProducto.getNombre();
+					int totalPuntos = detalleProducto.getPrecio() * producto.getCantidad();
+					java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+										
+					Scotiauser usuario = Emudata.getUsusario();
 					
-					 String descipcionAbono = "Canje: "+detalleProducto.getNombre();
-					 
-					 int totalPuntos = detalleProducto.getPrecio() * producto.getCantidad();
-					 
-					 
-					 Scotiauser usuario = Emudata.getUsusario();
-					CustomerReward movimientoActual  = new CustomerReward( usuario.getId_cliente(), 0, descipcionAbono, totalPuntos,
-							"27-05-2019", "27-05-2019", 0, 0, 1,1);				
+					CustomerReward movimientoActual = new CustomerReward(usuario.getId_cliente(), 0, descipcionAbono,
+							totalPuntos, date.toString(), date.toString(), 0, 0, 1, 1);
+					String agregado = dtserver.setReward(movimientoActual);
 					
-					boolean agregado = dtserver.setReward(movimientoActual);
-					if(agregado) {
+//					JSONObject myjson = new JSONObject(the_json);
+//					JSONArray the_json_array = myjson.getJSONArray("profiles");
+					
+					if (agregado != null) {
 						System.out.println("Movimiento agregado");
-					}else {
+					} else {
 						System.out.println("Movimiento no agregado");
 					}
-					
-					
+
 				}
-				
-			}
-			catch(Exception ex) {
-				System.out.println("canjeex: "+ex.getMessage());
+
+			} catch (Exception ex) {
+				System.out.println("canjeex: " + ex.getMessage());
 			}
 			
 			

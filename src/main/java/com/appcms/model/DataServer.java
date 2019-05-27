@@ -36,7 +36,8 @@ public class DataServer {
 	public DataServer(HttpServletRequest rq) {
 		rqx = rq;
 	}
-	@Cacheable(cacheNames="menu")
+
+	@Cacheable(cacheNames = "menu")
 	public List<Scmenu> loadScmenu() {
 
 		HttpHeaders headers = new HttpHeaders();
@@ -77,7 +78,8 @@ public class DataServer {
 
 		String url = urlServer + "/cmsrest/get/informationsubmenu/" + idsubmenu;
 
-		ResponseEntity<Scinformacionsubmenu> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,Scinformacionsubmenu.class);
+		ResponseEntity<Scinformacionsubmenu> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+				Scinformacionsubmenu.class);
 
 		if (xresponse.getStatusCodeValue() == 200) {
 
@@ -92,7 +94,7 @@ public class DataServer {
 //				information.condicioneslista.add(post_id);
 				information.addCondicioneslista(post_id);
 			}
-			System.out.println("toString: "+information.toString());
+			System.out.println("toString: " + information.toString());
 			return information;
 
 		} else {
@@ -100,7 +102,7 @@ public class DataServer {
 		}
 
 	}
-	
+
 	public List<ProductoTipoLike> loadProductosLike(int idsubmenu) {
 
 		HttpHeaders headers = new HttpHeaders();
@@ -117,7 +119,7 @@ public class DataServer {
 				new ParameterizedTypeReference<List<ProductoTipoLike>>() {
 				});
 
-        System.out.println("requestxn: "+xresponse.getBody());   
+		System.out.println("requestxn: " + xresponse.getBody());
 
 		if (xresponse.getStatusCodeValue() == 200) {
 			return xresponse.getBody();
@@ -126,7 +128,7 @@ public class DataServer {
 		}
 
 	}
-	
+
 	public List<ProductoTipoLike> loadProductosLikeSubmenuCategoria(int idsubmenu, String categoria) {
 
 		HttpHeaders headers = new HttpHeaders();
@@ -143,7 +145,7 @@ public class DataServer {
 				new ParameterizedTypeReference<List<ProductoTipoLike>>() {
 				});
 
-        System.out.println("requestxn: "+xresponse.getBody());   
+		System.out.println("requestxn: " + xresponse.getBody());
 
 		if (xresponse.getStatusCodeValue() == 200) {
 			return xresponse.getBody();
@@ -152,7 +154,7 @@ public class DataServer {
 		}
 
 	}
-	
+
 	public List<ProductoTipoLike> loadProductosDetalle(int idproducto) {
 
 		HttpHeaders headers = new HttpHeaders();
@@ -169,7 +171,7 @@ public class DataServer {
 				new ParameterizedTypeReference<List<ProductoTipoLike>>() {
 				});
 
-        System.out.println("requestxn: "+xresponse.getBody());   
+		System.out.println("requestxn: " + xresponse.getBody());
 
 		if (xresponse.getStatusCodeValue() == 200) {
 			return xresponse.getBody();
@@ -178,10 +180,9 @@ public class DataServer {
 		}
 
 	}
-	
+
 	public List<ProductoCategoria> loadCateProductosFromCategoria(int idsubmenu) {
-		
-		
+
 		HttpHeaders headers = new HttpHeaders();
 
 		RestAuthentication xrestAuthentication = new RestAuthentication();
@@ -196,19 +197,18 @@ public class DataServer {
 				new ParameterizedTypeReference<List<ProductoCategoria>>() {
 				});
 
-        System.out.println("requestxn: "+xresponse.getBody());   
+		System.out.println("requestxn: " + xresponse.getBody());
 
 		if (xresponse.getStatusCodeValue() == 200) {
 			return xresponse.getBody();
 		} else {
 			return null;
 		}
-		
+
 	}
-	
+
 	public List<ProductoCategoria> loadproductoCategoriaConProductos(int idsubmenu, String categoria) {
-		
-		
+
 		HttpHeaders headers = new HttpHeaders();
 
 		RestAuthentication xrestAuthentication = new RestAuthentication();
@@ -223,17 +223,16 @@ public class DataServer {
 				new ParameterizedTypeReference<List<ProductoCategoria>>() {
 				});
 
-        System.out.println("requestxn: "+xresponse.getBody());   
+		System.out.println("requestxn: " + xresponse.getBody());
 
 		if (xresponse.getStatusCodeValue() == 200) {
 			return xresponse.getBody();
 		} else {
 			return null;
 		}
-		
+
 	}
-	
-	
+
 	public List<Banner> loadBannerAll() {
 
 		HttpHeaders headers = new HttpHeaders();
@@ -250,7 +249,7 @@ public class DataServer {
 				new ParameterizedTypeReference<List<Banner>>() {
 				});
 
-        System.out.println("requestxn: "+xresponse.getBody());   
+		System.out.println("requestxn: " + xresponse.getBody());
 
 		if (xresponse.getStatusCodeValue() == 200) {
 			return xresponse.getBody();
@@ -259,7 +258,7 @@ public class DataServer {
 		}
 
 	}
-	
+
 	public Information loadInformationScsubmenu(int idsubmenu) {
 
 		HttpHeaders headers = new HttpHeaders();
@@ -270,12 +269,12 @@ public class DataServer {
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = urlServer + "/cmsrest/get/informationScsubmenu/"+idsubmenu;
+		String url = urlServer + "/cmsrest/get/informationScsubmenu/" + idsubmenu;
 
-	
-		ResponseEntity<Information> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,Information.class);
+		ResponseEntity<Information> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+				Information.class);
 
-        System.out.println("requestxn: "+xresponse.getBody());   
+		System.out.println("requestxn: " + xresponse.getBody());
 
 		if (xresponse.getStatusCodeValue() == 200) {
 			return xresponse.getBody();
@@ -284,7 +283,7 @@ public class DataServer {
 		}
 
 	}
-	
+
 	public Information loadInformationByName(String idsubmenu) {
 
 		HttpHeaders headers = new HttpHeaders();
@@ -295,12 +294,12 @@ public class DataServer {
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = urlServer + "/cmsrest/get/informationByName/"+idsubmenu;
+		String url = urlServer + "/cmsrest/get/informationByName/" + idsubmenu;
 
-	
-		ResponseEntity<Information> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,Information.class);
+		ResponseEntity<Information> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+				Information.class);
 
-        System.out.println("requestxn: "+xresponse.getBody());   
+		System.out.println("requestxn: " + xresponse.getBody());
 
 		if (xresponse.getStatusCodeValue() == 200) {
 			return xresponse.getBody();
@@ -309,10 +308,8 @@ public class DataServer {
 		}
 
 	}
-	
-	
-	
-	public boolean  setReward(CustomerReward reward) {
+
+	public String setReward(CustomerReward reward) {
 
 		HttpHeaders headers = new HttpHeaders();
 
@@ -321,77 +318,70 @@ public class DataServer {
 		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
 
 		String url = urlServer + "/cmsrest/customerreward/set";
-		System.out.println("data param: "+ reward.toString());
-		
+		System.out.println("data param: " + reward.toString());
+
 		MultiValueMap<String, String> xparam = new LinkedMultiValueMap<String, String>();
-		xparam.add("customer_id",Integer.toString(reward.getCustomer_id()));
-		xparam.add("order_id",Integer.toString(reward.getOrder_id()));
-		xparam.add("description",reward.getDescription());
-		xparam.add("points",Integer.toString(reward.getPoints()));
-		xparam.add("date_added",reward.getDate_added());
-		xparam.add("date_vencimiento",reward.getDate_vencimiento());
-		xparam.add("id_campana",Integer.toString(reward.getId_campana()));
-		xparam.add("id_trx",Integer.toString(reward.getId_trx()));
-		xparam.add("id_jos_ticket",Integer.toString(reward.getId_jos_ticket()));
-		xparam.add("tipo_reward",Integer.toString(reward.getTipo_reward()));
-		  System.out.println("pre: "+reward.toString());  
-		
-		HttpEntity<?> httpEntity = new HttpEntity<Object>(xparam,headers);
+		xparam.add("customer_id", Integer.toString(reward.getCustomer_id()));
+		xparam.add("order_id", Integer.toString(reward.getOrder_id()));
+		xparam.add("description", reward.getDescription());
+		xparam.add("points", Integer.toString(reward.getPoints()));
+		xparam.add("date_added", reward.getDate_added());
+		xparam.add("date_vencimiento", reward.getDate_vencimiento());
+		xparam.add("id_campana", Integer.toString(reward.getId_campana()));
+		xparam.add("id_trx", Integer.toString(reward.getId_trx()));
+		xparam.add("id_jos_ticket", Integer.toString(reward.getId_jos_ticket()));
+		xparam.add("tipo_reward", Integer.toString(reward.getTipo_reward()));
+		System.out.println("pre: " + reward.toString());
+
+		HttpEntity<?> httpEntity = new HttpEntity<Object>(xparam, headers);
 		RestTemplate restTemplate = new RestTemplate();
-		
-		ResponseEntity<String> xresponse = restTemplate.exchange(url, HttpMethod.POST, httpEntity,String.class);
+
+		ResponseEntity<String> xresponse = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
 //		ResponseEntity<String> xresponse = this.restTemplate.exchange("http://142.93.62.102:9080/cmsrest/view/set", HttpMethod.POST, httpEntity, String.class);
 
-		
-		
-        System.out.println("requestxn: "+xresponse.getBody());   
-        
-        if (xresponse.getStatusCode() == HttpStatus.OK) {
-        	return true;
-        	} else {
-        	return false;
-        	}
+		System.out.println("requestxn: " + xresponse.getBody());
+
+		if (xresponse.getStatusCode() == HttpStatus.OK) {
+			return xresponse.getBody();
+//        	return true;
+		} else {
+			return null;
+		}
 //		if (xresponse.getStatusCodeValue() == 200) {
 //			return xresponse.getBody();
 //		} else {
 //			return null;
 //		}
-		
-		
-		
 
 	}
-	
 
 	public ProductoTipoLike loadProductoById(int idProd) {
 
-			HttpHeaders headers = new HttpHeaders();
+		HttpHeaders headers = new HttpHeaders();
 
-			RestAuthentication xrestAuthentication = new RestAuthentication();
+		RestAuthentication xrestAuthentication = new RestAuthentication();
 //			System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
-			headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
-			HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
-			RestTemplate restTemplate = new RestTemplate();
+		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
+		RestTemplate restTemplate = new RestTemplate();
 
-			String url = urlServer + "/cmsrest/get/ProductoById/" + idProd;
+		String url = urlServer + "/cmsrest/get/ProductoById/" + idProd;
 
 //			ResponseEntity<List<ProductoTipoLike>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 //					new ParameterizedTypeReference<List<ProductoTipoLike>>() {
 //					});
-			ResponseEntity<ProductoTipoLike> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,ProductoTipoLike.class);
-	        System.out.println("requestxn: "+xresponse.getBody());   
+		ResponseEntity<ProductoTipoLike> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+				ProductoTipoLike.class);
+		System.out.println("requestxn: " + xresponse.getBody());
 
-			if (xresponse.getStatusCodeValue() == 200) {
-				return xresponse.getBody();
-			} else {
-				ProductoTipoLike responsenull = new ProductoTipoLike();
-				responsenull.setId(0);
-				return responsenull;
-			}
-
+		if (xresponse.getStatusCodeValue() == 200) {
+			return xresponse.getBody();
+		} else {
+			ProductoTipoLike responsenull = new ProductoTipoLike();
+			responsenull.setId(0);
+			return responsenull;
 		}
-	
-	
-	
+
+	}
 
 }
