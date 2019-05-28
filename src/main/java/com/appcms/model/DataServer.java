@@ -233,7 +233,7 @@ public class DataServer {
 
 	}
 
-	public List<Banner> loadBannerAll() {
+	public List<Banner> loadBannerAll(int responsive) {
 
 		HttpHeaders headers = new HttpHeaders();
 
@@ -243,7 +243,7 @@ public class DataServer {
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = urlServer + "/cmsrest/get/bannerAll";
+		String url = urlServer + "/cmsrest/get/bannerAll/"+responsive;
 
 		ResponseEntity<List<Banner>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 				new ParameterizedTypeReference<List<Banner>>() {
@@ -259,6 +259,8 @@ public class DataServer {
 
 	}
 
+	
+	
 	public Information loadInformationScsubmenu(int idsubmenu) {
 
 		HttpHeaders headers = new HttpHeaders();

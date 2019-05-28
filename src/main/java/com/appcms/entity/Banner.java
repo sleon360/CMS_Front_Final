@@ -5,6 +5,7 @@ public class Banner {
 	public String ruta;
 	public String url;
 	public boolean blank;
+	int responsive;
 	
 	public Banner() {
 	}
@@ -39,5 +40,12 @@ public class Banner {
 	public void setBlank(boolean blank) {
 		this.blank = blank;
 	}
+	public int getResponsive() {
+		return responsive;
+	}
+	public void setResponsive(int responsive) {
+		this.responsive = responsive;
+	}
+	
 	
 }

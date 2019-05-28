@@ -164,7 +164,8 @@ public class routes {
 		DataServer dtserver = new DataServer(rq);
 		
 		ModelAndView mav = new ModelAndView(vi.render());
-		mav.addObject("banners",dtserver.loadBannerAll()); //Emudata.getBanners()
+		mav.addObject("banners",dtserver.loadBannerAll(0)); //Emudata.getBanners()
+		mav.addObject("banners_resp",dtserver.loadBannerAll(1));
 		this.setHeaderx(mav,rq);
 
 		return mav;
@@ -507,14 +508,24 @@ public class routes {
 							totalPuntos, date.toString(), date.toString(), 0, 0, 1, 1);
 					String agregado = dtserver.setReward(movimientoActual);
 					
+					if (agregado != null) {
+						System.out.println("Movimiento agregado");
+						//agregado: RETORNA STATUS DEL CANJE
+						//SI
+							//CONSULTA VOUCHER TICKETERA
+								//MUESTRA RESULTADO CANJE
+						//NO
+							//VALIDA ERROR (SESSION FINALIZADA, PUNTOS INSUFICIENTES, TOKEN INVALIDO, ETC)
+								//MUESTRA MENSAJE A CLIENTE
+					} else { //PROPBLEMA AL CONSULTAR
+						System.out.println("Movimiento no agregado");
+					}
+					
+					
+					
 //					JSONObject myjson = new JSONObject(the_json);
 //					JSONArray the_json_array = myjson.getJSONArray("profiles");
 					
-					if (agregado != null) {
-						System.out.println("Movimiento agregado");
-					} else {
-						System.out.println("Movimiento no agregado");
-					}
 
 				}
 
