@@ -85,9 +85,10 @@ public class routes {
 	{
 		
 		ViewApp vi=new ViewApp(rq);
-		vi.addView("header");
+		vi.addView("head");
 		vi.addView("404");
 		ModelAndView mav = new ModelAndView(vi.render());
+		this.setHeaderx(mav,rq);
 		return mav;
 	}
 	
