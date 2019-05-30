@@ -385,5 +385,54 @@ public class DataServer {
 		}
 
 	}
+	
+	
+	
+	
+	public String testLogin(String rut, String pass) {
+
+		HttpHeaders headers = new HttpHeaders();
+
+		RestAuthentication xrestAuthentication = new RestAuthentication();
+//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
+		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+
+		String url = urlServer + "/v1/login_customer";
+
+		MultiValueMap<String, String> xparam = new LinkedMultiValueMap<String, String>();
+		xparam.add("userCostumer", rut);
+		xparam.add("userPassword", pass);
+
+		HttpEntity<?> httpEntity = new HttpEntity<Object>(xparam, headers);
+		RestTemplate restTemplate = new RestTemplate();
+
+		try {
+			ResponseEntity<String> xresponse = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+			System.out.println("requestxn: " + xresponse.getBody());
+
+			if (xresponse.getStatusCode() == HttpStatus.OK) {
+				System.out.println(xresponse.getHeaders());
+				return xresponse.getHeaders().get("Authorization").toString().replace("Bearer ", "");
+			} else {
+				return null;
+			}
+		} catch (Exception ex) {
+			System.out.println("error: " + ex.getMessage());
+			return null;
+		}
+		
+
+	
+//		if (xresponse.getStatusCodeValue() == 200) {
+//			return xresponse.getBody();
+//		} else {
+//			return null;
+//		}
+
+	}
+	
+	
+	
+	
 
 }

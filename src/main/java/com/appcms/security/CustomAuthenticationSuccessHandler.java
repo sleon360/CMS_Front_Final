@@ -28,6 +28,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         if (isAdmin) {*/
     	System.out.println("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
     	RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-    	redirectStrategy.sendRedirect(request, response, "/admin");
+    	redirectStrategy.sendRedirect(request, response, "/");
     }
 }

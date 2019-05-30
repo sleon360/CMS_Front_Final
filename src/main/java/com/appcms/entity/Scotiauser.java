@@ -33,6 +33,7 @@ public class Scotiauser {
    /** Property address_id */
    String address_id;
  
+   String tokenScotia;
    /**
     * Constructor
     */
@@ -168,4 +169,21 @@ public class Scotiauser {
    public void setAddress_id(String value) {
       this.address_id = value;
    }
+
+public String getId_grupo() {
+	return id_grupo;
+}
+
+public void setId_grupo(String id_grupo) {
+	this.id_grupo = id_grupo;
+}
+
+public String getTokenScotia() {
+	return tokenScotia;
+}
+
+public void setTokenScotia(String tokenScotia) {
+	this.tokenScotia = tokenScotia;
+}
+   
 }

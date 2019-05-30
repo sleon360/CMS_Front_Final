@@ -8,6 +8,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.security.authentication.AuthenticationTrustResolver;
+import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -23,8 +26,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.NestedServletException;
 
 import com.appcms.entity.CanjeProducto;
+import com.appcms.entity.CredencialesEntity;
 import com.appcms.entity.CustomerReward;
 import com.appcms.entity.Information;
+import com.appcms.entity.LoginUser;
 import com.appcms.entity.ProductoTipoLike;
 import com.appcms.entity.Scmenu;
 import com.appcms.entity.Scotiauser;
@@ -69,8 +74,25 @@ public class routes {
 		mav.addObject("menuesHeader", dtserver.loadScmenu());
 //		mav.addObject("menuesHeader", Emudata.getmenuCategorias());
 	
-		mav.addObject("usuario", Emudata.getUsusario());
-//		 mav.addObject("usuario",Emudata.getUsusarioOff());
+		
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		final AuthenticationTrustResolver resolver=new AuthenticationTrustResolverImpl();
+	       
+		
+		System.out.println("esta login: "+resolver.isAnonymous(auth)); 
+		if (!resolver.isAnonymous(auth)) {
+			CredencialesEntity aaaa = (CredencialesEntity) auth.getPrincipal();
+			System.out.println(aaaa.getTOKENTWO());
+			
+//		aaaa.getPuntos();
+			mav.addObject("usuario", new Scotiauser(2, "177824577", "Fabian", "Gaete", "fgaete@afiniti.cl","1"));
+		}else {
+			 mav.addObject("usuario",Emudata.getUsusarioOff());			
+		}
+
+//		 mav.addObject("usuario",Emudata.getUsusarioOff());	
 	}
 	
 	
@@ -120,7 +142,7 @@ public class routes {
         if (auth != null){   
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
-        return "redirect:/home";
+        return "redirect:/";
     }
 
 	@RequestMapping("/admin")
@@ -207,14 +229,16 @@ public class routes {
 				}
 			}			
 		}catch (Exception e) {
-			return new ModelAndView("redirect:/");
+			return new ModelAndView("redirect:/404");
+
 		}
 		
 		
 
 		if (scmenuurlsub.getId() == 0) {
 			System.out.println("Seccion no encontrada");
-			return new ModelAndView("redirect:/");
+			return new ModelAndView("redirect:/404");
+
 		}
 
 		switch (scmenuurlsub.getTipo()) {
@@ -309,12 +333,14 @@ public class routes {
 				}
 			}			
 		}catch (Exception e) {
-			return new ModelAndView("redirect:/");
+			return new ModelAndView("redirect:/404");
+
 		}
 
 		if (scmenuurlsub.getId() == 0) {
 			System.out.println("Seccion no encontrada");
-			return new ModelAndView("redirect:/");
+			return new ModelAndView("redirect:/404");
+
 		}
 
 		switch (scmenuurlsub.getTipo()) { // SI O SI TIENE QUE SER SUB CATEGORIA TIPO 5 o 6 PARA TENER PRODUCTOS A LA
@@ -340,7 +366,8 @@ public class routes {
 			break;
 		default:
 			System.out.println("Seccion no encontrada");
-			return new ModelAndView("redirect:/");
+			return new ModelAndView("redirect:/404");
+
 		}
 
 //		mav.addObject("menuurl", scmenuurl);
@@ -395,12 +422,14 @@ public class routes {
 				}
 			}			
 		}catch (Exception e) {
-			return new ModelAndView("redirect:/");
+			return new ModelAndView("redirect:/404");
+
 		}
 
 		if (scmenuurlsub.getId() == 0) {
 			System.out.println("Seccion no encontrada");
-			return new ModelAndView("redirect:/");
+			return new ModelAndView("redirect:/404");
+
 		}
 
 		scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto); //Emudata.getProductoSearch(producto);
@@ -455,12 +484,14 @@ public class routes {
 				}
 			}			
 		}catch (Exception e) {
-			return new ModelAndView("redirect:/");
+			return new ModelAndView("redirect:/404");
+
 		}
 
 		if (scmenuurlsub.getId() == 0) {
 			System.out.println("Seccion no encontrada");
-			return new ModelAndView("redirect:/");
+			return new ModelAndView("redirect:/404");
+
 		}
 
 		System.out.println(producto.toString());
@@ -496,7 +527,8 @@ public class routes {
 				// PRODUCTO DISPONIBLE (NO FUNCIONA)
 				if (idPruductoCanje == 0 || producto.getCantidad() < 0) {
 					System.out.println("no producto");
-					return new ModelAndView("redirect:/");
+					return new ModelAndView("redirect:/404");
+//					return new ModelAndView("redirect:/");
 				} else {
 
 					String descipcionAbono = "Canje: " + detalleProducto.getNombre();
@@ -569,7 +601,8 @@ public class routes {
 			break;
 		default:
 			System.out.println("Seccion fuera de menu");
-			return new ModelAndView("redirect:/");
+			return new ModelAndView("redirect:/404");
+
 		}
 		mav.addObject("menuurl", scmenuurl);
 		mav.addObject("submenuurl", scmenuurlsub);
@@ -619,12 +652,12 @@ public class routes {
 				}
 			}			
 		}catch (Exception e) {
-			return new ModelAndView("redirect:/");
+			return new ModelAndView("redirect:/404");
 		}
 
 		if (scmenuurlsub.getId() == 0) {
 			System.out.println("Seccion no encontrada");
-			return new ModelAndView("redirect:/");
+			return new ModelAndView("redirect:/404");
 		}
 
 		switch (scmenuurlsub.getTipo()) {
@@ -666,7 +699,7 @@ public class routes {
 			break;
 		default:
 			System.out.println("Seccion fuera de menu");
-			return new ModelAndView("redirect:/");
+			return new ModelAndView("redirect:/404");
 		}
 
 //		mav.addObject("menuurl", scmenuurl);
@@ -704,8 +737,11 @@ public class routes {
 		Information informationhtml = new Information();
 		
 		informationhtml = dtserver.loadInformationByName(nombreInformation);
-
-
+		System.out.println("inforxn"+informationhtml); 
+		if(informationhtml == null) {
+			return new ModelAndView("redirect:/404");
+		}
+		
 		mav.addObject("informationhtml", informationhtml);
 
 		this.setHeaderx(mav,rq);
@@ -713,8 +749,38 @@ public class routes {
 		return mav;
 		
 	}
+
+
+	@PostMapping("/user/login")
+	public ModelAndView loginuser(@ModelAttribute("loginForm") LoginUser loginForm, HttpServletRequest rq) {
+//		ModelAndView mav = new ModelAndView("user");
+		ViewApp vi=new ViewApp(rq);
+		
+		DataServer dtserver = new DataServer(rq);
+		
+		vi.addView("HEAD");
+//		vi.addView("INFORMATION");
+		vi.addView("FOOTER");
+
+		ModelAndView mav = new ModelAndView(vi.render());
+		
+		System.out.println("infologin: "+loginForm); 
 	
-	
+		
+		String resultlogin = dtserver.testLogin(loginForm.getRut(),loginForm.getPass());
+		System.out.println("result_login:"+resultlogin); 
+		
+		if(resultlogin != null) { //token de sesion devuelto 
+			
+		}else {
+			
+		}
+		
+		this.setHeaderx(mav,rq);
+
+		return mav;
+		
+	}
 	
 	
 	
