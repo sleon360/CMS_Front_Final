@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -89,7 +90,7 @@ public class routes {
 //		aaaa.getPuntos();
 			mav.addObject("usuario", new Scotiauser(2, "177824577", "Fabian", "Gaete", "fgaete@afiniti.cl","1"));
 		}else {
-			 mav.addObject("usuario",Emudata.getUsusarioOff());			
+			mav.addObject("usuario",Emudata.getUsusarioOff());			
 		}
 
 //		 mav.addObject("usuario",Emudata.getUsusarioOff());	
@@ -109,6 +110,7 @@ public class routes {
 		ViewApp vi=new ViewApp(rq);
 		vi.addView("head");
 		vi.addView("404");
+		vi.addView("footer");
 		ModelAndView mav = new ModelAndView(vi.render());
 		this.setHeaderx(mav,rq);
 		return mav;
@@ -121,9 +123,20 @@ public class routes {
 
 	@ExceptionHandler(value = {Exception.class,MultipartException.class,NestedServletException.class,NestedServletException.class,ConnectException.class })
 	@RequestMapping("/errores")
-	public String error()
+	public ModelAndView error(HttpServletRequest rq)
 	{
-		return "error";
+		
+		ViewApp vi=new ViewApp(rq);
+		vi.addView("head");
+		vi.addView("error");
+		vi.addView("footer");
+		ModelAndView mav = new ModelAndView(vi.render());
+		this.setHeaderx(mav,rq);
+		return mav;
+		
+		
+		
+//		return "error";
 	}
 	
 	@RequestMapping("/login")
@@ -142,6 +155,11 @@ public class routes {
         if (auth != null){   
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
+        
+        Cookie cookie = new Cookie("welcomex", null); // cookie que muestra detalle al inciar     
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        
         return "redirect:/";
     }
 
