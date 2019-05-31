@@ -141,54 +141,67 @@ public class routes {
     }
 
 //	@ExceptionHandler(value = {Exception.class,MultipartException.class,NestedServletException.class,NestedServletException.class,ConnectException.class })
+	@ExceptionHandler(value = {Exception.class,MultipartException.class,NestedServletException.class,NestedServletException.class,ConnectException.class })
 	@RequestMapping("/errores")
-	public ModelAndView error(HttpServletRequest rq)
+	public String error(HttpServletRequest rq)
 	{
-		
-		String errorMsg = "";
-        int httpErrorCode = getErrorCode(rq);
- 
-        switch (httpErrorCode) {
-            case 400: {
-                errorMsg = "Http Error Code: 400. Bad Request";
-                break;
-            }
-            case 401: {
-                errorMsg = "Http Error Code: 401. Unauthorized";
-                break;
-            }
-            case 403: {
-                errorMsg = "Http Error Code: 403. Forbidden";
-                break;
-            }
-            case 404: {
-                errorMsg = "Http Error Code: 404. Resource not found";
-                break;
-            }
-            case 500: {
-                errorMsg = "Http Error Code: 500. Internal Server Error";
-                break;
-            }
-        }
-		
-       
-		
-		ViewApp vi=new ViewApp(rq);
+		try {
+			int code=(Integer) rq.getAttribute("javax.servlet.error.status_code");
+			return "redirect:/error/"+code;	           
+		}catch(Exception ex) {
+			return "redirect:/error/500";
+		}
+
+	}
+	
+
+	@GetMapping("/error/{err}")
+	public ModelAndView errorprint(@PathVariable("err") int err, HttpServletRequest rq) {
+
+		String errorMsg = "Error desconocido";
+		int httpErrorCode = err;
+		try {
+			switch (httpErrorCode) {
+			case 400: {
+				errorMsg = "Http Error Code: 400. Bad Request";
+				break;
+			}
+			case 401: {
+				errorMsg = "Http Error Code: 401. Unauthorized";
+				break;
+			}
+			case 403: {
+				errorMsg = "Http Error Code: 403. Forbidden";
+				break;
+			}
+			case 404: {
+				errorMsg = "Http Error Code: 404. Resource not found";
+				break;
+			}
+			case 500: {
+				errorMsg = "Http Error Code: 500. Internal Server Error";
+				break;
+			}
+			}
+		} catch (Exception ex) {
+
+		}
+
+		ViewApp vi = new ViewApp(rq);
 		vi.addView("head");
 		vi.addView("error");
 		vi.addView("footer");
 		ModelAndView mav = new ModelAndView(vi.render());
-		
-		 mav.addObject("titulo_error",httpErrorCode);
-		 mav.addObject("descripcion_error",errorMsg);
-		
-		this.setHeaderx(mav,rq);
+
+		mav.addObject("titulo_error", httpErrorCode);
+		mav.addObject("descripcion_error", errorMsg);
+
+		this.setHeaderx(mav, rq);
 		return mav;
-		
-		
-		
+
 //		return "error";
 	}
+	
 	
 	@RequestMapping("/login")
 	public ModelAndView login(HttpServletRequest rq)
