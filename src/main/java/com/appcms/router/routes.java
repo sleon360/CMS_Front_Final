@@ -85,13 +85,10 @@ public class routes {
 //
 //	}
 	public void setHeaderx(ModelAndView mav,HttpServletRequest rq) {
-	
-		
 		DataServer dtserver = new DataServer(rq);
 		mav.addObject("menuesHeader", dtserver.loadScmenu());
-//		mav.addObject("menuesHeader", Emudata.getmenuCategorias());
+		//mav.addObject("menuesHeader", Emudata.getmenuCategorias());
 	
-		
 		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
@@ -100,16 +97,17 @@ public class routes {
 		
 		System.out.println("esta login: "+resolver.isAnonymous(auth)); 
 		if (!resolver.isAnonymous(auth)) {
-			CredencialesEntity aaaa = (CredencialesEntity) auth.getPrincipal();
-			System.out.println(aaaa.getTOKENTWO());
+			CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+			System.out.println("El usuario se encuentra autenticado con el token: " + credencialesEntity.getTOKENTWO());
 			
-//		aaaa.getPuntos();
-			mav.addObject("usuario", new Scotiauser(2, "177824577", "Fabian", "Gaete", "fgaete@afiniti.cl","1"));
+			//Se recuperan los datos del ususario a partir de la entidad de usuario
+			/*mav.addObject("usuario", new Scotiauser(2, "177824577", "Fabian", "Gaete", "fgaete@afiniti.cl","1"));*/
+			credencialesEntity.getScotiauser().setId_cliente(2);
+			mav.addObject("usuario", credencialesEntity.getScotiauser());
 		}else {
 			mav.addObject("usuario",Emudata.getUsusarioOff());			
 		}
-
-//		 mav.addObject("usuario",Emudata.getUsusarioOff());	
+		//mav.addObject("usuario",Emudata.getUsusarioOff());	
 	}
 	
 	
