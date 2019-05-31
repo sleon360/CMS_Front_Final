@@ -15,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationTrustResolverIm
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -141,7 +142,7 @@ public class routes {
     }
 
 //	@ExceptionHandler(value = {Exception.class,MultipartException.class,NestedServletException.class,NestedServletException.class,ConnectException.class })
-	@ExceptionHandler(value = {Exception.class,MultipartException.class,NestedServletException.class,NestedServletException.class,ConnectException.class })
+	@ExceptionHandler(value = {Exception.class,MultipartException.class,NestedServletException.class,NestedServletException.class,ConnectException.class,RequestRejectedException.class })
 	@RequestMapping("/errores")
 	public String error(HttpServletRequest rq)
 	{
@@ -159,6 +160,7 @@ public class routes {
 	public ModelAndView errorprint(@PathVariable("err") int err, HttpServletRequest rq) {
 
 		String errorMsg = "Error desconocido";
+		int clean = 0;
 		int httpErrorCode = err;
 		try {
 			switch (httpErrorCode) {
@@ -172,6 +174,7 @@ public class routes {
 			}
 			case 403: {
 				errorMsg = "Http Error Code: 403. Forbidden";
+				clean = 1;
 				break;
 			}
 			case 404: {
@@ -195,7 +198,8 @@ public class routes {
 
 		mav.addObject("titulo_error", httpErrorCode);
 		mav.addObject("descripcion_error", errorMsg);
-
+		mav.addObject("clean", clean);
+		
 		this.setHeaderx(mav, rq);
 		return mav;
 

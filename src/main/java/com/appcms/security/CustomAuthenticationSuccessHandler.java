@@ -29,6 +29,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     	String referer = request.getHeader("Referer");
     	System.out.println("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG - "+referer);
        	RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-        redirectStrategy.sendRedirect(request, response, "/"+referer);
+        redirectStrategy.sendRedirect(request, response, referer);
     }
 }
