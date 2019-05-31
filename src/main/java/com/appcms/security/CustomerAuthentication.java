@@ -29,8 +29,10 @@ public class CustomerAuthentication {
 	        
 	        HttpEntity<?> httpEntity = new HttpEntity<Object>(xlogin, headers);
 	        RestTemplate restTemplate = new RestTemplate();
-	        ResponseEntity<String> response = restTemplate.exchange("http://localhost:9080/cmsrest/v1/login_customer",HttpMethod.POST, httpEntity, String.class);
-	       
+//	        ResponseEntity<String> response = restTemplate.exchange("http://localhost:9080/cmsrest/v1/login_customer",HttpMethod.POST, httpEntity, String.class);
+	        ResponseEntity<String> response = restTemplate.exchange("http://localhost:9080/cmsrest/v1/login_customer_local",HttpMethod.POST, httpEntity, String.class);
+	        
+	        
 	        if(response.getStatusCodeValue()==200)
 		        {
 	        		TOKENTWO=response.getHeaders().getFirst("Authorization");

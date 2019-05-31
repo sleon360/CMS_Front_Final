@@ -10,6 +10,7 @@
 		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
 	
+
 	
 	<servlet>
 		<servlet-name>spring</servlet-name>
@@ -46,6 +47,23 @@
      	<tracking-mode>COOKIE</tracking-mode>
 	</session-config>
 	
-    
+	<error-page>
+	 	<error-code>404</error-code>
+	 	<location>/errores</location>
+	</error-page>
+	
+
+	
+	<error-page> <exception-type>java.lang.Exception</exception-type> <location>/errores</location> </error-page>
+	
+	    <error-page>
+	    <location>/errores</location>
+	</error-page>
+	
+	
+<!-- <error-page> -->
+<!--     <error-code>403</error-code> -->
+<!--     <location>/errores?403</location> -->
+<!-- </error-page> -->
 
 </web-app>

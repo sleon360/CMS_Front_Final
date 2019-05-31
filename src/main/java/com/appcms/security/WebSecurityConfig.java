@@ -39,7 +39,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
           .addFilterBefore(new JwtFilter(),UsernamePasswordAuthenticationFilter.class).exceptionHandling();*/
 		
 		http.authenticationProvider(authProvider).authorizeRequests()
-	    .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
+//	    .antMatchers("/user/**").access("hasRole('ROLE_ADMIN')")
+		.antMatchers("/user/**").access("hasRole('ROLE_USER')")
 	    .antMatchers("/login","/auth","/home","/","/errores","/error","/logout").permitAll()
 	    .and().addFilterBefore(new CustomerSecurityFilter("/auth", authenticationManager()),UsernamePasswordAuthenticationFilter.class)
 	    .formLogin()
@@ -57,7 +58,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		 
 	      http.sessionManagement()
           .sessionFixation()
-          .newSession();
+          .newSession().and().exceptionHandling().accessDeniedPage("/errores?403");
+	      
+	      
 
 	      
 
