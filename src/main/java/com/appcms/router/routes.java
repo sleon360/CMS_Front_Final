@@ -6,10 +6,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.naming.NamingException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
 import org.springframework.security.core.Authentication;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartException;
@@ -39,7 +43,9 @@ import com.appcms.entity.Scotiauser;
 import com.appcms.entity.Scsubmenu;
 import com.appcms.model.DataServer;
 import com.appcms.model.Emudata;
+import com.appcms.security.ErrorControllerExection;
 import com.cms.views.ViewApp;
+
 
 
 
@@ -94,18 +100,16 @@ public class routes {
 	
 		
 		
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();		
 		final AuthenticationTrustResolver resolver=new AuthenticationTrustResolverImpl();
-	       
-		
-		System.out.println("esta login: "+resolver.isAnonymous(auth)); 
 		if (!resolver.isAnonymous(auth)) {
-			CredencialesEntity aaaa = (CredencialesEntity) auth.getPrincipal();
-			System.out.println(aaaa.getTOKENTWO());
+			CredencialesEntity credentialUser = (CredencialesEntity) auth.getPrincipal();
+			System.out.println(credentialUser.getTOKENTWO());
 			
-//		aaaa.getPuntos();
-			mav.addObject("usuario", new Scotiauser(2, "177824577", "Fabian", "Gaete", "fgaete@afiniti.cl","1"));
+			Scotiauser userLogin =  new Scotiauser(2, "177824577", "Fabian", "Gaete", "fgaete@afiniti.cl","1");
+			userLogin.setPoints(100);
+	        credentialUser.setUserLogin(userLogin);
+			mav.addObject("usuario", userLogin);
 		}else {
 			mav.addObject("usuario",Emudata.getUsusarioOff());			
 		}
@@ -159,7 +163,7 @@ public class routes {
 	@GetMapping("/error/{err}")
 	public ModelAndView errorprint(@PathVariable("err") int err, HttpServletRequest rq) {
 
-		String errorMsg = "Error desconocido";
+		String errorMsg = "Error al procesar la solicitud.";
 		int clean = 0;
 		int httpErrorCode = err;
 		try {
@@ -532,12 +536,25 @@ public class routes {
 		return mav;
 	}
 
-	@PostMapping("/categoria/{menu}/{submenu}/canje/")
+//	@PostMapping("/categoria/{menu}/{submenu}/canje/")
+//	public Banner findBanner(@PathVariable("id") int id) throws NamingException, ErrorControllerExection
+	@RequestMapping(value = "/categoria/{menu}/{submenu}/canje", method = RequestMethod.POST)
 	public ModelAndView menuCanje(@ModelAttribute("producto") CanjeProducto producto, @PathVariable("menu") String menu,
-			@PathVariable("submenu") String submenu,HttpServletRequest rq) {
+			@PathVariable("submenu") String submenu,HttpServletRequest rq, @RequestHeader(value = "referer", required = false) final String referer )throws NamingException, ErrorControllerExection {
 		//		ModelAndView mav = new ModelAndView("canjes");
-		ViewApp vi=new ViewApp(rq);
 		
+		CredencialesEntity credentialUser = new CredencialesEntity();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();		
+		final AuthenticationTrustResolver resolver=new AuthenticationTrustResolverImpl();
+		if (!resolver.isAnonymous(auth)) {
+			credentialUser = (CredencialesEntity) auth.getPrincipal();
+		}else {
+			System.out.println("User no login");
+			return new ModelAndView("redirect:"+referer+"?login");
+		}
+		
+		ViewApp vi=new ViewApp(rq);
+//		if(true) return new ModelAndView("redirect:/404");
 		DataServer dtserver = new DataServer(rq);
 		
 		vi.addView("HEAD");
@@ -546,6 +563,7 @@ public class routes {
 		vi.addView("FOOTER");		
 		ModelAndView mav = new ModelAndView(vi.render());
 		
+//		if(true) return new ModelAndView("redirect:/404");
 		Scmenu scmenuurl = new Scmenu();
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 
@@ -580,12 +598,16 @@ public class routes {
 
 		}
 
-		System.out.println(producto.toString());
+		
 
-		if (!producto.getCsrf_token().equalsIgnoreCase(csrf_token)) {
-			System.out.println("Error csrf_token");
-			scmenuurlsub.setTipo(0);
-		}
+
+
+
+
+//		if (!producto.getCsrf_token().equalsIgnoreCase(csrf_token)) {
+//			System.out.println("Error csrf_token");
+//			scmenuurlsub.setTipo(0);
+//		}
 
 		switch (scmenuurlsub.getTipo()) {
 		case 1: // TIPO INFORMACION
@@ -621,7 +643,9 @@ public class routes {
 					int totalPuntos = detalleProducto.getPrecio() * producto.getCantidad();
 					java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
 										
-					Scotiauser usuario = Emudata.getUsusario();
+					Scotiauser usuario = credentialUser.getUserLogin();
+//					int puntosUsuario = funcionGetPuntosScotia();
+//					if(totalPuntos > puntosUsuario){se cancela el canje}
 					
 					CustomerReward movimientoActual = new CustomerReward(usuario.getId_cliente(), 0, descipcionAbono,
 							totalPuntos, date.toString(), date.toString(), 0, 0, 1, 1);
@@ -629,6 +653,7 @@ public class routes {
 					
 					if (agregado != null) {
 						System.out.println("Movimiento agregado");
+						mav.addObject("canjeExito", true);
 						//agregado: RETORNA STATUS DEL CANJE
 						//SI
 							//CONSULTA VOUCHER TICKETERA
@@ -638,6 +663,7 @@ public class routes {
 								//MUESTRA MENSAJE A CLIENTE
 					} else { //PROPBLEMA AL CONSULTAR
 						System.out.println("Movimiento no agregado");
+						mav.addObject("canjeExito", false);
 					}
 					
 					
@@ -656,7 +682,7 @@ public class routes {
 			
 //			System.out.println("canje: "+producto.getIdProducto());
 			
-			mav.addObject("canjeExito", true);
+//			mav.addObject("canjeExito", true);
 			break;
 		case 5: // TIPO CANJE CON CATEGORIAS
 			if (producto.getActionx().equalsIgnoreCase("finish")) {

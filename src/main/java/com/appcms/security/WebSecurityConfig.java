@@ -37,7 +37,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
           .and()
           .addFilterBefore(new LoginFilter("/auth", authenticationManager()),UsernamePasswordAuthenticationFilter.class)
           .addFilterBefore(new JwtFilter(),UsernamePasswordAuthenticationFilter.class).exceptionHandling();*/
-		
+//		http.csrf().disable();
+//		,"/categoria/*/*/canje"
 		http.authenticationProvider(authProvider).authorizeRequests()
 	    .antMatchers("/user/**").access("hasRole('ROLE_ADMIN')")
 //		.antMatchers("/user/**").access("hasRole('ROLE_USER')")
@@ -75,6 +76,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      @Override  
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
           auth.authenticationProvider(authProvider);
+          
     }
 
 }

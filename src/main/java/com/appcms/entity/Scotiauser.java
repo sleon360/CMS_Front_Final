@@ -185,5 +185,13 @@ public String getTokenScotia() {
 public void setTokenScotia(String tokenScotia) {
 	this.tokenScotia = tokenScotia;
 }
+
+//public int getPoints() {
+//	return points;
+//}
+
+public void setPoints(int points) {
+	this.points = points;
+}
    
 }

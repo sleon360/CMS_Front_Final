@@ -1,7 +1,5 @@
 package com.appcms.entity;
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 public class CredencialesEntity {
 	
@@ -10,6 +8,7 @@ private String password;
 private String TOKENONE;
 private String TOKENTWO;
 
+private Scotiauser userLogin;
 
 public CredencialesEntity()
 {}
@@ -49,6 +48,14 @@ public String getPassword() {
 }
 public void setPassword(String password) {
 	this.password = password;
+}
+
+public Scotiauser getUserLogin() {
+	return userLogin;
+}
+
+public void setUserLogin(Scotiauser userLogin) {
+	this.userLogin = userLogin;
 }
 
 
