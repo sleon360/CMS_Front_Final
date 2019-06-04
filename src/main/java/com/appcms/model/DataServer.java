@@ -244,6 +244,7 @@ public class DataServer {
 		RestTemplate restTemplate = new RestTemplate();
 
 		String url = urlServer + "/cmsrest/get/bannerAll/"+responsive;
+		System.out.println(url);
 
 		ResponseEntity<List<Banner>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 				new ParameterizedTypeReference<List<Banner>>() {
