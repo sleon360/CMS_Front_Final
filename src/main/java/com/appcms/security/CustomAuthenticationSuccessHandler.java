@@ -26,8 +26,9 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             }
         }
         if (isAdmin) {*/
-    	System.out.println("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
-    	RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-    	redirectStrategy.sendRedirect(request, response, "/");
+    	String referer = request.getHeader("Referer");
+    	System.out.println("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG - "+referer);
+       	RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+        redirectStrategy.sendRedirect(request, response, referer);
     }
 }

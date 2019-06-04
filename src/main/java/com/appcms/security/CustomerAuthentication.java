@@ -33,17 +33,12 @@ public class CustomerAuthentication {
 			ResponseEntity<CustomerEntity> response = restTemplate.exchange(
 					"http://localhost:9080/cmsrest/v1/login_customer", HttpMethod.POST, httpEntity,
 					CustomerEntity.class);
-
-			if (response.getStatusCodeValue() == 200) {
-				TOKENTWO = response.getHeaders().getFirst("Authorization");
-				CustomerEntity customerEntity = response.getBody();
-				Scotiauser scotiauser = new Scotiauser(customerEntity.getId(), customerEntity.getRut(), customerEntity.getPrimerNombre(),
-						customerEntity.getPrimerApellido(), customerEntity.getEmail(), customerEntity.getIdCustomerGroupFK());
-				System.out.println("Usuario correctamente autenticado ante el servicio: " + scotiauser.toString());
-				return new Customer(TOKENTWO, scotiauser);
-			} else {
-				return null;
-			}
+			TOKENTWO = response.getHeaders().getFirst("Authorization");
+			CustomerEntity customerEntity = response.getBody();
+			Scotiauser scotiauser = new Scotiauser(customerEntity.getId(), customerEntity.getRut(),
+					customerEntity.getPrimerNombre(), customerEntity.getPrimerApellido(), customerEntity.getEmail(),
+					customerEntity.getIdCustomerGroupFK());
+			return new Customer(TOKENTWO, scotiauser);
 		} catch (HttpClientErrorException ex) {
 			return null;
 		} catch (Exception ex) {
