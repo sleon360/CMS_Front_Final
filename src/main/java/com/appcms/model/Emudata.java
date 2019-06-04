@@ -3,9 +3,19 @@ package com.appcms.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.HtmlUtils;
 
 import com.appcms.entity.Banner;
+import com.appcms.entity.CredencialesEntity;
 import com.appcms.entity.FormatoDetalle;
 import com.appcms.entity.Information;
 import com.appcms.entity.Menutop;
@@ -20,6 +30,7 @@ import com.appcms.entity.UserCartola;
 import com.appcms.entity.UserCartolaMovimiento;
 import com.appcms.entity.UserGusto;
 import com.appcms.entity.UserInscripcion;
+import com.appcms.entity.points.Points;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
@@ -373,9 +384,31 @@ public class Emudata {
 		List<UserCartolaMovimiento> movimientos = new ArrayList<>();
 		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "REDCOMPRA", "Abono", "+ $1.158", "$40.158"));
 		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "MASTERCARD NACIONAL PLATINIUM	", "Abono", "+ $3.189", "$40.158"));
-		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "SCOTIACLUB GRANDES TIENDAS Y ZAPATERIAS	", "Cargo", "- $11.330", "$40.158"));		
-		UserCartola miCartola = new UserCartola("Fabian", "Gaete", "al 20 de diciembre 2018", 30000, 20000, 2018, movimientos);				 
-		return miCartola;
+		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "SCOTIACLUB GRANDES TIENDAS Y ZAPATERIAS	", "Cargo", "- $11.330", "$40.158"));
+		
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+		Scotiauser scotiauser = credencialesEntity.getScotiauser();
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
+		try {
+			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange("http://localhost:9080/cmsrest/v1/customer/points", HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
+			Points points = pointsResponseEntity.getBody();
+			UserCartola miCartola = new UserCartola(scotiauser.getFirstname(), scotiauser.getLastname(), "al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints(), points.getExpiringPointsDate(), movimientos);				 
+			return miCartola;
+		} catch(Exception e) {
+			Points points = new Points();
+			points.setAvailablePoints(0);
+			points.setExpiringPoints(0);
+			points.setExpiringPointsDate("N/A");
+			UserCartola miCartola = new UserCartola(scotiauser.getFirstname(), scotiauser.getLastname(), "al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints(), points.getExpiringPointsDate(), movimientos);				 
+			return miCartola;
+		}
+		
+		
+				
 	}
 	
 	public static List<UserInscripcion> getInscripciones() {

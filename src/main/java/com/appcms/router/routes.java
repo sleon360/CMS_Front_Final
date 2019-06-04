@@ -90,7 +90,6 @@ public class routes {
 			
 			//Se recuperan los datos del ususario a partir de la entidad de usuario
 			/*mav.addObject("usuario", new Scotiauser(2, "177824577", "Fabian", "Gaete", "fgaete@afiniti.cl","1"));*/
-			credencialesEntity.getScotiauser().setId_cliente(2);
 			mav.addObject("usuario", credencialesEntity.getScotiauser());
 		}else {
 			mav.addObject("usuario",Emudata.getUsusarioOff());			

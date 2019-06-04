@@ -9,7 +9,7 @@ public class UserCartola {
 	String strFecha;
 	int puntosDisponibles;
 	int puntosCanjeados;
-	int ano;
+	String fechaVencimiento;
 	public List<UserCartolaMovimiento> movimientos = new ArrayList<>();
 	
 	public UserCartola() {
@@ -17,14 +17,14 @@ public class UserCartola {
 	}
 
 	public UserCartola(String nombre, String apellido, String strFecha, int puntosDisponibles, int puntosCanjeados,
-			int ano, List<UserCartolaMovimiento> movimientos) {
+			String fechaVencimiento, List<UserCartolaMovimiento> movimientos) {
 		super();
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.strFecha = strFecha;
 		this.puntosDisponibles = puntosDisponibles;
 		this.puntosCanjeados = puntosCanjeados;
-		this.ano = ano;
+		this.fechaVencimiento = fechaVencimiento;
 		this.movimientos = movimientos;
 	}
 
@@ -68,12 +68,12 @@ public class UserCartola {
 		this.puntosCanjeados = puntosCanjeados;
 	}
 
-	public int getAno() {
-		return ano;
+	public String getFechaVencimeinto() {
+		return fechaVencimiento;
 	}
 
-	public void setAno(int ano) {
-		this.ano = ano;
+	public void setFechaVencimiento(String fechaVencimiento) {
+		this.fechaVencimiento = fechaVencimiento;
 	}
 
 	public List<UserCartolaMovimiento> getMovimientos() {
