@@ -400,8 +400,8 @@ public class Emudata {
 			return miCartola;
 		} catch(Exception e) {
 			Points points = new Points();
-			points.setAvailablePoints(0);
-			points.setExpiringPoints(0);
+			points.setAvailablePoints(-1);
+			points.setExpiringPoints(-1);
 			points.setExpiringPointsDate("N/A");
 			UserCartola miCartola = new UserCartola(scotiauser.getFirstname(), scotiauser.getLastname(), "al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints(), points.getExpiringPointsDate(), movimientos);				 
 			return miCartola;

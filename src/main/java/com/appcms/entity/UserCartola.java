@@ -68,7 +68,7 @@ public class UserCartola {
 		this.puntosCanjeados = puntosCanjeados;
 	}
 
-	public String getFechaVencimeinto() {
+	public String getFechaVencimiento() {
 		return fechaVencimiento;
 	}
 

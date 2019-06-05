@@ -45,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/login", "/auth", "/home", "/", "/errores", "/error", "/logout").permitAll().and()
 				.addFilterBefore(new CustomerSecurityFilter("/auth", authenticationManager()),
 						UsernamePasswordAuthenticationFilter.class)
-				.formLogin().loginPage("/login").loginProcessingUrl("/auth").usernameParameter("username")
+				.formLogin().loginPage("/").loginProcessingUrl("/auth").usernameParameter("username")
 				.passwordParameter("password");
 
 		http.logout().logoutUrl("/logout").logoutSuccessUrl("/").invalidateHttpSession(true).deleteCookies("JSESSIONID")
