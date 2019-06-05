@@ -1,7 +1,15 @@
 package com.appcms.router;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -11,7 +19,12 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
@@ -28,6 +41,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.NestedServletException;
@@ -100,18 +114,25 @@ public class routes {
 	
 		
 		
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();		
-		final AuthenticationTrustResolver resolver=new AuthenticationTrustResolverImpl();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
 		if (!resolver.isAnonymous(auth)) {
 			CredencialesEntity credentialUser = (CredencialesEntity) auth.getPrincipal();
 			System.out.println(credentialUser.getTOKENTWO());
-			
-			Scotiauser userLogin =  new Scotiauser(2, "177824577", "Fabian", "Gaete", "fgaete@afiniti.cl","1");
-			userLogin.setPoints(100);
-	        credentialUser.setUserLogin(userLogin);
-			mav.addObject("usuario", userLogin);
-		}else {
-			mav.addObject("usuario",Emudata.getUsusarioOff());			
+			String idUser = dtserver.loadIdUserByRut("177824577");
+
+			if (idUser != null && idUser != "0") {
+				int idUserCast = Integer.parseInt(idUser);
+				if (idUserCast != 0) {
+					Scotiauser userLogin = new Scotiauser(idUserCast, "177824577", "Fabian", "Gaete",
+							"fgaete@afiniti.cl", "1");
+					userLogin.setPoints(100);
+					credentialUser.setUserLogin(userLogin);
+					mav.addObject("usuario", userLogin);
+				}
+			}
+		} else {
+			mav.addObject("usuario", Emudata.getUsusarioOff());
 		}
 
 //		 mav.addObject("usuario",Emudata.getUsusarioOff());	
@@ -726,25 +747,37 @@ public class routes {
 	}
 
 	@GetMapping("/user/{menu}/{submenu}")
-	public ModelAndView menuUser(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu,HttpServletRequest rq)
+	public ModelAndView menuUser(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu,
+			HttpServletRequest rq, @RequestHeader(value = "referer", required = false) final String referer)
 			throws UnsupportedEncodingException {
 //		ModelAndView mav = new ModelAndView("user");
-		ViewApp vi=new ViewApp(rq);
-		
+
+		CredencialesEntity credentialUser = new CredencialesEntity();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
+		if (!resolver.isAnonymous(auth)) {
+			credentialUser = (CredencialesEntity) auth.getPrincipal();
+		} else {
+			System.out.println("User no login");
+			return new ModelAndView("redirect:" + referer + "?login");
+		}
+
+		ViewApp vi = new ViewApp(rq);
+
 		DataServer dtserver = new DataServer(rq);
-		
+
 		vi.addView("HEAD");
 		vi.addView("HEADER_CATEGORIAS");
 //		vi.addView("USER");
-		
+
 //		ModelAndView mav = new ModelAndView(vi.render());
 		ModelAndView mav = new ModelAndView(vi.render());
-		
+
 		Scmenu scmenuurl = new Scmenu();
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 
 		List<Scmenu> categiriasmenu = new ArrayList<>();
-		categiriasmenu = Emudata.getmenuCategorias();
+		categiriasmenu = dtserver.loadScmenu();// Emudata.getmenuCategorias();
 
 		for (Scmenu menusel : categiriasmenu) // buscamos el menu que seleccionó
 		{
@@ -753,7 +786,7 @@ public class routes {
 				break;
 			}
 		}
-		try {	
+		try {
 			if (scmenuurl != null) {
 				for (Scsubmenu scmenuurlsubtemp : scmenuurl.getSubmenues()) // buscamos el submenu que seleccionó
 				{
@@ -762,14 +795,16 @@ public class routes {
 						break;
 					}
 				}
-			}			
-		}catch (Exception e) {
+			}
+		} catch (Exception e) {
 			return new ModelAndView("redirect:/404");
+
 		}
 
 		if (scmenuurlsub.getId() == 0) {
 			System.out.println("Seccion no encontrada");
 			return new ModelAndView("redirect:/404");
+
 		}
 
 		switch (scmenuurlsub.getTipo()) {
@@ -778,7 +813,7 @@ public class routes {
 			vi.addView("MI-CARTOLA");
 			vi.addView("FOOTER");
 			mav = new ModelAndView(vi.render());
-			mav.addObject("cartola", Emudata.getUserCartola());
+			mav.addObject("cartola", dtserver.loadUserCartola());
 			break;
 		case 21: // information
 			System.out.println("Tipo 21"); // TIPO INSCRIPCCION
@@ -792,7 +827,10 @@ public class routes {
 			vi.addView("mis-cupones");
 			vi.addView("FOOTER");
 			mav = new ModelAndView(vi.render());
-			scmenuurlsub.informationsubmenu = Emudata.getInformatiotest();
+			System.out.println("Mis cupones: usr: "+credentialUser.getUserLogin().getId_cliente());
+			mav.addObject("usercupones", dtserver.loadCupones(credentialUser.getUserLogin().getId_cliente()));
+			
+//			scmenuurlsub.informationsubmenu = Emudata.getInformatiotest();
 			break;
 		case 23: // information
 			System.out.println("Tipo 23"); // TIPO MIS GUSTOS
@@ -820,15 +858,14 @@ public class routes {
 //		this.setHeaderx(mav,rq);
 //
 //		return mav;
-		
-		
+
 		mav.addObject("menuurl", scmenuurl);
 		mav.addObject("submenuurl", scmenuurlsub);
 
-		this.setHeaderx(mav,rq);
+		this.setHeaderx(mav, rq);
 
 		return mav;
-		
+
 	}
 	
 	
@@ -898,13 +935,146 @@ public class routes {
 	
 	
 	
+	@GetMapping("/cupon/get/{id_reward}")
+	public ModelAndView getCuponByRew(@PathVariable("id_reward") int id_reward,HttpServletRequest rq, @RequestHeader(value = "referer", required = false) final String referer)
+			throws UnsupportedEncodingException {
+//		ModelAndView mav = new ModelAndView("user");
+		
+		CredencialesEntity credentialUser = new CredencialesEntity();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
+		if (!resolver.isAnonymous(auth)) {
+			credentialUser = (CredencialesEntity) auth.getPrincipal();
+		} else {
+			System.out.println("User no login");
+			return new ModelAndView("redirect:" + referer + "?login");
+		}
+		
+		ViewApp vi=new ViewApp(rq);
+		
+		DataServer dtserver = new DataServer(rq);
+		
+		
+		
+		
+		
+		vi.addView("HEAD");
+		vi.addView("INFORMATION");
+		vi.addView("FOOTER");
+
+		ModelAndView mav = new ModelAndView(vi.render());
+		
+//		Information informationhtml = new Information();
+		
+//		informationhtml = dtserver.loadInformationByName(nombreInformation);
+//		System.out.println("inforxn"+informationhtml); 
+//		if(informationhtml == null) {
+//			return new ModelAndView("redirect:/404");
+//		}
+//		
+//		mav.addObject("informationhtml", informationhtml);
+
+		this.setHeaderx(mav,rq);
+
+		return mav;
+		
+	}
 	
 	
+//	@RequestMapping(value = "/getpdf/{pdf}", method = RequestMethod.GET)
+//	public  void getPdf(@PathVariable("pdf") String fileName, HttpServletResponse response) throws IOException {
+//
+//	    try {
+//	        File file = new File(FileConstant.BOOKINGPDFFILE + fileName+ ".pdf");
+//
+//	        if (file.exists()) {
+//	            // here I use Commons IO API to copy this file to the response output stream, I don't know which API you use.
+//	            FileUtils.copyFile(file, response.getOutputStream());
+//
+//	            // here we define the content of this file to tell the browser how to handle it
+//	            response.setContentType("application/pdf");
+//	            response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".pdf");
+//	            response.flushBuffer();
+//	        } else {
+//	            System.out.println("Contract Not Found");
+//	        }
+//	    } catch (IOException exception) {
+//	        System.out.println("Contract Not Found");
+//	        System.out.println(exception.getMessage());
+//	    }
+//	}
 	
-	
-	
-	
-	
+	@RequestMapping(value = "/files/{file_name}", method = RequestMethod.GET)
+	@ResponseBody
+	public Object getFile(@PathVariable("file_name") String fileName) {
+		
+
+		   
+		  URL url;
+		  byte[] response =  null;
+		try {
+//			url = new URL("https://www.soundczech.cz/temp/lorem-ipsum.pdf");
+			url = new URL("http://206.189.70.163/test/lorem-ipsum.pdf");
+		
+		 InputStream in = new BufferedInputStream(url.openStream());
+		   ByteArrayOutputStream out = new ByteArrayOutputStream();
+		   byte[] buf = new byte[2048];
+		   int n = 0;
+		   while (-1!=(n=in.read(buf)))
+		   {
+		      out.write(buf, 0, n);
+		   }
+		   out.close();
+		   in.close();
+		   response = out.toByteArray();
+		
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		  
+
+		 
+		   
+		   
+		   
+		return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/pdf"))
+                //.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + rEntity.getNombre_resource() + "\"")
+                .body(new ByteArrayResource(response));
+		
+//	    return new FileSystemResource("https://www.soundczech.cz/temp/lorem-ipsum.pdf"); 
+	}
+    private static byte[] readBytesFromFile(String filePath) {
+
+        FileInputStream fileInputStream = null;
+        byte[] bytesArray = null;
+
+        try {
+
+            File file = new File(filePath);
+            bytesArray = new byte[(int) file.length()];
+
+            //read file into bytes[]
+            fileInputStream = new FileInputStream(file);
+            fileInputStream.read(bytesArray);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (fileInputStream != null) {
+                try {
+                    fileInputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+        return bytesArray;
+
+    }
 	
 	
 	

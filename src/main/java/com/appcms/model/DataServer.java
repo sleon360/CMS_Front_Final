@@ -1,5 +1,6 @@
 package com.appcms.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,9 @@ import com.appcms.entity.ProductoCategoria;
 import com.appcms.entity.ProductoTipoLike;
 import com.appcms.entity.Scinformacionsubmenu;
 import com.appcms.entity.Scmenu;
+import com.appcms.entity.UserCartola;
+import com.appcms.entity.UserCartolaMovimiento;
+import com.appcms.entity.UserCupon;
 import com.appcms.security.RestAuthentication;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
@@ -432,7 +436,93 @@ public class DataServer {
 	}
 	
 	
+	public UserCartola loadUserCartola() {
+		
+		List<UserCartolaMovimiento> movimientos = new ArrayList<>();
+		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "REDCOMPRA", "Abono", "+ $1.158", "$40.158"));
+		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "MASTERCARD NACIONAL PLATINIUM	", "Abono", "+ $3.189", "$40.158"));
+		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "SCOTIACLUB GRANDES TIENDAS Y ZAPATERIAS	", "Cargo", "- $11.330", "$40.158"));		
+		UserCartola miCartola = new UserCartola("Fabian", "Gaete", "al 20 de diciembre 2018", 30000, 20000, 2018, movimientos);				 
+		return miCartola;
+	}
 	
+	public String loadIdUserByRut(String rut) {
+
+		HttpHeaders headers = new HttpHeaders();
+
+		RestAuthentication xrestAuthentication = new RestAuthentication();
+//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
+		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
+		RestTemplate restTemplate = new RestTemplate();
+
+		String url = urlServer + "/cmsrest/get/userid/" + rut;
+
+		ResponseEntity<String> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+				String.class);
+
+		System.out.println("requestxn: " + xresponse.getBody());
+
+		if (xresponse.getStatusCodeValue() == 200) {
+			return xresponse.getBody();
+		} else {
+			return null;
+		}
+
+	}
+	
+	public List<UserCupon> loadCupones(int idUser) {
+
+		HttpHeaders headers = new HttpHeaders();
+
+		RestAuthentication xrestAuthentication = new RestAuthentication();
+//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
+		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
+		RestTemplate restTemplate = new RestTemplate();
+
+		String url = urlServer + "/cmsrest/get/usercupones/"+idUser;
+
+		ResponseEntity<List<UserCupon>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+				new ParameterizedTypeReference<List<UserCupon>>() {
+				});
+
+		System.out.println("requestxn: " + xresponse.getBody());
+
+		if (xresponse.getStatusCodeValue() == 200) {
+			return xresponse.getBody();
+		} else {
+			return null;
+		}
+
+	}
+	
+	
+	public List<UserCupon> loadCuponPdf(int idUser) {
+
+		HttpHeaders headers = new HttpHeaders();
+
+		RestAuthentication xrestAuthentication = new RestAuthentication();
+//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
+		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
+		RestTemplate restTemplate = new RestTemplate();
+
+		String url = urlServer + "/cmsrest/get/usercupones/"+idUser;
+
+		ResponseEntity<List<UserCupon>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+				new ParameterizedTypeReference<List<UserCupon>>() {
+				});
+
+		System.out.println("requestxn: " + xresponse.getBody());
+
+		if (xresponse.getStatusCodeValue() == 200) {
+			return xresponse.getBody();
+		} else {
+			return null;
+		}
+
+	}
 	
 
 }
