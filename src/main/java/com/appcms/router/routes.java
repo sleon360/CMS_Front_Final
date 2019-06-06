@@ -1004,37 +1004,23 @@ public class routes {
 //	    }
 //	}
 	
-	@RequestMapping(value = "/files/{file_name}", method = RequestMethod.GET)
+	@RequestMapping(value = "/getcupon/{id_rew}", method = RequestMethod.GET)
 	@ResponseBody
-	public Object getFile(@PathVariable("file_name") String fileName) {
+	public Object getFile(@PathVariable("id_rew") int id_rew,HttpServletRequest rq, @RequestHeader(value = "referer", required = false) final String referer) {
 		
-
-		   
-		  URL url;
-		  byte[] response =  null;
-		try {
-//			url = new URL("https://www.soundczech.cz/temp/lorem-ipsum.pdf");
-			url = new URL("http://206.189.70.163/test/lorem-ipsum.pdf");
-		
-		 InputStream in = new BufferedInputStream(url.openStream());
-		   ByteArrayOutputStream out = new ByteArrayOutputStream();
-		   byte[] buf = new byte[2048];
-		   int n = 0;
-		   while (-1!=(n=in.read(buf)))
-		   {
-		      out.write(buf, 0, n);
-		   }
-		   out.close();
-		   in.close();
-		   response = out.toByteArray();
-		
-		
-		} catch (Exception e) {
-			e.printStackTrace();
+		CredencialesEntity credentialUser = new CredencialesEntity();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
+		if (!resolver.isAnonymous(auth)) {
+			credentialUser = (CredencialesEntity) auth.getPrincipal();
+		} else {
+			System.out.println("User no login");
+			return new ModelAndView("redirect: /?login");
 		}
-		  
 
-		 
+		DataServer dtserver = new DataServer(rq);
+//		 byte[] response =  null;
+		 byte[] response = dtserver.loadCuponPdf(credentialUser.getUserLogin().getId_cliente(),id_rew);	 
 		   
 		   
 		   
@@ -1045,37 +1031,7 @@ public class routes {
 		
 //	    return new FileSystemResource("https://www.soundczech.cz/temp/lorem-ipsum.pdf"); 
 	}
-    private static byte[] readBytesFromFile(String filePath) {
 
-        FileInputStream fileInputStream = null;
-        byte[] bytesArray = null;
-
-        try {
-
-            File file = new File(filePath);
-            bytesArray = new byte[(int) file.length()];
-
-            //read file into bytes[]
-            fileInputStream = new FileInputStream(file);
-            fileInputStream.read(bytesArray);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (fileInputStream != null) {
-                try {
-                    fileInputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-
-        return bytesArray;
-
-    }
-	
 	
 	
 	

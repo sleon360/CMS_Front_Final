@@ -1,5 +1,9 @@
 package com.appcms.model;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -498,8 +502,11 @@ public class DataServer {
 	}
 	
 	
-	public List<UserCupon> loadCuponPdf(int idUser) {
+	public byte[] loadCuponPdf(int idUser, int idReward) {
 
+		
+		
+		
 		HttpHeaders headers = new HttpHeaders();
 
 		RestAuthentication xrestAuthentication = new RestAuthentication();
@@ -508,20 +515,52 @@ public class DataServer {
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = urlServer + "/cmsrest/get/usercupones/"+idUser;
+		String url = urlServer + "/cmsrest/get/usercuponjosticket/"+idUser+"/"+idReward;
 
-		ResponseEntity<List<UserCupon>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
-				new ParameterizedTypeReference<List<UserCupon>>() {
-				});
+		ResponseEntity<UserCupon> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+				UserCupon.class);
 
-		System.out.println("requestxn: " + xresponse.getBody());
-
+		System.out.println("requestxnfr: " + xresponse.getBody());
+		
 		if (xresponse.getStatusCodeValue() == 200) {
-			return xresponse.getBody();
+//			return xresponse.getBody();		CENCOSUD_TEST
+
+			UserCupon cuponusr =  new UserCupon();
+			cuponusr = xresponse.getBody();
+			
+			 URL urlTicketera;
+			  byte[] response =  null;
+			try {
+				//http://ticket.clubadelante.cl/getPDHtml/CENCOSUD/000000/000000
+				urlTicketera = new URL("http://206.189.70.163/test/lorem-ipsum.pdf");
+			
+			 InputStream in = new BufferedInputStream(urlTicketera.openStream());
+			   ByteArrayOutputStream out = new ByteArrayOutputStream();
+			   byte[] buf = new byte[2048];
+			   int n = 0;
+			   while (-1!=(n=in.read(buf)))
+			   {
+			      out.write(buf, 0, n);
+			   }
+			   out.close();
+			   in.close();
+			   response = out.toByteArray();
+			
+			
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			  return response;			
+			
+			
 		} else {
 			return null;
 		}
-
+				
+		
+		
+		
+		
 	}
 	
 
