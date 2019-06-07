@@ -313,7 +313,8 @@ public class DataServer {
 	}
 
 	public String setReward(CustomerReward reward) {
-
+		System.out.println("Cambiando puntos");
+		
 		HttpHeaders headers = new HttpHeaders();
 
 		RestAuthentication xrestAuthentication = new RestAuthentication();

@@ -485,7 +485,7 @@ public class routes {
 		return mav;
 	}
 
-	@PostMapping("/categoria/{menu}/{submenu}/canje/")
+	@RequestMapping("/categoria/{menu}/{submenu}/canje")
 	public ModelAndView menuCanje(@ModelAttribute("producto") CanjeProducto producto, @PathVariable("menu") String menu,
 			@PathVariable("submenu") String submenu, HttpServletRequest rq) {
 		System.out.println("<<<<<<<<<<<<<<< Ingreso en controlador >>>>>>>>>>>>>>>");
@@ -534,13 +534,15 @@ public class routes {
 
 		}
 
-		System.out.println(producto.toString());
+		System.out.println("<<<<< Producto: >>>>>" + producto.toString());
 
-		if (!producto.getCsrf_token().equalsIgnoreCase(csrf_token)) {
+		/*if (!producto.getCsrf_token().equalsIgnoreCase(csrf_token)) {
 			System.out.println("Error csrf_token");
 			scmenuurlsub.setTipo(0);
-		}
-
+		}*/
+		
+		System.out.println("<<<<< Tipo se submenu: >>>>>" + scmenuurlsub.getTipo());
+		
 		switch (scmenuurlsub.getTipo()) {
 		case 1: // TIPO INFORMACION
 			System.out.println("Error tipo");
