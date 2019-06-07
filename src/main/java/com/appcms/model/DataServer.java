@@ -532,7 +532,10 @@ public class DataServer {
 			  byte[] response =  null;
 			try {
 				//http://ticket.clubadelante.cl/getPDHtml/CENCOSUD/000000/000000
-				urlTicketera = new URL("http://206.189.70.163/test/lorem-ipsum.pdf");
+				//http://ticket.clubadelante.cl/getPDF/:empresa/:codigo/:idcliente
+//				urlTicketera = new URL("http://ticket.clubadelante.cl/getPDF/"+cuponusr.getNombre()+"/"+cuponusr.getId_cupon()+"/177824577");
+				urlTicketera = new URL("http://ticket.clubadelante.cl/getPDFile/"+cuponusr.getNombre()+"/"+cuponusr.getCodigo()+"/"+cuponusr.getImagen());
+//				urlTicketera = new URL("http://206.189.70.163/test/lorem-ipsum.pdf");
 			
 			 InputStream in = new BufferedInputStream(urlTicketera.openStream());
 			   ByteArrayOutputStream out = new ByteArrayOutputStream();

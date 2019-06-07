@@ -1,8 +1,8 @@
 package com.appcms.entity;
 
 public class UserCupon {
-	
 	int id_cupon;
+	String codigo;
 	String nombre;
 	String valor;
 	String imagen;
@@ -22,6 +22,20 @@ public class UserCupon {
 		this.imagen = imagen;
 		this.fecha_emitido = fecha_emitido;
 		this.fecha_vencimiento = fecha_vencimiento;
+	}
+
+	
+	
+	public UserCupon(int id_cupon, String nombre, String valor, String imagen, String fecha_emitido,
+			String fecha_vencimiento, String codigo) {
+		super();
+		this.id_cupon = id_cupon;
+		this.nombre = nombre;
+		this.valor = valor;
+		this.imagen = imagen;
+		this.fecha_emitido = fecha_emitido;
+		this.fecha_vencimiento = fecha_vencimiento;
+		this.codigo = codigo;
 	}
 
 	public int getId_cupon() {
@@ -70,6 +84,14 @@ public class UserCupon {
 
 	public void setFecha_vencimiento(String fecha_vencimiento) {
 		this.fecha_vencimiento = fecha_vencimiento;
+	}
+
+	public String getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
 	}
 	
 	

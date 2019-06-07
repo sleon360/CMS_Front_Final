@@ -668,7 +668,7 @@ public class routes {
 //					int puntosUsuario = funcionGetPuntosScotia();
 //					if(totalPuntos > puntosUsuario){se cancela el canje}
 					
-					CustomerReward movimientoActual = new CustomerReward(usuario.getId_cliente(), 0, descipcionAbono,
+					CustomerReward movimientoActual = new CustomerReward(usuario.getId_cliente(), producto.getIdProducto(), descipcionAbono,
 							totalPuntos, date.toString(), date.toString(), 0, 0, 1, 1);
 					String agregado = dtserver.setReward(movimientoActual);
 					
