@@ -1,5 +1,10 @@
 package com.appcms.model;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,17 +16,25 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.appcms.entity.Banner;
+import com.appcms.entity.CredencialesEntity;
 import com.appcms.entity.CustomerReward;
 import com.appcms.entity.Information;
 import com.appcms.entity.ProductoCategoria;
 import com.appcms.entity.ProductoTipoLike;
 import com.appcms.entity.Scinformacionsubmenu;
 import com.appcms.entity.Scmenu;
+import com.appcms.entity.Scotiauser;
+import com.appcms.entity.UserCartola;
+import com.appcms.entity.UserCartolaMovimiento;
+import com.appcms.entity.UserCupon;
+import com.appcms.entity.points.Points;
 import com.appcms.security.RestAuthentication;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
@@ -434,7 +447,148 @@ public class DataServer {
 	}
 	
 	
+	public UserCartola loadUserCartola() {
+		
+		List<UserCartolaMovimiento> movimientos = new ArrayList<>();
+		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "REDCOMPRA", "Abono", "+ $1.158", "$40.158"));
+		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "MASTERCARD NACIONAL PLATINIUM	", "Abono", "+ $3.189", "$40.158"));
+		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "SCOTIACLUB GRANDES TIENDAS Y ZAPATERIAS	", "Cargo", "- $11.330", "$40.158"));		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+		Scotiauser scotiauser = credencialesEntity.getScotiauser();
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
+		try {
+			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange("http://localhost:9080/cmsrest/v1/customer/points", HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
+			Points points = pointsResponseEntity.getBody();
+			UserCartola miCartola = new UserCartola(scotiauser.getFirstname(), scotiauser.getLastname(), "al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints(), points.getExpiringPointsDate(), movimientos);				 
+			return miCartola;
+		} catch(Exception e) {
+			Points points = new Points();
+			points.setAvailablePoints(0);
+			points.setExpiringPoints(0);
+			points.setExpiringPointsDate("N/A");
+			UserCartola miCartola = new UserCartola(scotiauser.getFirstname(), scotiauser.getLastname(), "al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints(), points.getExpiringPointsDate(), movimientos);				 
+			return miCartola;
+		}
+	}
 	
+	public String loadIdUserByRut(String rut) {
+
+		HttpHeaders headers = new HttpHeaders();
+
+		RestAuthentication xrestAuthentication = new RestAuthentication();
+//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
+		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
+		RestTemplate restTemplate = new RestTemplate();
+
+		String url = urlServer + "/cmsrest/get/userid/" + rut;
+
+		ResponseEntity<String> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+				String.class);
+
+		System.out.println("requestxn: " + xresponse.getBody());
+
+		if (xresponse.getStatusCodeValue() == 200) {
+			return xresponse.getBody();
+		} else {
+			return null;
+		}
+
+	}
+	
+	public List<UserCupon> loadCupones(int idUser) {
+
+		HttpHeaders headers = new HttpHeaders();
+
+		RestAuthentication xrestAuthentication = new RestAuthentication();
+//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
+		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
+		RestTemplate restTemplate = new RestTemplate();
+
+		String url = urlServer + "/cmsrest/get/usercupones/"+idUser;
+
+		ResponseEntity<List<UserCupon>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+				new ParameterizedTypeReference<List<UserCupon>>() {
+				});
+
+		System.out.println("requestxn: " + xresponse.getBody());
+
+		if (xresponse.getStatusCodeValue() == 200) {
+			return xresponse.getBody();
+		} else {
+			return null;
+		}
+
+	}
+	
+	
+	public byte[] loadCuponPdf(int idUser, int idReward) {
+
+		
+		
+		
+		HttpHeaders headers = new HttpHeaders();
+
+		RestAuthentication xrestAuthentication = new RestAuthentication();
+//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
+		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
+		RestTemplate restTemplate = new RestTemplate();
+
+		String url = urlServer + "/cmsrest/get/usercuponjosticket/"+idUser+"/"+idReward;
+
+		ResponseEntity<UserCupon> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+				UserCupon.class);
+
+		System.out.println("requestxnfr: " + xresponse.getBody());
+		
+		if (xresponse.getStatusCodeValue() == 200) {
+//			return xresponse.getBody();		CENCOSUD_TEST
+
+			UserCupon cuponusr =  new UserCupon();
+			cuponusr = xresponse.getBody();
+			
+			 URL urlTicketera;
+			  byte[] response =  null;
+			try {
+				//http://ticket.clubadelante.cl/getPDHtml/CENCOSUD/000000/000000
+				//http://ticket.clubadelante.cl/getPDF/:empresa/:codigo/:idcliente
+//				urlTicketera = new URL("http://ticket.clubadelante.cl/getPDF/"+cuponusr.getNombre()+"/"+cuponusr.getId_cupon()+"/177824577");
+				urlTicketera = new URL("http://ticket.clubadelante.cl/getPDFile/"+cuponusr.getNombre()+"/"+cuponusr.getCodigo()+"/"+cuponusr.getImagen());
+//				urlTicketera = new URL("http://206.189.70.163/test/lorem-ipsum.pdf");
+			
+			 InputStream in = new BufferedInputStream(urlTicketera.openStream());
+			   ByteArrayOutputStream out = new ByteArrayOutputStream();
+			   byte[] buf = new byte[2048];
+			   int n = 0;
+			   while (-1!=(n=in.read(buf)))
+			   {
+			      out.write(buf, 0, n);
+			   }
+			   out.close();
+			   in.close();
+			   response = out.toByteArray();
+			
+			
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			  return response;			
+			
+			
+		} else {
+			return null;
+		}
+				
+		
+		
+		
+		
+	}
 	
 
 }

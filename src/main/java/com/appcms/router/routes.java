@@ -1,15 +1,31 @@
 package com.appcms.router;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.naming.NamingException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
 import org.springframework.security.core.Authentication;
@@ -22,7 +38,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.NestedServletException;
@@ -38,6 +58,7 @@ import com.appcms.entity.Scotiauser;
 import com.appcms.entity.Scsubmenu;
 import com.appcms.model.DataServer;
 import com.appcms.model.Emudata;
+import com.appcms.security.ErrorControllerExection;
 import com.cms.views.ViewApp;
 
 @Controller
@@ -79,8 +100,25 @@ public class routes {
 		DataServer dtserver = new DataServer(rq);
 		mav.addObject("menuesHeader", dtserver.loadScmenu());
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
+		if (!resolver.isAnonymous(auth)) {
+			CredencialesEntity credentialUser = (CredencialesEntity) auth.getPrincipal();
+			System.out.println(credentialUser.getTOKENTWO());
+			String idUser = dtserver.loadIdUserByRut("177824577");
+
+			if (idUser != null && idUser != "0") {
+				int idUserCast = Integer.parseInt(idUser);
+				if (idUserCast != 0) {
+					Scotiauser scotiauser = new Scotiauser(idUserCast, "177824577", "Fabian", "Gaete",
+							"fgaete@afiniti.cl", "1");
+					//scotiauser.setPoints(100);
+					credentialUser.setScotiauser(scotiauser);
+					mav.addObject("usuario", scotiauser);
+				}
+			}
+		} else {
+			mav.addObject("usuario", Emudata.getUsusarioOff());
+		}
 
 		System.out.println("esta login: " + resolver.isAnonymous(auth));
 		if (!resolver.isAnonymous(auth)) {
@@ -135,7 +173,7 @@ public class routes {
 	@GetMapping("/error/{err}")
 	public ModelAndView errorprint(@PathVariable("err") int err, HttpServletRequest rq) {
 
-		String errorMsg = "Error desconocido";
+		String errorMsg = "Error al procesar la solicitud.";
 		int clean = 0;
 		int httpErrorCode = err;
 		try {
@@ -485,13 +523,23 @@ public class routes {
 		return mav;
 	}
 
-	@RequestMapping("/categoria/{menu}/{submenu}/canje")
+	@PostMapping("/categoria/{menu}/{submenu}/canje")
 	public ModelAndView menuCanje(@ModelAttribute("producto") CanjeProducto producto, @PathVariable("menu") String menu,
-			@PathVariable("submenu") String submenu, HttpServletRequest rq) {
-		System.out.println("<<<<<<<<<<<<<<< Ingreso en controlador >>>>>>>>>>>>>>>");
-		// ModelAndView mav = new ModelAndView("canjes");
-		ViewApp vi = new ViewApp(rq);
-
+			@PathVariable("submenu") String submenu,HttpServletRequest rq, @RequestHeader(value = "referer", required = false) final String referer )throws NamingException, ErrorControllerExection {
+		//		ModelAndView mav = new ModelAndView("canjes");
+		
+		CredencialesEntity credentialUser = new CredencialesEntity();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();		
+		final AuthenticationTrustResolver resolver=new AuthenticationTrustResolverImpl();
+		if (!resolver.isAnonymous(auth)) {
+			credentialUser = (CredencialesEntity) auth.getPrincipal();
+		}else {
+			System.out.println("User no login");
+			return new ModelAndView("redirect:"+referer+"?login");
+		}
+		
+		ViewApp vi=new ViewApp(rq);
+//		if(true) return new ModelAndView("redirect:/404");
 		DataServer dtserver = new DataServer(rq);
 
 		vi.addView("HEAD");
@@ -499,7 +547,7 @@ public class routes {
 		vi.addView("CANJES");
 		vi.addView("FOOTER");
 		ModelAndView mav = new ModelAndView(vi.render());
-
+		
 		Scmenu scmenuurl = new Scmenu();
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 
@@ -534,15 +582,6 @@ public class routes {
 
 		}
 
-		System.out.println("<<<<< Producto: >>>>>" + producto.toString());
-
-		/*if (!producto.getCsrf_token().equalsIgnoreCase(csrf_token)) {
-			System.out.println("Error csrf_token");
-			scmenuurlsub.setTipo(0);
-		}*/
-		
-		System.out.println("<<<<< Tipo se submenu: >>>>>" + scmenuurlsub.getTipo());
-		
 		switch (scmenuurlsub.getTipo()) {
 		case 1: // TIPO INFORMACION
 			System.out.println("Error tipo");
@@ -575,23 +614,29 @@ public class routes {
 					int totalPuntos = detalleProducto.getPrecio() * producto.getCantidad();
 					java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
 
-					Scotiauser usuario = Emudata.getUsusario();
+										
+					Scotiauser usuario = credentialUser.getScotiauser();
+//					int puntosUsuario = funcionGetPuntosScotia();
+//					if(totalPuntos > puntosUsuario){se cancela el canje}
+					
+					CustomerReward movimientoActual = new CustomerReward(usuario.getId_cliente(), producto.getIdProducto(), descipcionAbono,
 
-					CustomerReward movimientoActual = new CustomerReward(usuario.getId_cliente(), 0, descipcionAbono,
 							totalPuntos, date.toString(), date.toString(), 0, 0, 1, 1);
 					String agregado = dtserver.setReward(movimientoActual);
 
 					if (agregado != null) {
 						System.out.println("Movimiento agregado");
-						// agregado: RETORNA STATUS DEL CANJE
-						// SI
-						// CONSULTA VOUCHER TICKETERA
-						// MUESTRA RESULTADO CANJE
-						// NO
-						// VALIDA ERROR (SESSION FINALIZADA, PUNTOS INSUFICIENTES, TOKEN INVALIDO, ETC)
-						// MUESTRA MENSAJE A CLIENTE
-					} else { // PROPBLEMA AL CONSULTAR
+						mav.addObject("canjeExito", true);
+						//agregado: RETORNA STATUS DEL CANJE
+						//SI
+							//CONSULTA VOUCHER TICKETERA
+								//MUESTRA RESULTADO CANJE
+						//NO
+							//VALIDA ERROR (SESSION FINALIZADA, PUNTOS INSUFICIENTES, TOKEN INVALIDO, ETC)
+								//MUESTRA MENSAJE A CLIENTE
+					} else { //PROPBLEMA AL CONSULTAR
 						System.out.println("Movimiento no agregado");
+						mav.addObject("canjeExito", false);
 					}
 
 //					JSONObject myjson = new JSONObject(the_json);
@@ -606,6 +651,7 @@ public class routes {
 //			System.out.println("canje: "+producto.getIdProducto());
 
 			mav.addObject("canjeExito", true);
+
 			break;
 		case 5: // TIPO CANJE CON CATEGORIAS
 			if (producto.getActionx().equalsIgnoreCase("finish")) {
@@ -650,8 +696,20 @@ public class routes {
 
 	@GetMapping("/user/{menu}/{submenu}")
 	public ModelAndView menuUser(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu,
-			HttpServletRequest rq) throws UnsupportedEncodingException {
+			HttpServletRequest rq, @RequestHeader(value = "referer", required = false) final String referer)
+			throws UnsupportedEncodingException {
 //		ModelAndView mav = new ModelAndView("user");
+
+		CredencialesEntity credentialUser = new CredencialesEntity();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
+		if (!resolver.isAnonymous(auth)) {
+			credentialUser = (CredencialesEntity) auth.getPrincipal();
+		} else {
+			System.out.println("User no login");
+			return new ModelAndView("redirect:" + referer + "?login");
+		}
+
 		ViewApp vi = new ViewApp(rq);
 
 		DataServer dtserver = new DataServer(rq);
@@ -667,7 +725,7 @@ public class routes {
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 
 		List<Scmenu> categiriasmenu = new ArrayList<>();
-		categiriasmenu = Emudata.getmenuCategorias();
+		categiriasmenu = dtserver.loadScmenu();// Emudata.getmenuCategorias();
 
 		for (Scmenu menusel : categiriasmenu) // buscamos el menu que seleccionó
 		{
@@ -688,11 +746,13 @@ public class routes {
 			}
 		} catch (Exception e) {
 			return new ModelAndView("redirect:/404");
+
 		}
 
 		if (scmenuurlsub.getId() == 0) {
 			System.out.println("Seccion no encontrada");
 			return new ModelAndView("redirect:/404");
+
 		}
 
 		switch (scmenuurlsub.getTipo()) {
@@ -701,7 +761,7 @@ public class routes {
 			vi.addView("MI-CARTOLA");
 			vi.addView("FOOTER");
 			mav = new ModelAndView(vi.render());
-			mav.addObject("cartola", Emudata.getUserCartola());
+			mav.addObject("cartola", dtserver.loadUserCartola());
 			break;
 		case 21: // information
 			System.out.println("Tipo 21"); // TIPO INSCRIPCCION
@@ -715,7 +775,10 @@ public class routes {
 			vi.addView("mis-cupones");
 			vi.addView("FOOTER");
 			mav = new ModelAndView(vi.render());
-			scmenuurlsub.informationsubmenu = Emudata.getInformatiotest();
+			System.out.println("Mis cupones: usr: "+credentialUser.getScotiauser().getId_cliente());
+			mav.addObject("usercupones", dtserver.loadCupones(credentialUser.getScotiauser().getId_cliente()));
+			
+//			scmenuurlsub.informationsubmenu = Emudata.getInformatiotest();
 			break;
 		case 23: // information
 			System.out.println("Tipo 23"); // TIPO MIS GUSTOS
@@ -810,6 +873,108 @@ public class routes {
 		this.setHeaderx(mav, rq);
 
 		return mav;
+		
+	}
+	
+	
+	
+	
+	
+	@GetMapping("/cupon/get/{id_reward}")
+	public ModelAndView getCuponByRew(@PathVariable("id_reward") int id_reward,HttpServletRequest rq, @RequestHeader(value = "referer", required = false) final String referer)
+			throws UnsupportedEncodingException {
+//		ModelAndView mav = new ModelAndView("user");
+		
+		CredencialesEntity credentialUser = new CredencialesEntity();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
+		if (!resolver.isAnonymous(auth)) {
+			credentialUser = (CredencialesEntity) auth.getPrincipal();
+		} else {
+			System.out.println("User no login");
+			return new ModelAndView("redirect:" + referer + "?login");
+		}
+		
+		ViewApp vi=new ViewApp(rq);
+		
+		DataServer dtserver = new DataServer(rq);
+		
+		
+		
+		
+		
+		vi.addView("HEAD");
+		vi.addView("INFORMATION");
+		vi.addView("FOOTER");
+
+		ModelAndView mav = new ModelAndView(vi.render());
+		
+//		Information informationhtml = new Information();
+		
+//		informationhtml = dtserver.loadInformationByName(nombreInformation);
+//		System.out.println("inforxn"+informationhtml); 
+//		if(informationhtml == null) {
+//			return new ModelAndView("redirect:/404");
+//		}
+//		
+//		mav.addObject("informationhtml", informationhtml);
+
+		this.setHeaderx(mav,rq);
+
+		return mav;
+		
+	}
+	
+	
+//	@RequestMapping(value = "/getpdf/{pdf}", method = RequestMethod.GET)
+//	public  void getPdf(@PathVariable("pdf") String fileName, HttpServletResponse response) throws IOException {
+//
+//	    try {
+//	        File file = new File(FileConstant.BOOKINGPDFFILE + fileName+ ".pdf");
+//
+//	        if (file.exists()) {
+//	            // here I use Commons IO API to copy this file to the response output stream, I don't know which API you use.
+//	            FileUtils.copyFile(file, response.getOutputStream());
+//
+//	            // here we define the content of this file to tell the browser how to handle it
+//	            response.setContentType("application/pdf");
+//	            response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".pdf");
+//	            response.flushBuffer();
+//	        } else {
+//	            System.out.println("Contract Not Found");
+//	        }
+//	    } catch (IOException exception) {
+//	        System.out.println("Contract Not Found");
+//	        System.out.println(exception.getMessage());
+//	    }
+//	}
+	
+	@RequestMapping(value = "/getcupon/{id_rew}", method = RequestMethod.GET)
+	@ResponseBody
+	public Object getFile(@PathVariable("id_rew") int id_rew,HttpServletRequest rq, @RequestHeader(value = "referer", required = false) final String referer) {
+		
+		CredencialesEntity credentialUser = new CredencialesEntity();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
+		if (!resolver.isAnonymous(auth)) {
+			credentialUser = (CredencialesEntity) auth.getPrincipal();
+		} else {
+			System.out.println("User no login");
+			return new ModelAndView("redirect: /?login");
+		}
+
+		DataServer dtserver = new DataServer(rq);
+//		 byte[] response =  null;
+		 byte[] response = dtserver.loadCuponPdf(credentialUser.getScotiauser().getId_cliente(),id_rew);	 
+		   
+		   
+		   
+		return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/pdf"))
+                //.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + rEntity.getNombre_resource() + "\"")
+                .body(new ByteArrayResource(response));
+		
+//	    return new FileSystemResource("https://www.soundczech.cz/temp/lorem-ipsum.pdf"); 
 
 	}
 

@@ -54,14 +54,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.sessionManagement().sessionFixation().newSession().and().exceptionHandling()
 				.accessDeniedPage("/error/403");
 
-		// http.sessionManagement().sessionFixation().newSession().and().rememberMe();//.tokenRepository(persistentTokenRepository())
-		// .tokenValiditySeconds(1209600);
-
-	}
-
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.authenticationProvider(authProvider);
-	}
+    }
+	
+	
+	
+	
+     @Override  
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+          auth.authenticationProvider(authProvider);
+          
+    }
 
 }
