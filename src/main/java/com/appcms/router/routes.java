@@ -112,6 +112,7 @@ public class routes {
 					Scotiauser scotiauser = new Scotiauser(idUserCast, "177824577", "Fabian", "Gaete",
 							"fgaete@afiniti.cl", "1");
 					//scotiauser.setPoints(100);
+					mav.addObject("points", dtserver.loadUserPoints());
 					credentialUser.setScotiauser(scotiauser);
 					mav.addObject("usuario", scotiauser);
 				}
@@ -617,8 +618,8 @@ public class routes {
 										
 					Scotiauser usuario = credentialUser.getScotiauser();
 //					int puntosUsuario = funcionGetPuntosScotia();
-//					if(totalPuntos > puntosUsuario){se cancela el canje}
-					
+//					if(totalPuntos > usuario.getPoints()){se cancela el canje}
+					usuario.setPoints(dtserver.loadUserPoints().getAvailablePoints());
 					CustomerReward movimientoActual = new CustomerReward(usuario.getId_cliente(), producto.getIdProducto(), descipcionAbono,
 
 							totalPuntos, date.toString(), date.toString(), 0, 0, 1, 1);

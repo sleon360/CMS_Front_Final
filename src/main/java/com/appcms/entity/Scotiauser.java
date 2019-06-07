@@ -186,6 +186,14 @@ public class Scotiauser {
 		this.tokenScotia = tokenScotia;
 	}
 
+	public int getPoints() {
+		return points;
+	}
+
+	public void setPoints(int points) {
+		this.points = points;
+	}
+
 	@Override
 	public String toString() {
 		return "Scotiauser [id_cliente=" + id_cliente + ", points=" + points + ", firstname=" + firstname
