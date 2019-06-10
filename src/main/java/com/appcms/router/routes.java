@@ -529,6 +529,8 @@ public class routes {
 			@PathVariable("submenu") String submenu,HttpServletRequest rq, @RequestHeader(value = "referer", required = false) final String referer )throws NamingException, ErrorControllerExection {
 		//		ModelAndView mav = new ModelAndView("canjes");
 		
+		producto.setCantidad(1);
+		
 		CredencialesEntity credentialUser = new CredencialesEntity();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();		
 		final AuthenticationTrustResolver resolver=new AuthenticationTrustResolverImpl();
@@ -605,7 +607,7 @@ public class routes {
 				int idPruductoCanje = detalleProducto.getId();
 
 				// PRODUCTO DISPONIBLE (NO FUNCIONA)
-				if (idPruductoCanje == 0 || producto.getCantidad() < 0) {
+				if (idPruductoCanje == 0 || producto.getCantidad() < 1) {
 					System.out.println("no producto");
 					return new ModelAndView("redirect:/404");
 //					return new ModelAndView("redirect:/");
@@ -614,30 +616,34 @@ public class routes {
 					String descipcionAbono = "Canje: " + detalleProducto.getNombre();
 					int totalPuntos = detalleProducto.getPrecio() * producto.getCantidad();
 					java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-
-										
 					Scotiauser usuario = credentialUser.getScotiauser();
-//					int puntosUsuario = funcionGetPuntosScotia();
-//					if(totalPuntos > usuario.getPoints()){se cancela el canje}
 					usuario.setPoints(dtserver.loadUserPoints().getAvailablePoints());
-					CustomerReward movimientoActual = new CustomerReward(usuario.getId_cliente(), producto.getIdProducto(), descipcionAbono,
 
-							totalPuntos, date.toString(), date.toString(), 0, 0, 1, 1);
-					String agregado = dtserver.setReward(movimientoActual);
 
-					if (agregado != null) {
-						System.out.println("Movimiento agregado");
-						mav.addObject("canjeExito", true);
-						//agregado: RETORNA STATUS DEL CANJE
-						//SI
-							//CONSULTA VOUCHER TICKETERA
-								//MUESTRA RESULTADO CANJE
-						//NO
-							//VALIDA ERROR (SESSION FINALIZADA, PUNTOS INSUFICIENTES, TOKEN INVALIDO, ETC)
-								//MUESTRA MENSAJE A CLIENTE
-					} else { //PROPBLEMA AL CONSULTAR
-						System.out.println("Movimiento no agregado");
+					System.out.println("puntos canje: "+totalPuntos+"puntos disponibles: "+usuario.getPoints());
+					if (totalPuntos > usuario.getPoints()) {
 						mav.addObject("canjeExito", false);
+					} else {
+						CustomerReward movimientoActual = new CustomerReward(usuario.getId_cliente(),
+								producto.getIdProducto(), descipcionAbono, totalPuntos, date.toString(),
+								date.toString(), 0, 0, 1, 1);
+						String agregado = dtserver.setReward(movimientoActual);
+
+						if (agregado != null) {
+							System.out.println("Movimiento agregado");
+							mav.addObject("canjeExito", true);
+							// agregado: RETORNA STATUS DEL CANJE
+							// SI
+							// CONSULTA VOUCHER TICKETERA
+							// MUESTRA RESULTADO CANJE
+							// NO
+							// VALIDA ERROR (SESSION FINALIZADA, PUNTOS INSUFICIENTES, TOKEN INVALIDO, ETC)
+							// MUESTRA MENSAJE A CLIENTE
+						} else { // PROPBLEMA AL CONSULTAR
+							System.out.println("Movimiento no agregado");
+							mav.addObject("canjeExito", false);
+						}
+
 					}
 
 //					JSONObject myjson = new JSONObject(the_json);
@@ -651,7 +657,7 @@ public class routes {
 
 //			System.out.println("canje: "+producto.getIdProducto());
 
-			mav.addObject("canjeExito", true);
+//			mav.addObject("canjeExito", true);
 
 			break;
 		case 5: // TIPO CANJE CON CATEGORIAS
