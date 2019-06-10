@@ -613,7 +613,7 @@ public class routes {
 //					return new ModelAndView("redirect:/");
 				} else {
 
-					String descipcionAbono = "Canje: " + detalleProducto.getNombre();
+					String descipcionAbono = "Canje: " + detalleProducto.getTitulo();
 					int totalPuntos = detalleProducto.getPrecio() * producto.getCantidad();
 					java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
 					Scotiauser usuario = credentialUser.getScotiauser();
