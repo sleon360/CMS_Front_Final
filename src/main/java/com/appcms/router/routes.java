@@ -620,14 +620,14 @@ public class routes {
 					usuario.setPoints(dtserver.loadUserPoints().getAvailablePoints());
 
 
-					System.out.println("puntos canje: "+totalPuntos+"puntos disponibles: "+usuario.getPoints());
+					System.out.println("puntos canje: " + totalPuntos + "puntos disponibles: " + usuario.getPoints());
 					if (totalPuntos > usuario.getPoints()) {
 						mav.addObject("canjeExito", false);
 					} else {
 						CustomerReward movimientoActual = new CustomerReward(usuario.getId_cliente(),
 								producto.getIdProducto(), descipcionAbono, totalPuntos, date.toString(),
 								date.toString(), 0, 0, 1, 1);
-						String agregado = dtserver.setReward(movimientoActual);
+						String agregado = dtserver.setReward(movimientoActual, detalleProducto.getNombre());
 
 						if (agregado != null) {
 							System.out.println("Movimiento agregado");

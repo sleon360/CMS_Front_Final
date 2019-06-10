@@ -326,7 +326,7 @@ public class DataServer {
 
 	}
 
-	public String setReward(CustomerReward reward) {
+	public String setReward(CustomerReward reward, String nombreTicket) {
 		System.out.println("Cambiando puntos");
 		
 		HttpHeaders headers = new HttpHeaders();
@@ -349,6 +349,7 @@ public class DataServer {
 		xparam.add("id_trx", Integer.toString(reward.getId_trx()));
 		xparam.add("id_jos_ticket", Integer.toString(reward.getId_jos_ticket()));
 		xparam.add("tipo_reward", Integer.toString(reward.getTipo_reward()));
+		xparam.add("nombre_ticket", nombreTicket);
 		System.out.println("pre: " + reward.toString());
 
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(xparam, headers);
