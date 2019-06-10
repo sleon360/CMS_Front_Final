@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import com.appcms.entity.ViewEntity;
+import com.appcms.model.ConfigJNDIModel;
 import com.appcms.security.RestAuthentication;
 
 public class ViewApp {
@@ -39,7 +40,7 @@ public class ViewApp {
       
         HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<ViewEntity> response = restTemplate.exchange("http://localhost:9080/cmsrest/view/getByName/"+view,HttpMethod.GET, httpEntity, ViewEntity.class);
+        ResponseEntity<ViewEntity> response = restTemplate.exchange(ConfigJNDIModel.getVar("apiURL")+"/cmsrest/view/getByName/"+view,HttpMethod.GET, httpEntity, ViewEntity.class);
         if(response.getStatusCodeValue()==200)
 	        {
         	ViewEntity vV = response.getBody();

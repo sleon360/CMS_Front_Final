@@ -69,4 +69,21 @@
 <!--     <location>/errores?403</location> -->
 <!-- </error-page> -->
 
+
+  	<resource-ref>
+    	<description></description>
+    	<res-ref-name>apiURL</res-ref-name>
+    	<res-type>java.lang.String</res-type>
+    	<res-auth>Container</res-auth>
+    	<res-sharing-scope>Shareable</res-sharing-scope>
+  	</resource-ref>
+  	<resource-ref>
+    	<description></description>
+    	<res-ref-name>siteURL</res-ref-name>
+    	<res-type>java.lang.String</res-type>
+    	<res-auth>Container</res-auth>
+    	<res-sharing-scope>Shareable</res-sharing-scope>
+  	</resource-ref>
+  	
+
 </web-app>

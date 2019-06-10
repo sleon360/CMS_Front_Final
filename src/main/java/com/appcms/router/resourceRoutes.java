@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 
 import com.appcms.entity.ResourceEntity;
+import com.appcms.model.ConfigJNDIModel;
 
 @Controller
 public class resourceRoutes {
@@ -35,7 +36,7 @@ public class resourceRoutes {
         xparam.add("idresource", resourceid);
         HttpEntity<?> httpEntity = new HttpEntity<Object>(xparam, headers);
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<ResourceEntity> xresponse = restTemplate.exchange("http://localhost:9080/cmsrest/resource/"+folder+"/get",HttpMethod.POST, httpEntity, ResourceEntity.class);
+        ResponseEntity<ResourceEntity> xresponse = restTemplate.exchange(ConfigJNDIModel.getVar("apiURL")+"/cmsrest/resource/"+folder+"/get",HttpMethod.POST, httpEntity, ResourceEntity.class);
        
         if(xresponse.getStatusCode()==HttpStatus.OK)
         {
