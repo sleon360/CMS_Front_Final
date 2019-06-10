@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import com.appcms.entity.CustomerEntity;
 import com.appcms.entity.Scotiauser;
 import com.appcms.entity.customer.Customer;
+import com.appcms.model.ConfigJNDIModel;
 
 @Component
 public class CustomerAuthentication {
@@ -31,7 +32,7 @@ public class CustomerAuthentication {
 			HttpEntity<?> httpEntity = new HttpEntity<Object>(xlogin, headers);
 			RestTemplate restTemplate = new RestTemplate();
 			ResponseEntity<CustomerEntity> response = restTemplate.exchange(
-					"http://localhost:9080/cmsrest/v1/login_customer", HttpMethod.POST, httpEntity,
+					ConfigJNDIModel.getVar("apiURL")+"/cmsrest/v1/login_customer", HttpMethod.POST, httpEntity,
 					CustomerEntity.class);
 			TOKENTWO = response.getHeaders().getFirst("Authorization");
 			CustomerEntity customerEntity = response.getBody();

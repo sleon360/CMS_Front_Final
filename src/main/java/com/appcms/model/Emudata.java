@@ -37,7 +37,7 @@ import com.google.gson.JsonParser;
 
 public class Emudata {
 	
-	public static String serverIp = "http://localhost:9080";
+	public static String serverIp = ConfigJNDIModel.getVar("apiURL");
 	
 	public static List<Menutop> getmenuHeader() {
 
@@ -394,7 +394,7 @@ public class Emudata {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
 		try {
-			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange("http://localhost:9080/cmsrest/v1/customer/points", HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
+			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange(ConfigJNDIModel.getVar("apiURL")+"/cmsrest/v1/customer/points", HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
 			Points points = pointsResponseEntity.getBody();
 			UserCartola miCartola = new UserCartola(scotiauser.getFirstname(), scotiauser.getLastname(), "al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints(), points.getExpiringPointsDate(), movimientos);				 
 			return miCartola;

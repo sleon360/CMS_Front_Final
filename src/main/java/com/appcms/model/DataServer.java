@@ -36,12 +36,13 @@ import com.appcms.entity.UserCartolaMovimiento;
 import com.appcms.entity.UserCupon;
 import com.appcms.entity.points.Points;
 import com.appcms.security.RestAuthentication;
+import com.appcms.model.ConfigJNDIModel;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
 public class DataServer {
 
-	private final String urlServer = "http://localhost:9080";
+	private final String urlServer = ConfigJNDIModel.getVar("apiURL");
 
 	StringBuilder sb = new StringBuilder("");
 	private HttpServletRequest rqx;
@@ -460,7 +461,7 @@ public class DataServer {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
 		try {
-			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange("http://localhost:9080/cmsrest/v1/customer/points", HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
+			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange(ConfigJNDIModel.getVar("apiURL")+"/cmsrest/v1/customer/points", HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
 			Points points = pointsResponseEntity.getBody();
 			UserCartola miCartola = new UserCartola(scotiauser.getFirstname(), scotiauser.getLastname(), "al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints(), points.getExpiringPointsDate(), movimientos);				 
 			return miCartola;
@@ -483,7 +484,7 @@ public class DataServer {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
 		try {
-			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange("http://localhost:9080/cmsrest/v1/customer/points", HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
+			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange(ConfigJNDIModel.getVar("apiURL")+"/cmsrest/v1/customer/points", HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
 			Points points = pointsResponseEntity.getBody();
 			return points;
 		} catch(Exception e) {

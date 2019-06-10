@@ -20,6 +20,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.NestedServletException;
 
+import com.appcms.model.ConfigJNDIModel;
+
 
 //@Component
 //@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
@@ -63,7 +65,7 @@ public class RestAuthentication {
 	        headers.setContentType(MediaType.APPLICATION_JSON);
 	        HttpEntity<String> entity = new HttpEntity<String>("{\"username\":\"spring\",\"password\":\"secret\"}",headers);
 	        RestTemplate restTemplate = new RestTemplate();
-	        ResponseEntity<String> xresponse = restTemplate.exchange("http://localhost:9080/cmsrest/login",HttpMethod.POST, entity, String.class);
+	        ResponseEntity<String> xresponse = restTemplate.exchange(ConfigJNDIModel.getVar("apiURL")+"/cmsrest/login",HttpMethod.POST, entity, String.class);
 	        
 	        String result = xresponse.getBody();
 	        System.out.println(" XXXXXBBBBB "+xresponse.getHeaders().getFirst("Authorization")+" - "+result);
