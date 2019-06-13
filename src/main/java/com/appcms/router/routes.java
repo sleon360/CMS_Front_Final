@@ -664,7 +664,7 @@ public class routes {
 						CustomerReward movimientoActual = new CustomerReward(usuario.getId_cliente(),
 								producto.getIdProducto(), descipcionAbono, totalPuntos, date.toString(),
 								date.toString(), 0, 0, 1, 1);
-						String agregado = dtserver.setReward(movimientoActual, detalleProducto.getNombre());
+						String agregado = dtserver.setReward(movimientoActual, detalleProducto.getNombre(),usuario.getRut());
 
 						if (agregado != null) {
 							System.out.println("Movimiento agregado");

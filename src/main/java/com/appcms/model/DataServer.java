@@ -326,7 +326,7 @@ public class DataServer {
 
 	}
 
-	public String setReward(CustomerReward reward, String nombreTicket) {
+	public String setReward(CustomerReward reward, String nombreTicket, String rut) {
 		System.out.println("Cambiando puntos");
 		
 		HttpHeaders headers = new HttpHeaders();
@@ -350,6 +350,7 @@ public class DataServer {
 		xparam.add("id_jos_ticket", Integer.toString(reward.getId_jos_ticket()));
 		xparam.add("tipo_reward", Integer.toString(reward.getTipo_reward()));
 		xparam.add("nombre_ticket", nombreTicket);
+		xparam.add("rut_cliente", rut);
 		System.out.println("pre: " + reward.toString());
 
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(xparam, headers);
@@ -552,9 +553,6 @@ public class DataServer {
 	
 	
 	public byte[] loadCuponPdf(int idUser, int idReward) {
-
-		
-		
 		
 		HttpHeaders headers = new HttpHeaders();
 
