@@ -109,8 +109,8 @@ public class routes {
 			if (idUser != null && idUser != "0") {
 				int idUserCast = Integer.parseInt(idUser);
 				if (idUserCast != 0) {
-					Scotiauser scotiauser = new Scotiauser(idUserCast, "177824577", "Fabian", "Gaete",
-							"fgaete@afiniti.cl", "1");
+					CredencialesEntity credenciales = (CredencialesEntity) auth.getCredentials();
+					Scotiauser scotiauser = credenciales.getScotiauser();
 					//scotiauser.setPoints(100);
 					mav.addObject("points", dtserver.loadUserPoints());
 					credentialUser.setScotiauser(scotiauser);
