@@ -96,44 +96,81 @@ public class routes {
 //		mav.addObject("usuario", Emudata.getUsusario());
 //
 //	}
+	
+	
 	public void setHeaderx(ModelAndView mav, HttpServletRequest rq) {
 		DataServer dtserver = new DataServer(rq);
 		mav.addObject("menuesHeader", dtserver.loadScmenu());
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
-		if (!resolver.isAnonymous(auth)) {
-			CredencialesEntity credentialUser = (CredencialesEntity) auth.getPrincipal();
-			System.out.println(credentialUser.getTOKENTWO());
-			String idUser = dtserver.loadIdUserByRut("177824577");
-
-			if (idUser != null && idUser != "0") {
-				int idUserCast = Integer.parseInt(idUser);
-				if (idUserCast != 0) {
-					CredencialesEntity credenciales = (CredencialesEntity) auth.getCredentials();
-					Scotiauser scotiauser = credenciales.getScotiauser();
-					//scotiauser.setPoints(100);
-					mav.addObject("points", dtserver.loadUserPoints());
-					credentialUser.setScotiauser(scotiauser);
-					mav.addObject("usuario", scotiauser);
-				}
-			}
-		} else {
-			mav.addObject("usuario", Emudata.getUsusarioOff());
-		}
-
 		System.out.println("esta login: " + resolver.isAnonymous(auth));
 		if (!resolver.isAnonymous(auth)) {
 			CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
 			System.out.println("El usuario se encuentra autenticado con el token: " + credencialesEntity.getTOKENTWO());
-			
-			//Se recuperan los datos del ususario a partir de la entidad de usuario
-			/*mav.addObject("usuario", new Scotiauser(2, "177824577", "Fabian", "Gaete", "fgaete@afiniti.cl","1"));*/
+
+			// Se recuperan los datos del ususario a partir de la entidad de usuario
+			/*
+			 * mav.addObject("usuario", new Scotiauser(2, "177824577", "Fabian", "Gaete",
+			 * "fgaete@afiniti.cl","1"));
+			 */
 			mav.addObject("usuario", credencialesEntity.getScotiauser());
-		}else {
-			mav.addObject("usuario",Emudata.getUsusarioOff());			
+			mav.addObject("points", dtserver.loadUserPoints());
+		} else {
+			mav.addObject("usuario", Emudata.getUsusarioOff());
 		}
-		//mav.addObject("usuario",Emudata.getUsusarioOff());	
+		// mav.addObject("usuario",Emudata.getUsusarioOff());
 	}
+	
+	
+//	public void setHeaderx(ModelAndView mav, HttpServletRequest rq) {
+//		DataServer dtserver = new DataServer(rq);
+//		mav.addObject("menuesHeader", dtserver.loadScmenu());
+//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
+//		if (!resolver.isAnonymous(auth)) {
+//			CredencialesEntity credentialUser = (CredencialesEntity) auth.getPrincipal();
+//			System.out.println(credentialUser.getTOKENTWO());
+//			String idUser = dtserver.loadIdUserByRut(credentialUser.getScotiauser().getRut()); // dtserver.loadIdUserByRut("177824577");
+//
+////			if (idUser != null && idUser != "0") {
+////				int idUserCast = Integer.parseInt(idUser);
+////				if (idUserCast != 0) {
+////					CredencialesEntity credenciales = (CredencialesEntity) auth.getCredentials();
+////					Scotiauser scotiauser = credenciales.getScotiauser();
+////					//scotiauser.setPoints(100);
+////					mav.addObject("points", dtserver.loadUserPoints());
+////					credentialUser.setScotiauser(scotiauser);
+////					mav.addObject("usuario", scotiauser);
+////				}
+////			}
+//			if (idUser != null && idUser != "0") {
+//				int idUserCast = Integer.parseInt(idUser);
+//				if (idUserCast != 0) {
+//					Scotiauser scotiauser = new Scotiauser(idUserCast, "177824577", "Fabian", "Gaete",
+//							"fgaete@afiniti.cl", "1");
+//					//scotiauser.setPoints(100);
+//					mav.addObject("points", dtserver.loadUserPoints());
+//					credentialUser.setScotiauser(scotiauser);
+//					mav.addObject("usuario", scotiauser);
+//				}
+//			}
+//		} else {
+//			mav.addObject("usuario", Emudata.getUsusarioOff());
+//		}
+//
+//		System.out.println("esta login: " + resolver.isAnonymous(auth));
+//		if (!resolver.isAnonymous(auth)) {
+//			CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+//			System.out.println("El usuario se encuentra autenticado con el token: " + credencialesEntity.getTOKENTWO());
+//			
+//			//Se recuperan los datos del ususario a partir de la entidad de usuario
+//			/*mav.addObject("usuario", new Scotiauser(2, "177824577", "Fabian", "Gaete", "fgaete@afiniti.cl","1"));*/
+//			mav.addObject("usuario", credencialesEntity.getScotiauser());
+//		}else {
+//			mav.addObject("usuario",Emudata.getUsusarioOff());			
+//		}
+//		//mav.addObject("usuario",Emudata.getUsusarioOff());	
+//	}
 
 //	@RequestMapping("/test")
 //	public String groovy()

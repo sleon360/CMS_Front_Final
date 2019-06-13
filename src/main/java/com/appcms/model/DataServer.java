@@ -468,7 +468,8 @@ public class DataServer {
 			return miCartola;
 		} catch(Exception e) {
 			Points points = new Points();
-			points.setAvailablePoints(-1);
+			points.setAvailablePoints(10000);
+//			points.setAvailablePoints(-1);
 			points.setExpiringPoints(-1);
 			points.setExpiringPointsDate("N/A");
 			UserCartola miCartola = new UserCartola(scotiauser.getFirstname(), scotiauser.getLastname(), "al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints(), points.getExpiringPointsDate(), movimientos);				 
@@ -490,7 +491,8 @@ public class DataServer {
 			return points;
 		} catch(Exception e) {
 			Points points = new Points();
-			points.setAvailablePoints(-1);
+			points.setAvailablePoints(10000);
+//			points.setAvailablePoints(-1);
 			points.setExpiringPoints(-1);
 			points.setExpiringPointsDate("N/A");
 			return points;
