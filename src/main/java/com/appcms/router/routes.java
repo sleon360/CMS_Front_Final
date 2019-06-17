@@ -56,10 +56,13 @@ import com.appcms.entity.ProductoTipoLike;
 import com.appcms.entity.Scmenu;
 import com.appcms.entity.Scotiauser;
 import com.appcms.entity.Scsubmenu;
+import com.appcms.entity.StockTicket;
 import com.appcms.model.DataServer;
 import com.appcms.model.Emudata;
 import com.appcms.security.ErrorControllerExection;
 import com.cms.views.ViewApp;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 
 @Controller
 public class routes {
@@ -96,8 +99,7 @@ public class routes {
 //		mav.addObject("usuario", Emudata.getUsusario());
 //
 //	}
-	
-	
+
 	public void setHeaderx(ModelAndView mav, HttpServletRequest rq) {
 		DataServer dtserver = new DataServer(rq);
 		mav.addObject("menuesHeader", dtserver.loadScmenu());
@@ -120,8 +122,7 @@ public class routes {
 		}
 		// mav.addObject("usuario",Emudata.getUsusarioOff());
 	}
-	
-	
+
 //	public void setHeaderx(ModelAndView mav, HttpServletRequest rq) {
 //		DataServer dtserver = new DataServer(rq);
 //		mav.addObject("menuesHeader", dtserver.loadScmenu());
@@ -563,22 +564,24 @@ public class routes {
 
 	@PostMapping("/categoria/{menu}/{submenu}/canje")
 	public ModelAndView menuCanje(@ModelAttribute("producto") CanjeProducto producto, @PathVariable("menu") String menu,
-			@PathVariable("submenu") String submenu,HttpServletRequest rq, @RequestHeader(value = "referer", required = false) final String referer )throws NamingException, ErrorControllerExection {
-		//		ModelAndView mav = new ModelAndView("canjes");
-		
+			@PathVariable("submenu") String submenu, HttpServletRequest rq,
+			@RequestHeader(value = "referer", required = false) final String referer)
+			throws NamingException, ErrorControllerExection {
+		// ModelAndView mav = new ModelAndView("canjes");
+
 		producto.setCantidad(1);
-		
+
 		CredencialesEntity credentialUser = new CredencialesEntity();
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();		
-		final AuthenticationTrustResolver resolver=new AuthenticationTrustResolverImpl();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
 		if (!resolver.isAnonymous(auth)) {
 			credentialUser = (CredencialesEntity) auth.getPrincipal();
-		}else {
+		} else {
 			System.out.println("User no login");
-			return new ModelAndView("redirect:"+referer+"?login");
+			return new ModelAndView("redirect:" + referer + "?login");
 		}
-		
-		ViewApp vi=new ViewApp(rq);
+
+		ViewApp vi = new ViewApp(rq);
 //		if(true) return new ModelAndView("redirect:/404");
 		DataServer dtserver = new DataServer(rq);
 
@@ -587,7 +590,7 @@ public class routes {
 		vi.addView("CANJES");
 		vi.addView("FOOTER");
 		ModelAndView mav = new ModelAndView(vi.render());
-		
+
 		Scmenu scmenuurl = new Scmenu();
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 
@@ -656,20 +659,32 @@ public class routes {
 					Scotiauser usuario = credentialUser.getScotiauser();
 					usuario.setPoints(dtserver.loadUserPoints().getAvailablePoints());
 
-
+					StockTicket stockticket = dtserver.loadStockTicket(detalleProducto.getNombre());
+					System.out.println("activosticket: " + stockticket.toString());
 					System.out.println("puntos canje: " + totalPuntos + "puntos disponibles: " + usuario.getPoints());
-					if (totalPuntos > usuario.getPoints()) {
+					int stockProducto = stockticket.getActivo();
+
+					if (stockProducto < 1) {// sin stock
 						mav.addObject("canjeExito", false);
+						mav.addObject("error_code", 10);//Sin stock
+
+					} else if (totalPuntos > usuario.getPoints()) {
+						mav.addObject("canjeExito", false);
+						mav.addObject("error_code", 11);//Puntos insuficientes
 					} else {
 						CustomerReward movimientoActual = new CustomerReward(usuario.getId_cliente(),
 								producto.getIdProducto(), descipcionAbono, totalPuntos, date.toString(),
 								date.toString(), 0, 0, 1, 1);
-						String agregado = dtserver.setReward(movimientoActual, detalleProducto.getNombre(),usuario.getRut());
-
+						String agregado = dtserver.setReward(movimientoActual, detalleProducto.getNombre(),
+								usuario.getRut());
+						System.out.println("RESULTSETREWARDS: " + agregado);
 						if (agregado != null) {
 							System.out.println("Movimiento agregado");
 							mav.addObject("canjeExito", true);
-							// agregado: RETORNA STATUS DEL CANJE
+
+							JsonArray jsonObjectAgregado = new JsonParser().parse(agregado).getAsJsonArray();
+//							mav.addObject("idrewards", jsonObjectAgregado.get);
+							// agregado: RETORNA STATUS DEL CANJE ("customer_reward_id")
 							// SI
 							// CONSULTA VOUCHER TICKETERA
 							// MUESTRA RESULTADO CANJE
@@ -819,9 +834,9 @@ public class routes {
 			vi.addView("mis-cupones");
 			vi.addView("FOOTER");
 			mav = new ModelAndView(vi.render());
-			System.out.println("Mis cupones: usr: "+credentialUser.getScotiauser().getId_cliente());
+			System.out.println("Mis cupones: usr: " + credentialUser.getScotiauser().getId_cliente());
 			mav.addObject("usercupones", dtserver.loadCupones(credentialUser.getScotiauser().getId_cliente()));
-			
+
 //			scmenuurlsub.informationsubmenu = Emudata.getInformatiotest();
 			break;
 		case 23: // information
@@ -917,18 +932,15 @@ public class routes {
 		this.setHeaderx(mav, rq);
 
 		return mav;
-		
+
 	}
-	
-	
-	
-	
-	
+
 	@GetMapping("/cupon/get/{id_reward}")
-	public ModelAndView getCuponByRew(@PathVariable("id_reward") int id_reward,HttpServletRequest rq, @RequestHeader(value = "referer", required = false) final String referer)
+	public ModelAndView getCuponByRew(@PathVariable("id_reward") int id_reward, HttpServletRequest rq,
+			@RequestHeader(value = "referer", required = false) final String referer)
 			throws UnsupportedEncodingException {
 //		ModelAndView mav = new ModelAndView("user");
-		
+
 		CredencialesEntity credentialUser = new CredencialesEntity();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
@@ -938,23 +950,19 @@ public class routes {
 			System.out.println("User no login");
 			return new ModelAndView("redirect:" + referer + "?login");
 		}
-		
-		ViewApp vi=new ViewApp(rq);
-		
+
+		ViewApp vi = new ViewApp(rq);
+
 		DataServer dtserver = new DataServer(rq);
-		
-		
-		
-		
-		
+
 		vi.addView("HEAD");
 		vi.addView("INFORMATION");
 		vi.addView("FOOTER");
 
 		ModelAndView mav = new ModelAndView(vi.render());
-		
+
 //		Information informationhtml = new Information();
-		
+
 //		informationhtml = dtserver.loadInformationByName(nombreInformation);
 //		System.out.println("inforxn"+informationhtml); 
 //		if(informationhtml == null) {
@@ -963,13 +971,12 @@ public class routes {
 //		
 //		mav.addObject("informationhtml", informationhtml);
 
-		this.setHeaderx(mav,rq);
+		this.setHeaderx(mav, rq);
 
 		return mav;
-		
+
 	}
-	
-	
+
 //	@RequestMapping(value = "/getpdf/{pdf}", method = RequestMethod.GET)
 //	public  void getPdf(@PathVariable("pdf") String fileName, HttpServletResponse response) throws IOException {
 //
@@ -992,11 +999,12 @@ public class routes {
 //	        System.out.println(exception.getMessage());
 //	    }
 //	}
-	
+
 	@RequestMapping(value = "/getcupon/{id_rew}", method = RequestMethod.GET)
 	@ResponseBody
-	public Object getFile(@PathVariable("id_rew") int id_rew,HttpServletRequest rq, @RequestHeader(value = "referer", required = false) final String referer) {
-		
+	public Object getFile(@PathVariable("id_rew") int id_rew, HttpServletRequest rq,
+			@RequestHeader(value = "referer", required = false) final String referer) {
+
 		CredencialesEntity credentialUser = new CredencialesEntity();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
@@ -1009,15 +1017,13 @@ public class routes {
 
 		DataServer dtserver = new DataServer(rq);
 //		 byte[] response =  null;
-		 byte[] response = dtserver.loadCuponPdf(credentialUser.getScotiauser().getId_cliente(),id_rew);	 
-		   
-		   
-		   
-		return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType("application/pdf"))
-                //.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + rEntity.getNombre_resource() + "\"")
-                .body(new ByteArrayResource(response));
-		
+		byte[] response = dtserver.loadCuponPdf(credentialUser.getScotiauser().getId_cliente(), id_rew);
+
+		return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/pdf"))
+				// .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +
+				// rEntity.getNombre_resource() + "\"")
+				.body(new ByteArrayResource(response));
+
 //	    return new FileSystemResource("https://www.soundczech.cz/temp/lorem-ipsum.pdf"); 
 
 	}
