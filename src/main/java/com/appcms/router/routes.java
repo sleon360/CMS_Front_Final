@@ -357,6 +357,7 @@ public class routes {
 			return new ModelAndView("redirect:/404");
 
 		}
+		
 
 		switch (scmenuurlsub.getTipo()) {
 		case 1: // information
