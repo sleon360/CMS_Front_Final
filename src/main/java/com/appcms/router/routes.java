@@ -305,6 +305,11 @@ public class routes {
 		ModelAndView mav = new ModelAndView(vi.render());
 		mav.addObject("banners", dtserver.loadBannerAll(0)); // Emudata.getBanners()
 		mav.addObject("banners_resp", dtserver.loadBannerAll(1));
+		
+		
+		mav.addObject("descuentos_destacados", dtserver.loadscmenuinformationFomScmenu(10));
+			
+		
 		this.setHeaderx(mav, rq);
 
 		return mav;
@@ -355,7 +360,7 @@ public class routes {
 
 		switch (scmenuurlsub.getTipo()) {
 		case 1: // information
-			System.out.println("Tipo 1"); // TIPO INFORMACION
+			System.out.println("Tipo 1:"+scmenuurlsub.getId()); // TIPO INFORMACION
 			scmenuurlsub.informationsubmenu = dtserver.loadInformatioSub(scmenuurlsub.getId());// Emudata.getInformatiotest();
 			break;
 		case 2:
