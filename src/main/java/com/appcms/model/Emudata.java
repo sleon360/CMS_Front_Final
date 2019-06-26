@@ -3,12 +3,15 @@ package com.appcms.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -34,10 +37,15 @@ import com.appcms.entity.points.Points;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
-
+@Component
 public class Emudata {
 	
-	public static String serverIp = ConfigJNDIModel.getVar("apiURL");
+	private static String apiUrl;
+	
+	@Autowired
+	public Emudata(@Qualifier("apiUrl") String apiUrl) {
+		this.apiUrl = apiUrl;
+	}
 	
 	public static List<Menutop> getmenuHeader() {
 
@@ -394,7 +402,7 @@ public class Emudata {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
 		try {
-			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange(ConfigJNDIModel.getVar("apiURL")+"/cmsrest/v1/customer/points", HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
+			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/points", HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
 			Points points = pointsResponseEntity.getBody();
 			UserCartola miCartola = new UserCartola(scotiauser.getFirstname(), scotiauser.getLastname(), "al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints(), points.getExpiringPointsDate(), movimientos);				 
 			return miCartola;

@@ -1,15 +1,7 @@
 package com.appcms.router;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -19,11 +11,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.tomcat.util.http.fileupload.FileUtils;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
@@ -65,13 +55,23 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
 @Controller
-public class routes {
+public class Routes {
 
 	public final String csrf_token = "afxn123xnx360";
+	
+	private String apiUrl;
 
+	@Autowired
+	DataServer dtserver;
+	
+	@Autowired
+	public Routes(@Qualifier("apiUrl") String apiUrl) {
+		this.apiUrl = apiUrl;
+	}
+	
 	@RequestMapping("/home")
 	public ModelAndView index(HttpServletRequest rq) {
-		ViewApp vi = new ViewApp(rq);
+		ViewApp vi = new ViewApp(rq, apiUrl);
 		vi.addView("head");
 		vi.addView("home");
 		vi.addView("footer");
@@ -101,8 +101,8 @@ public class routes {
 //	}
 
 	public void setHeaderx(ModelAndView mav, HttpServletRequest rq) {
-		DataServer dtserver = new DataServer(rq);
-		mav.addObject("menuesHeader", dtserver.loadScmenu());
+		
+		mav.addObject("menuesHeader", dtserver.loadScmenu(rq));
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
 		System.out.println("esta login: " + resolver.isAnonymous(auth));
@@ -182,7 +182,7 @@ public class routes {
 	@RequestMapping("/404")
 	public ModelAndView notfound(HttpServletRequest rq) {
 
-		ViewApp vi = new ViewApp(rq);
+		ViewApp vi = new ViewApp(rq, apiUrl);
 		vi.addView("head");
 		vi.addView("404");
 		vi.addView("footer");
@@ -191,11 +191,7 @@ public class routes {
 		return mav;
 	}
 
-	private int getErrorCode(HttpServletRequest httpRequest) {
-		return (Integer) httpRequest.getAttribute("javax.servlet.error.status_code");
-	}
-
-//	@ExceptionHandler(value = {Exception.class,MultipartException.class,NestedServletException.class,NestedServletException.class,ConnectException.class })
+	//	@ExceptionHandler(value = {Exception.class,MultipartException.class,NestedServletException.class,NestedServletException.class,ConnectException.class })
 	@ExceptionHandler(value = { Exception.class, MultipartException.class, NestedServletException.class,
 			NestedServletException.class, ConnectException.class, RequestRejectedException.class })
 	@RequestMapping("/errores")
@@ -243,7 +239,7 @@ public class routes {
 
 		}
 
-		ViewApp vi = new ViewApp(rq);
+		ViewApp vi = new ViewApp(rq, apiUrl);
 		vi.addView("head");
 		vi.addView("error");
 		vi.addView("footer");
@@ -261,7 +257,7 @@ public class routes {
 
 	@RequestMapping("/login")
 	public ModelAndView login(HttpServletRequest rq) {
-		ViewApp vi = new ViewApp(rq);
+		ViewApp vi = new ViewApp(rq, apiUrl);
 		vi.addView("header");
 		vi.addView("login");
 		ModelAndView mav = new ModelAndView(vi.render());
@@ -284,7 +280,7 @@ public class routes {
 
 	@RequestMapping("/admin")
 	public ModelAndView admin(HttpServletRequest rq) {
-		ViewApp vi = new ViewApp(rq);
+		ViewApp vi = new ViewApp(rq, apiUrl);
 		vi.addView("header");
 		vi.addView("admin");
 		ModelAndView mav = new ModelAndView(vi.render());
@@ -293,21 +289,21 @@ public class routes {
 
 	@RequestMapping("/")
 	public ModelAndView home(HttpServletRequest rq) {
+		System.out.print("<<<<< Se llega al controlador >>>>>");
 		// return new ModelAndView("redirect:/home");
-		ViewApp vi = new ViewApp(rq);
+		ViewApp vi = new ViewApp(rq, apiUrl);
 		vi.addView("head");
 		// vi.addView("home");
 		vi.addView("index");
 		vi.addView("footer");
 
-		DataServer dtserver = new DataServer(rq);
-
 		ModelAndView mav = new ModelAndView(vi.render());
-		mav.addObject("banners", dtserver.loadBannerAll(0)); // Emudata.getBanners()
-		mav.addObject("banners_resp", dtserver.loadBannerAll(1));
+		mav.addObject("banners", dtserver.loadBannerAll(0, rq)); // Emudata.getBanners()
+		mav.addObject("banners_resp", dtserver.loadBannerAll(1, rq));
 		
-		
-		mav.addObject("descuentos_destacados", dtserver.loadscmenuinformationFomScmenu(10));
+		System.out.println("Antes de los descuentos destacados");
+		mav.addObject("descuentos_destacados", dtserver.loadscmenuinformationFomScmenu(10, rq));
+		System.out.println("Después de los descuentos destacados");
 			
 		
 		this.setHeaderx(mav, rq);
@@ -319,15 +315,14 @@ public class routes {
 	public ModelAndView menuSubmenu(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu,
 			HttpServletRequest rq) throws UnsupportedEncodingException {
 		// ModelAndView mav = new ModelAndView("categorias");
-		ViewApp vi = new ViewApp(rq);
+		ViewApp vi = new ViewApp(rq, apiUrl);
 
-		DataServer dtserver = new DataServer(rq);
 
 		Scmenu scmenuurl = new Scmenu();
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 
 		List<Scmenu> categiriasmenu = new ArrayList<>();
-		categiriasmenu = dtserver.loadScmenu();// Emudata.getmenuCategorias();
+		categiriasmenu = dtserver.loadScmenu(rq);// Emudata.getmenuCategorias();
 
 		for (Scmenu menusel : categiriasmenu) // buscamos el menu que seleccionó
 		{
@@ -362,27 +357,27 @@ public class routes {
 		switch (scmenuurlsub.getTipo()) {
 		case 1: // information
 			System.out.println("Tipo 1:"+scmenuurlsub.getId()); // TIPO INFORMACION
-			scmenuurlsub.informationsubmenu = dtserver.loadInformatioSub(scmenuurlsub.getId());// Emudata.getInformatiotest();
+			scmenuurlsub.informationsubmenu = dtserver.loadInformatioSub(scmenuurlsub.getId(), rq);// Emudata.getInformatiotest();
 			break;
 		case 2:
 			System.out.println("Tipo 2"); // TIPO PRODUCTO CON LIKE
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId());// Emudata.getProductosLikeTest();
+			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId(), rq);// Emudata.getProductosLikeTest();
 			break;
 		case 3:
 			System.out.println("Tipo 3"); // TIPO CON CUPON
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId());// Emudata.getProductosiNFOTest();
+			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId(), rq);// Emudata.getProductosiNFOTest();
 			break;
 		case 4:
 			System.out.println("Tipo 4"); // TIPO PRODUCTO E-COMERCE
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId());// Emudata.getProductoseEcomerceTest();
+			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId(), rq);// Emudata.getProductoseEcomerceTest();
 			break;
 		case 5:
 			System.out.println("Tipo 5"); // TIPO CANJE CON CATEGORIAS
-			scmenuurlsub.categoriaProductoLista = dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId());// Emudata.getCategoriasProductosTest();//
+			scmenuurlsub.categoriaProductoLista = dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId(), rq);// Emudata.getCategoriasProductosTest();//
 			break;
 		case 6:
 			System.out.println("Tipo 6"); // TIPO CANJE CON CATEGORIAS PARA FORMULARIO
-			scmenuurlsub.categoriaProductoLista = dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId());// Emudata.getCategoriasProductosTestTipo6();
+			scmenuurlsub.categoriaProductoLista = dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId(), rq);// Emudata.getCategoriasProductosTestTipo6();
 			break;
 		case 7:
 			System.out.println("Tipo 7"); // TIPO CANJE CASHBACK
@@ -390,11 +385,11 @@ public class routes {
 			break;
 		case 8:
 			System.out.println("Tipo 8"); // TIPO CANJE DESCUENTOS
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId());// Emudata.getProductosLikeTest();
+			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId(), rq);// Emudata.getProductosLikeTest();
 			break;
 		case 9:
 			System.out.println("Tipo 9"); // TIPO VISTA INFORMATION
-			scmenuurlsub.informationHtml = dtserver.loadInformationScsubmenu(scmenuurlsub.getId());// Emudata.getInformationHtml();loadInformationScsubmenu
+			scmenuurlsub.informationHtml = dtserver.loadInformationScsubmenu(scmenuurlsub.getId(), rq);// Emudata.getInformationHtml();loadInformationScsubmenu
 			break;
 		}
 
@@ -417,9 +412,8 @@ public class routes {
 			@PathVariable("submenu") String submenu, @PathVariable("categoria") String categoria, HttpServletRequest rq)
 			throws UnsupportedEncodingException {
 //		ModelAndView mav = new ModelAndView("categorias");
-		ViewApp vi = new ViewApp(rq);
+		ViewApp vi = new ViewApp(rq, apiUrl);
 
-		DataServer dtserver = new DataServer(rq);
 
 		vi.addView("head");
 		vi.addView("HEADER_CATEGORIAS");
@@ -431,7 +425,7 @@ public class routes {
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 
 		List<Scmenu> categiriasmenu = new ArrayList<>();
-		categiriasmenu = dtserver.loadScmenu();// Emudata.getmenuCategorias();
+		categiriasmenu = dtserver.loadScmenu(rq);// Emudata.getmenuCategorias();
 
 		for (Scmenu menusel : categiriasmenu) // buscamos el menu que seleccionó
 		{
@@ -466,7 +460,7 @@ public class routes {
 		case 5:
 			System.out.println("Tipo 5"); // TIPO CANJE CON CATEGORIAS
 			scmenuurlsub.categoriaProductoLista = dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(),
-					categoria);// Emudata.getCateProductosFromCategoria(categoria);
+					categoria, rq);// Emudata.getCateProductosFromCategoria(categoria);
 			mav.addObject("verProductosCategoria", true);
 			break;
 
@@ -476,14 +470,14 @@ public class routes {
 			// siempre tener 1 producto MAXIMO por categoria tipo formulario
 
 			scmenuurlsub.productosLikeLista = dtserver.loadProductosLikeSubmenuCategoria(scmenuurlsub.getId(),
-					categoria);// Emudata.getProductosLikeTest();
+					categoria, rq);// Emudata.getProductosLikeTest();
 			mav.addObject("producto", new CanjeProducto());
 			mav.addObject("verProductosCategoria", true);
 			break;
 		case 8:
 			System.out.println("Tipo 8"); // TIPO CANJE CON CATEGORIAS
 			scmenuurlsub.categoriaProductoLista = dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(),
-					categoria);// Emudata.getCateProductosFromCategoria(categoria);
+					categoria, rq);// Emudata.getCateProductosFromCategoria(categoria);
 			mav.addObject("verProductosCategoria", true);
 			break;
 		default:
@@ -510,9 +504,8 @@ public class routes {
 	public ModelAndView menuDetalleProducto(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu,
 			@PathVariable("producto") int producto, HttpServletRequest rq) throws UnsupportedEncodingException {
 //		ModelAndView mav = new ModelAndView("canjes");
-		ViewApp vi = new ViewApp(rq);
+		ViewApp vi = new ViewApp(rq, apiUrl);
 
-		DataServer dtserver = new DataServer(rq);
 
 		vi.addView("HEAD");
 		vi.addView("HEADER_CATEGORIAS");
@@ -524,7 +517,7 @@ public class routes {
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 
 		List<Scmenu> categiriasmenu = new ArrayList<>();
-		categiriasmenu = dtserver.loadScmenu();// Emudata.getmenuCategorias();
+		categiriasmenu = dtserver.loadScmenu(rq);// Emudata.getmenuCategorias();
 
 		for (Scmenu menusel : categiriasmenu) // buscamos el menu que seleccionó
 		{
@@ -554,7 +547,7 @@ public class routes {
 
 		}
 
-		scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto); // Emudata.getProductoSearch(producto);
+		scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto, rq); // Emudata.getProductoSearch(producto);
 
 //		mav.addObject("csrf_token", csrf_token);
 //		mav.addObject("menuurl", scmenuurl);
@@ -587,9 +580,8 @@ public class routes {
 			return new ModelAndView("redirect:" + referer + "?login");
 		}
 
-		ViewApp vi = new ViewApp(rq);
+		ViewApp vi = new ViewApp(rq, apiUrl);
 //		if(true) return new ModelAndView("redirect:/404");
-		DataServer dtserver = new DataServer(rq);
 
 		vi.addView("HEAD");
 		vi.addView("HEADER_CATEGORIAS");
@@ -601,7 +593,7 @@ public class routes {
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 
 		List<Scmenu> categiriasmenu = new ArrayList<>();
-		categiriasmenu = dtserver.loadScmenu();// Emudata.getmenuCategorias();
+		categiriasmenu = dtserver.loadScmenu(rq);// Emudata.getmenuCategorias();
 
 		for (Scmenu menusel : categiriasmenu) // buscamos el menu que seleccionó
 		{
@@ -649,7 +641,7 @@ public class routes {
 
 			try {
 				// OBTENEMOS EL PRODUCTO
-				ProductoTipoLike detalleProducto = dtserver.loadProductoById(producto.getIdProducto());
+				ProductoTipoLike detalleProducto = dtserver.loadProductoById(producto.getIdProducto(), rq);
 				int idPruductoCanje = detalleProducto.getId();
 
 				// PRODUCTO DISPONIBLE (NO FUNCIONA)
@@ -665,7 +657,7 @@ public class routes {
 					Scotiauser usuario = credentialUser.getScotiauser();
 					usuario.setPoints(dtserver.loadUserPoints().getAvailablePoints());
 
-					StockTicket stockticket = dtserver.loadStockTicket(detalleProducto.getNombre());
+					StockTicket stockticket = dtserver.loadStockTicket(detalleProducto.getNombre(), rq);
 					System.out.println("activosticket: " + stockticket.toString());
 					System.out.println("puntos canje: " + totalPuntos + "puntos disponibles: " + usuario.getPoints());
 					int stockProducto = stockticket.getActivo();
@@ -682,7 +674,7 @@ public class routes {
 								producto.getIdProducto(), descipcionAbono, totalPuntos, date.toString(),
 								date.toString(), 0, 0, 1, 1);
 						String agregado = dtserver.setReward(movimientoActual, detalleProducto.getNombre(),
-								usuario.getRut());
+								usuario.getRut(), rq);
 						System.out.println("RESULTSETREWARDS: " + agregado);
 						if (agregado != null) {
 							System.out.println("Movimiento agregado");
@@ -724,7 +716,7 @@ public class routes {
 			} else {
 				producto.setActionx("finish");
 			} // dtserver.loadProductosDetalle(scmenuurlsub.getId());//
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto());// Emudata.getProductoSearchById(producto.getIdProducto());//dtserver.loadProductosDetalle(scmenuurlsub.getId());//Emudata.getProductoSearchById(producto.getIdProducto());//
+			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto(), rq);// Emudata.getProductoSearchById(producto.getIdProducto());//dtserver.loadProductosDetalle(scmenuurlsub.getId());//Emudata.getProductoSearchById(producto.getIdProducto());//
 			mav.addObject("producto", producto);
 
 			break;
@@ -735,13 +727,13 @@ public class routes {
 				producto.setActionx("finish");
 			}
 
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto());// Emudata.getProductoSearchById(producto.getIdProducto());
+			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto(), rq);// Emudata.getProductoSearchById(producto.getIdProducto());
 			mav.addObject("producto", producto);
 			break;
 		case 7: // TIPO CANJE CASHBACK
 			break;
 		case 8: // TIPO CANJE DESCUENTOS
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto());// Emudata.getProductoSearchById(producto.getIdProducto());//dtserver.loadProductosDetalle(scmenuurlsub.getId());//Emudata.getProductoSearchById(producto.getIdProducto());
+			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto(), rq);// Emudata.getProductoSearchById(producto.getIdProducto());//dtserver.loadProductosDetalle(scmenuurlsub.getId());//Emudata.getProductoSearchById(producto.getIdProducto());
 			mav.addObject("producto", producto);
 			mav.addObject("canjeExito", true);
 			break;
@@ -775,9 +767,8 @@ public class routes {
 			return new ModelAndView("redirect:" + referer + "?login");
 		}
 
-		ViewApp vi = new ViewApp(rq);
+		ViewApp vi = new ViewApp(rq, apiUrl);
 
-		DataServer dtserver = new DataServer(rq);
 
 		vi.addView("HEAD");
 		vi.addView("HEADER_CATEGORIAS");
@@ -790,7 +781,7 @@ public class routes {
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 
 		List<Scmenu> categiriasmenu = new ArrayList<>();
-		categiriasmenu = dtserver.loadScmenu();// Emudata.getmenuCategorias();
+		categiriasmenu = dtserver.loadScmenu(rq);// Emudata.getmenuCategorias();
 
 		for (Scmenu menusel : categiriasmenu) // buscamos el menu que seleccionó
 		{
@@ -841,7 +832,7 @@ public class routes {
 			vi.addView("FOOTER");
 			mav = new ModelAndView(vi.render());
 			System.out.println("Mis cupones: usr: " + credentialUser.getScotiauser().getId_cliente());
-			mav.addObject("usercupones", dtserver.loadCupones(credentialUser.getScotiauser().getId_cliente()));
+			mav.addObject("usercupones", dtserver.loadCupones(credentialUser.getScotiauser().getId_cliente(), rq));
 
 //			scmenuurlsub.informationsubmenu = Emudata.getInformatiotest();
 			break;
@@ -885,9 +876,8 @@ public class routes {
 	public ModelAndView getinformation(@PathVariable("nombreInformation") String nombreInformation,
 			HttpServletRequest rq) throws UnsupportedEncodingException {
 //		ModelAndView mav = new ModelAndView("user");
-		ViewApp vi = new ViewApp(rq);
+		ViewApp vi = new ViewApp(rq, apiUrl);
 
-		DataServer dtserver = new DataServer(rq);
 
 		vi.addView("HEAD");
 		vi.addView("INFORMATION");
@@ -897,7 +887,7 @@ public class routes {
 
 		Information informationhtml = new Information();
 
-		informationhtml = dtserver.loadInformationByName(nombreInformation);
+		informationhtml = dtserver.loadInformationByName(nombreInformation, rq);
 		System.out.println("inforxn" + informationhtml);
 		if (informationhtml == null) {
 			return new ModelAndView("redirect:/404");
@@ -914,9 +904,8 @@ public class routes {
 	@PostMapping("/user/login")
 	public ModelAndView loginuser(@ModelAttribute("loginForm") LoginUser loginForm, HttpServletRequest rq) {
 //		ModelAndView mav = new ModelAndView("user");
-		ViewApp vi = new ViewApp(rq);
+		ViewApp vi = new ViewApp(rq, apiUrl);
 
-		DataServer dtserver = new DataServer(rq);
 
 		vi.addView("HEAD");
 //		vi.addView("INFORMATION");
@@ -926,7 +915,7 @@ public class routes {
 
 		System.out.println("infologin: " + loginForm);
 
-		String resultlogin = dtserver.testLogin(loginForm.getRut(), loginForm.getPass());
+		String resultlogin = dtserver.testLogin(loginForm.getRut(), loginForm.getPass(), rq);
 		System.out.println("result_login:" + resultlogin);
 
 		if (resultlogin != null) { // token de sesion devuelto
@@ -957,9 +946,8 @@ public class routes {
 			return new ModelAndView("redirect:" + referer + "?login");
 		}
 
-		ViewApp vi = new ViewApp(rq);
+		ViewApp vi = new ViewApp(rq, apiUrl);
 
-		DataServer dtserver = new DataServer(rq);
 
 		vi.addView("HEAD");
 		vi.addView("INFORMATION");
@@ -1021,9 +1009,8 @@ public class routes {
 			return new ModelAndView("redirect: /?login");
 		}
 
-		DataServer dtserver = new DataServer(rq);
 //		 byte[] response =  null;
-		byte[] response = dtserver.loadCuponPdf(credentialUser.getScotiauser().getId_cliente(), id_rew);
+		byte[] response = dtserver.loadCuponPdf(credentialUser.getScotiauser().getId_cliente(), id_rew, rq);
 
 		return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/pdf"))
 				// .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +
