@@ -375,6 +375,7 @@ public class routes {
 		case 4:
 			System.out.println("Tipo 4"); // TIPO PRODUCTO E-COMERCE
 			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId());// Emudata.getProductoseEcomerceTest();
+			System.out.println("prodconstock:"+scmenuurlsub.productosLikeLista.toString());
 			break;
 		case 5:
 			System.out.println("Tipo 5"); // TIPO CANJE CON CATEGORIAS

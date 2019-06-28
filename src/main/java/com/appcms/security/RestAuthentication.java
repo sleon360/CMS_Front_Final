@@ -59,6 +59,7 @@ public class RestAuthentication {
 		//RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 		
 		try {
+			System.out.println(rq.getSession().getAttribute("TOKENONE"));
 		if(rq.getSession().getAttribute("TOKENONE")==null)
 		{
 			HttpHeaders headers = new HttpHeaders();
