@@ -10,8 +10,8 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.app.front</groupId>
-	<artifactId>fronend</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>scclubfront</artifactId>
+	<version>0.0.1</version>
 	<packaging>war</packaging>
 	<name>fronend</name>
 	<description>CMS Lealtad360</description>
@@ -86,6 +86,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>scclubfront</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
