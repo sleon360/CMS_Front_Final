@@ -1,7 +1,15 @@
 package com.appcms.router;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -11,9 +19,13 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
@@ -55,7 +67,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
 @Controller
-public class Routes {
+public class routes {
 
 	public final String csrf_token = "afxn123xnx360";
 	
@@ -65,7 +77,7 @@ public class Routes {
 	DataServer dtserver;
 	
 	@Autowired
-	public Routes(@Qualifier("apiUrl") String apiUrl) {
+	public routes(@Qualifier("apiUrl") String apiUrl) {
 		this.apiUrl = apiUrl;
 	}
 	
@@ -81,27 +93,7 @@ public class Routes {
 		return mav;
 	}
 
-//	@RequestMapping("/error")
-//	public ModelAndView handleError(HttpServletRequest rq) {
-//		ViewApp vi=new ViewApp(rq);
-//		vi.addView("head");
-//		vi.addView("404");
-//		vi.addView("footer");
-//		ModelAndView mav = new ModelAndView(vi.render());
-//		this.setHeaderx(mav,rq);
-//		return mav;
-//	}
-
-//	public void setHeaderx(ModelAndView mav) {
-//
-//		mav.addObject("menuesHeader", Emudata.getmenuCategorias());
-//
-//		mav.addObject("usuario", Emudata.getUsusario());
-//
-//	}
-
 	public void setHeaderx(ModelAndView mav, HttpServletRequest rq) {
-		
 		mav.addObject("menuesHeader", dtserver.loadScmenu(rq));
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
@@ -123,62 +115,6 @@ public class Routes {
 		// mav.addObject("usuario",Emudata.getUsusarioOff());
 	}
 
-//	public void setHeaderx(ModelAndView mav, HttpServletRequest rq) {
-//		DataServer dtserver = new DataServer(rq);
-//		mav.addObject("menuesHeader", dtserver.loadScmenu());
-//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
-//		if (!resolver.isAnonymous(auth)) {
-//			CredencialesEntity credentialUser = (CredencialesEntity) auth.getPrincipal();
-//			System.out.println(credentialUser.getTOKENTWO());
-//			String idUser = dtserver.loadIdUserByRut(credentialUser.getScotiauser().getRut()); // dtserver.loadIdUserByRut("177824577");
-//
-////			if (idUser != null && idUser != "0") {
-////				int idUserCast = Integer.parseInt(idUser);
-////				if (idUserCast != 0) {
-////					CredencialesEntity credenciales = (CredencialesEntity) auth.getCredentials();
-////					Scotiauser scotiauser = credenciales.getScotiauser();
-////					//scotiauser.setPoints(100);
-////					mav.addObject("points", dtserver.loadUserPoints());
-////					credentialUser.setScotiauser(scotiauser);
-////					mav.addObject("usuario", scotiauser);
-////				}
-////			}
-//			if (idUser != null && idUser != "0") {
-//				int idUserCast = Integer.parseInt(idUser);
-//				if (idUserCast != 0) {
-//					Scotiauser scotiauser = new Scotiauser(idUserCast, "177824577", "Fabian", "Gaete",
-//							"fgaete@afiniti.cl", "1");
-//					//scotiauser.setPoints(100);
-//					mav.addObject("points", dtserver.loadUserPoints());
-//					credentialUser.setScotiauser(scotiauser);
-//					mav.addObject("usuario", scotiauser);
-//				}
-//			}
-//		} else {
-//			mav.addObject("usuario", Emudata.getUsusarioOff());
-//		}
-//
-//		System.out.println("esta login: " + resolver.isAnonymous(auth));
-//		if (!resolver.isAnonymous(auth)) {
-//			CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
-//			System.out.println("El usuario se encuentra autenticado con el token: " + credencialesEntity.getTOKENTWO());
-//			
-//			//Se recuperan los datos del ususario a partir de la entidad de usuario
-//			/*mav.addObject("usuario", new Scotiauser(2, "177824577", "Fabian", "Gaete", "fgaete@afiniti.cl","1"));*/
-//			mav.addObject("usuario", credencialesEntity.getScotiauser());
-//		}else {
-//			mav.addObject("usuario",Emudata.getUsusarioOff());			
-//		}
-//		//mav.addObject("usuario",Emudata.getUsusarioOff());	
-//	}
-
-//	@RequestMapping("/test")
-//	public String groovy()
-//	{
-//		return "index";
-//	}
-
 	@RequestMapping("/404")
 	public ModelAndView notfound(HttpServletRequest rq) {
 
@@ -191,7 +127,11 @@ public class Routes {
 		return mav;
 	}
 
-	//	@ExceptionHandler(value = {Exception.class,MultipartException.class,NestedServletException.class,NestedServletException.class,ConnectException.class })
+	private int getErrorCode(HttpServletRequest httpRequest) {
+		return (Integer) httpRequest.getAttribute("javax.servlet.error.status_code");
+	}
+
+//	@ExceptionHandler(value = {Exception.class,MultipartException.class,NestedServletException.class,NestedServletException.class,ConnectException.class })
 	@ExceptionHandler(value = { Exception.class, MultipartException.class, NestedServletException.class,
 			NestedServletException.class, ConnectException.class, RequestRejectedException.class })
 	@RequestMapping("/errores")
@@ -289,7 +229,6 @@ public class Routes {
 
 	@RequestMapping("/")
 	public ModelAndView home(HttpServletRequest rq) {
-		System.out.print("<<<<< Se llega al controlador >>>>>");
 		// return new ModelAndView("redirect:/home");
 		ViewApp vi = new ViewApp(rq, apiUrl);
 		vi.addView("head");
@@ -301,9 +240,8 @@ public class Routes {
 		mav.addObject("banners", dtserver.loadBannerAll(0, rq)); // Emudata.getBanners()
 		mav.addObject("banners_resp", dtserver.loadBannerAll(1, rq));
 		
-		System.out.println("Antes de los descuentos destacados");
+		
 		mav.addObject("descuentos_destacados", dtserver.loadscmenuinformationFomScmenu(10, rq));
-		System.out.println("Después de los descuentos destacados");
 			
 		
 		this.setHeaderx(mav, rq);
@@ -316,7 +254,6 @@ public class Routes {
 			HttpServletRequest rq) throws UnsupportedEncodingException {
 		// ModelAndView mav = new ModelAndView("categorias");
 		ViewApp vi = new ViewApp(rq, apiUrl);
-
 
 		Scmenu scmenuurl = new Scmenu();
 		Scsubmenu scmenuurlsub = new Scsubmenu();
@@ -370,6 +307,7 @@ public class Routes {
 		case 4:
 			System.out.println("Tipo 4"); // TIPO PRODUCTO E-COMERCE
 			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId(), rq);// Emudata.getProductoseEcomerceTest();
+			System.out.println("prodconstock:"+scmenuurlsub.productosLikeLista.toString());
 			break;
 		case 5:
 			System.out.println("Tipo 5"); // TIPO CANJE CON CATEGORIAS
@@ -413,7 +351,6 @@ public class Routes {
 			throws UnsupportedEncodingException {
 //		ModelAndView mav = new ModelAndView("categorias");
 		ViewApp vi = new ViewApp(rq, apiUrl);
-
 
 		vi.addView("head");
 		vi.addView("HEADER_CATEGORIAS");
@@ -506,7 +443,6 @@ public class Routes {
 //		ModelAndView mav = new ModelAndView("canjes");
 		ViewApp vi = new ViewApp(rq, apiUrl);
 
-
 		vi.addView("HEAD");
 		vi.addView("HEADER_CATEGORIAS");
 		vi.addView("CANJES");
@@ -581,7 +517,6 @@ public class Routes {
 		}
 
 		ViewApp vi = new ViewApp(rq, apiUrl);
-//		if(true) return new ModelAndView("redirect:/404");
 
 		vi.addView("HEAD");
 		vi.addView("HEADER_CATEGORIAS");
@@ -655,8 +590,14 @@ public class Routes {
 					int totalPuntos = detalleProducto.getPrecio() * producto.getCantidad();
 					java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
 					Scotiauser usuario = credentialUser.getScotiauser();
+					
+					
+					
 					usuario.setPoints(dtserver.loadUserPoints().getAvailablePoints());
 
+					
+					
+					
 					StockTicket stockticket = dtserver.loadStockTicket(detalleProducto.getNombre(), rq);
 					System.out.println("activosticket: " + stockticket.toString());
 					System.out.println("puntos canje: " + totalPuntos + "puntos disponibles: " + usuario.getPoints());
@@ -769,7 +710,6 @@ public class Routes {
 
 		ViewApp vi = new ViewApp(rq, apiUrl);
 
-
 		vi.addView("HEAD");
 		vi.addView("HEADER_CATEGORIAS");
 //		vi.addView("USER");
@@ -878,7 +818,6 @@ public class Routes {
 //		ModelAndView mav = new ModelAndView("user");
 		ViewApp vi = new ViewApp(rq, apiUrl);
 
-
 		vi.addView("HEAD");
 		vi.addView("INFORMATION");
 		vi.addView("FOOTER");
@@ -905,7 +844,6 @@ public class Routes {
 	public ModelAndView loginuser(@ModelAttribute("loginForm") LoginUser loginForm, HttpServletRequest rq) {
 //		ModelAndView mav = new ModelAndView("user");
 		ViewApp vi = new ViewApp(rq, apiUrl);
-
 
 		vi.addView("HEAD");
 //		vi.addView("INFORMATION");
@@ -947,7 +885,6 @@ public class Routes {
 		}
 
 		ViewApp vi = new ViewApp(rq, apiUrl);
-
 
 		vi.addView("HEAD");
 		vi.addView("INFORMATION");

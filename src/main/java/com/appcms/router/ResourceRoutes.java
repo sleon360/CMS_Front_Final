@@ -26,41 +26,38 @@ import com.appcms.entity.ResourceEntity;
 public class ResourceRoutes {
 
 	private String apiUrl;
-	
+
 	@Autowired
 	public ResourceRoutes(@Qualifier("apiUrl") String apiUrl) {
 		this.apiUrl = apiUrl;
 	}
-	
+
 	@GetMapping("/resource/{folder}/{resourceid:.+}")
-	public Object resource(@PathVariable("resourceid") String resourceid,@PathVariable("folder") String folder,HttpServletRequest request, HttpServletResponse response) {
+	public Object resource(@PathVariable("resourceid") String resourceid, @PathVariable("folder") String folder,
+			HttpServletRequest request, HttpServletResponse response) {
 		try {
-		
-		HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.set("Authorization", request.getSession().getAttribute("TOKENONE").toString());
-        MultiValueMap<String, String> xparam= new LinkedMultiValueMap<String, String>();
-        xparam.add("idresource", resourceid);
-        HttpEntity<?> httpEntity = new HttpEntity<Object>(xparam, headers);
-        RestTemplate restTemplate = new RestTemplate();
-			ResponseEntity<ResourceEntity> xresponse = restTemplate.postForEntity(
-					apiUrl + "/resource/"+folder+"/get", httpEntity, ResourceEntity.class);
-       
-        if(xresponse.getStatusCode()==HttpStatus.OK)
-        {
-		ResourceEntity rEntity=xresponse.getBody();
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(rEntity.getMime_resource()))
-                //.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + rEntity.getNombre_resource() + "\"")
-                .body(new ByteArrayResource(rEntity.getData()));
-        }
-        else
-        {
-        	request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
-            return new ModelAndView("redirect:/404");
-        }
-		}catch(Exception ex)
-		{
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+			headers.set("Authorization", request.getSession().getAttribute("TOKENONE").toString());
+			MultiValueMap<String, String> xparam = new LinkedMultiValueMap<String, String>();
+			xparam.add("idresource", resourceid);
+			HttpEntity<?> httpEntity = new HttpEntity<Object>(xparam, headers);
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseEntity<ResourceEntity> xresponse = restTemplate
+					.postForEntity(apiUrl + "/resource/" + folder + "/get", httpEntity, ResourceEntity.class);
+
+			if (xresponse.getStatusCode() == HttpStatus.OK) {
+				ResourceEntity rEntity = xresponse.getBody();
+				return ResponseEntity.ok().contentType(MediaType.parseMediaType(rEntity.getMime_resource()))
+						// .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +
+						// rEntity.getNombre_resource() + "\"")
+						.body(new ByteArrayResource(rEntity.getData()));
+			} else {
+				request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
+				return new ModelAndView("redirect:/404");
+			}
+		} catch (Exception ex) {
 			request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
 			return new ModelAndView("redirect:/404");
 		}

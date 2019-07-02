@@ -24,6 +24,27 @@ public class ProductoTipoLike {
 	public List<FormatoDetalle> direcciones = null;
 	String codigo;
 
+	int stock;
+	int canjeados;
+	
+	
+	
+	public int getStock() {
+		return stock;
+	}
+
+	public void setStock(int stock) {
+		this.stock = stock;
+	}
+
+	public int getCanjeados() {
+		return canjeados;
+	}
+
+	public void setCanjeados(int canjeados) {
+		this.canjeados = canjeados;
+	}
+	
 	public ProductoTipoLike() {
 		super();
 	}
@@ -56,6 +77,23 @@ public class ProductoTipoLike {
 	}
 
 
+	public ProductoTipoLike(int id, String nombre, String titulo, String subtitulo, String imagen,
+			String porcentajeInfo, String direccionTxt1, String direccionTxt2, String direccionTxt3, int like, int precio, int stock, int canjeados) { // CONSTRUCTOR TIPO 2
+		super();
+		this.id = id;
+		this.nombre = nombre;
+		this.titulo = titulo;
+		this.subtitulo = subtitulo;
+		this.imagen = imagen;
+		this.porcentajeInfo = porcentajeInfo;
+		this.direccionTxt1 = direccionTxt1;
+		this.direccionTxt2 = direccionTxt2;
+		this.direccionTxt3 = direccionTxt3;
+		this.like = like;
+		this.precio = precio;
+		this.stock = stock;
+		this.canjeados = canjeados;
+	}
 
 
 	public ProductoTipoLike(int id, String nombre, String titulo, String subtitulo, String imagen,
@@ -295,6 +333,17 @@ public class ProductoTipoLike {
 
 	public void setCodigo(String codigo) {
 		this.codigo = codigo;
+	}
+
+	@Override
+	public String toString() {
+		return "ProductoTipoLike [id=" + id + ", nombre=" + nombre + ", titulo=" + titulo + ", subtitulo=" + subtitulo
+				+ ", imagen=" + imagen + ", porcentajeInfo=" + porcentajeInfo + ", direccionTxt1=" + direccionTxt1
+				+ ", direccionTxt2=" + direccionTxt2 + ", direccionTxt3=" + direccionTxt3 + ", like=" + like
+				+ ", precio=" + precio + ", equiPesos=" + equiPesos + ", fecha_creacion=" + fecha_creacion
+				+ ", fecha_fin=" + fecha_fin + ", titulo_detalles=" + titulo_detalles + ", tutulo_direcciones="
+				+ tutulo_direcciones + ", detalles=" + detalles + ", direcciones=" + direcciones + ", codigo=" + codigo
+				+ ", stock=" + stock + ", canjeados=" + canjeados + "]";
 	}
 	
 

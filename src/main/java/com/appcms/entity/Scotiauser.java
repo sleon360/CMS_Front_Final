@@ -1,6 +1,8 @@
 
 package com.appcms.entity;
 
+import com.appcms.entity.points.Points;
+
 //import com.scotiajava.backendscotia.controller.Emudata;
 
 /**
@@ -10,7 +12,6 @@ public class Scotiauser {
 
 	/** Property id_cliente */
 	int id_cliente;
-	public int points;
 	/** Property firstname */
 	String firstname;
 
@@ -34,12 +35,13 @@ public class Scotiauser {
 
 	String tokenScotia;
 
+	int points;
+	
 	/**
 	 * Constructor
 	 */
 	public Scotiauser() {
 		this.id_cliente = 0;
-		this.points = this.getPints();
 	}
 
 	public Scotiauser(int id_cliente, String rut, String firstname, String lastname, String email, String id_grupo) {
@@ -50,7 +52,6 @@ public class Scotiauser {
 		this.lastname = lastname;
 		this.email = email;
 		this.id_grupo = id_grupo;
-		this.points = this.getPints();
 	}
 
 	public int getPints() {
@@ -192,13 +193,6 @@ public class Scotiauser {
 
 	public void setPoints(int points) {
 		this.points = points;
-	}
-
-	@Override
-	public String toString() {
-		return "Scotiauser [id_cliente=" + id_cliente + ", points=" + points + ", firstname=" + firstname
-				+ ", lastname=" + lastname + ", id_grupo=" + id_grupo + ", email=" + email + ", rut=" + rut
-				+ ", telephone=" + telephone + ", address_id=" + address_id + ", tokenScotia=" + tokenScotia + "]";
 	}
 
 }
