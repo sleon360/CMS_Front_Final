@@ -488,7 +488,7 @@ public class DataServer {
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
-		/*try {
+		try {
 			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/points",
 					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
 			Points points = pointsResponseEntity.getBody();
@@ -496,17 +496,16 @@ public class DataServer {
 					"al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints(),
 					points.getExpiringPointsDate(), movimientos);
 			return miCartola;
-		} catch (Exception e) {*/
+		} catch (Exception e) {
 			Points points = new Points();
-			points.setAvailablePoints(10000);
-//			points.setAvailablePoints(-1);
+			points.setAvailablePoints(-1);
 			points.setExpiringPoints(-1);
 			points.setExpiringPointsDate("N/A");
 			UserCartola miCartola = new UserCartola(scotiauser.getFirstname(), scotiauser.getLastname(),
 					"al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints(),
 					points.getExpiringPointsDate(), movimientos);
 			return miCartola;
-		//}
+		}
 	}
 
 	public Points loadUserPoints() {
