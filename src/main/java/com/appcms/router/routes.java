@@ -70,17 +70,17 @@ import com.google.gson.JsonParser;
 public class routes {
 
 	public final String csrf_token = "afxn123xnx360";
-	
+
 	private String apiUrl;
 
 	@Autowired
 	DataServer dtserver;
-	
+
 	@Autowired
 	public routes(@Qualifier("apiUrl") String apiUrl) {
 		this.apiUrl = apiUrl;
 	}
-	
+
 	@RequestMapping("/home")
 	public ModelAndView index(HttpServletRequest rq) {
 		ViewApp vi = new ViewApp(rq, apiUrl);
@@ -239,11 +239,9 @@ public class routes {
 		ModelAndView mav = new ModelAndView(vi.render());
 		mav.addObject("banners", dtserver.loadBannerAll(0, rq)); // Emudata.getBanners()
 		mav.addObject("banners_resp", dtserver.loadBannerAll(1, rq));
-		
-		
+
 		mav.addObject("descuentos_destacados", dtserver.loadscmenuinformationFomScmenu(10, rq));
-			
-		
+
 		this.setHeaderx(mav, rq);
 
 		return mav;
@@ -289,11 +287,10 @@ public class routes {
 			return new ModelAndView("redirect:/404");
 
 		}
-		
 
 		switch (scmenuurlsub.getTipo()) {
 		case 1: // information
-			System.out.println("Tipo 1:"+scmenuurlsub.getId()); // TIPO INFORMACION
+			System.out.println("Tipo 1:" + scmenuurlsub.getId()); // TIPO INFORMACION
 			scmenuurlsub.informationsubmenu = dtserver.loadInformatioSub(scmenuurlsub.getId(), rq);// Emudata.getInformatiotest();
 			break;
 		case 2:
@@ -307,7 +304,7 @@ public class routes {
 		case 4:
 			System.out.println("Tipo 4"); // TIPO PRODUCTO E-COMERCE
 			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId(), rq);// Emudata.getProductoseEcomerceTest();
-			System.out.println("prodconstock:"+scmenuurlsub.productosLikeLista.toString());
+			System.out.println("prodconstock:" + scmenuurlsub.productosLikeLista.toString());
 			break;
 		case 5:
 			System.out.println("Tipo 5"); // TIPO CANJE CON CATEGORIAS
@@ -590,14 +587,9 @@ public class routes {
 					int totalPuntos = detalleProducto.getPrecio() * producto.getCantidad();
 					java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
 					Scotiauser usuario = credentialUser.getScotiauser();
-					
-					
-					
+
 					usuario.setPoints(dtserver.loadUserPoints().getAvailablePoints());
 
-					
-					
-					
 					StockTicket stockticket = dtserver.loadStockTicket(detalleProducto.getNombre(), rq);
 					System.out.println("activosticket: " + stockticket.toString());
 					System.out.println("puntos canje: " + totalPuntos + "puntos disponibles: " + usuario.getPoints());
@@ -605,11 +597,11 @@ public class routes {
 
 					if (stockProducto < 1) {// sin stock
 						mav.addObject("canjeExito", false);
-						mav.addObject("error_code", 10);//Sin stock
+						mav.addObject("error_code", 10);// Sin stock
 
 					} else if (totalPuntos > usuario.getPoints()) {
 						mav.addObject("canjeExito", false);
-						mav.addObject("error_code", 11);//Puntos insuficientes
+						mav.addObject("error_code", 11);// Puntos insuficientes
 					} else {
 						CustomerReward movimientoActual = new CustomerReward(usuario.getId_cliente(),
 								producto.getIdProducto(), descipcionAbono, totalPuntos, date.toString(),
@@ -696,8 +688,8 @@ public class routes {
 	public ModelAndView menuUser(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu,
 			HttpServletRequest rq, @RequestHeader(value = "referer", required = false) final String referer)
 			throws UnsupportedEncodingException {
-//		ModelAndView mav = new ModelAndView("user");
-
+		System.out.println("Dentro de controlador");
+		
 		CredencialesEntity credentialUser = new CredencialesEntity();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
@@ -712,9 +704,7 @@ public class routes {
 
 		vi.addView("HEAD");
 		vi.addView("HEADER_CATEGORIAS");
-//		vi.addView("USER");
-
-//		ModelAndView mav = new ModelAndView(vi.render());
+		
 		ModelAndView mav = new ModelAndView(vi.render());
 
 		Scmenu scmenuurl = new Scmenu();

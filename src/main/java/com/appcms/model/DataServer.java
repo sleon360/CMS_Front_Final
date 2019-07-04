@@ -4,8 +4,11 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -476,38 +479,52 @@ public class DataServer {
 	}
 
 	public UserCartola loadUserCartola() {
-
-		List<UserCartolaMovimiento> movimientos = new ArrayList<>();
-		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "REDCOMPRA", "Abono", "+ $1.158", "$40.158"));
-		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "MASTERCARD NACIONAL PLATINIUM	", "Abono",
-				"+ $3.189", "$40.158"));
-		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "SCOTIACLUB GRANDES TIENDAS Y ZAPATERIAS	",
-				"Cargo", "- $11.330", "$40.158"));
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
 		Scotiauser scotiauser = credencialesEntity.getScotiauser();
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
+		
+		/* SE RECUPERAN LOS PUNTOS DE CLIENTE */
+		Points points = new Points();
+		SimpleDateFormat formatter = new SimpleDateFormat("'al' dd 'de' MMMM 'de' yyyy", new Locale("es_ES"));
+		Date date = new Date(System.currentTimeMillis());
+		String fechaActual = formatter.format(date);
 		try {
 			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/points",
 					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
-			Points points = pointsResponseEntity.getBody();
-			UserCartola miCartola = new UserCartola(scotiauser.getFirstname(), scotiauser.getLastname(),
-					"al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints().getPoints(),
-					points.getExpiringPoints().getExpirationDate(), movimientos);
-			return miCartola;
+			points = pointsResponseEntity.getBody();
 		} catch (Exception e) {
-			Points points = new Points();
 			points.setAvailablePoints(-1);
 			ExpiringPoints expiringPoints = new ExpiringPoints();
 			expiringPoints.setPoints(-1);
 			expiringPoints.setExpirationDate("N/A");
-			UserCartola miCartola = new UserCartola(scotiauser.getFirstname(), scotiauser.getLastname(),
-					"al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints().getPoints(),
-					points.getExpiringPoints().getExpirationDate(), movimientos);
-			return miCartola;
+			points.setExpiringPoints(expiringPoints);
 		}
+		
+		/* SE RECUPERAN LOS MOVIMIENTOS DE CLIENTE */
+		List<UserCartolaMovimiento> movimientos = new ArrayList<>();
+		try {
+			ResponseEntity<List<UserCartolaMovimiento>> movementsResponseEntity = restTemplate.exchange(apiUrl + "v1/customer/exchanges",
+					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), new ParameterizedTypeReference<List<UserCartolaMovimiento>>(){});
+			movimientos = movementsResponseEntity.getBody();
+		} catch (Exception e) {
+			movimientos.add(new UserCartolaMovimiento("1", "2019-05-01", "Canje de puntos a traves del portal", "+ $1.158", "99999"));
+			movimientos.add(new UserCartolaMovimiento("2", "2019-04-15", "MASTERCARD NACIONAL PLATINIUM", "+ $3.189", "99998"));
+			movimientos.add(new UserCartolaMovimiento("3", "2019-02-28", "SCOTIACLUB GRANDES TIENDAS Y ZAPATERIAS", "- $11.330", "99997"));
+			//movimientos.clear();
+		}
+		System.out.println("Movimientos: " + movimientos.toString());
+		UserCartola miCartola = new UserCartola();
+		miCartola.setNombre(scotiauser.getFirstname());
+		miCartola.setApellido(scotiauser.getLastname());
+		miCartola.setStrFecha(fechaActual);
+		miCartola.setPuntosDisponibles(points.getAvailablePoints());
+		miCartola.setPuntosPorVencer(points.getExpiringPoints().getPoints());
+		miCartola.setFechaVencimiento(points.getExpiringPoints().getExpirationDate());
+		miCartola.setMovimientos(movimientos);
+		return miCartola;
 	}
 
 	public Points loadUserPoints() {
