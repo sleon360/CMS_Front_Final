@@ -33,6 +33,7 @@ import com.appcms.entity.UserCartola;
 import com.appcms.entity.UserCartolaMovimiento;
 import com.appcms.entity.UserGusto;
 import com.appcms.entity.UserInscripcion;
+import com.appcms.entity.points.ExpiringPoints;
 import com.appcms.entity.points.Points;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
@@ -401,19 +402,20 @@ public class Emudata {
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
-		/*try {
+		try {
 			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/points", HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
 			Points points = pointsResponseEntity.getBody();
-			UserCartola miCartola = new UserCartola(scotiauser.getFirstname(), scotiauser.getLastname(), "al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints(), points.getExpiringPointsDate(), movimientos);				 
+			UserCartola miCartola = new UserCartola(scotiauser.getFirstname(), scotiauser.getLastname(), "al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints().getPoints(), points.getExpiringPoints().getExpirationDate(), movimientos);				 
 			return miCartola;
-		} catch(Exception e) {*/
+		} catch(Exception e) {
 			Points points = new Points();
 			points.setAvailablePoints(-1);
-			points.setExpiringPoints(-1);
-			points.setExpiringPointsDate("N/A");
-			UserCartola miCartola = new UserCartola(scotiauser.getFirstname(), scotiauser.getLastname(), "al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints(), points.getExpiringPointsDate(), movimientos);				 
+			ExpiringPoints expiringPoints = new ExpiringPoints();
+			expiringPoints.setPoints(-1);
+			expiringPoints.setExpirationDate("N/A");
+			UserCartola miCartola = new UserCartola(scotiauser.getFirstname(), scotiauser.getLastname(), "al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints().getPoints(), points.getExpiringPoints().getExpirationDate(), movimientos);				 
 			return miCartola;
-		//}
+		}
 		
 		
 				

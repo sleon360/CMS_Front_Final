@@ -38,6 +38,7 @@ import com.appcms.entity.StockTicket;
 import com.appcms.entity.UserCartola;
 import com.appcms.entity.UserCartolaMovimiento;
 import com.appcms.entity.UserCupon;
+import com.appcms.entity.points.ExpiringPoints;
 import com.appcms.entity.points.Points;
 import com.appcms.security.RestAuthentication;
 import com.google.gson.JsonArray;
@@ -493,17 +494,18 @@ public class DataServer {
 					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
 			Points points = pointsResponseEntity.getBody();
 			UserCartola miCartola = new UserCartola(scotiauser.getFirstname(), scotiauser.getLastname(),
-					"al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints(),
-					points.getExpiringPointsDate(), movimientos);
+					"al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints().getPoints(),
+					points.getExpiringPoints().getExpirationDate(), movimientos);
 			return miCartola;
 		} catch (Exception e) {
 			Points points = new Points();
 			points.setAvailablePoints(-1);
-			points.setExpiringPoints(-1);
-			points.setExpiringPointsDate("N/A");
+			ExpiringPoints expiringPoints = new ExpiringPoints();
+			expiringPoints.setPoints(-1);
+			expiringPoints.setExpirationDate("N/A");
 			UserCartola miCartola = new UserCartola(scotiauser.getFirstname(), scotiauser.getLastname(),
-					"al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints(),
-					points.getExpiringPointsDate(), movimientos);
+					"al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints().getPoints(),
+					points.getExpiringPoints().getExpirationDate(), movimientos);
 			return miCartola;
 		}
 	}
@@ -523,8 +525,10 @@ public class DataServer {
 		} catch (Exception e) {
 			Points points = new Points();
 			points.setAvailablePoints(-1);
-			points.setExpiringPoints(-1);
-			points.setExpiringPointsDate("N/A");
+			ExpiringPoints expiringPoints = new ExpiringPoints();
+			expiringPoints.setPoints(-1);
+			expiringPoints.setExpirationDate("N/A");
+			points.setExpiringPoints(expiringPoints);
 			return points;
 		}
 	}
