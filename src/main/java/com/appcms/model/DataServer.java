@@ -510,12 +510,8 @@ public class DataServer {
 					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), new ParameterizedTypeReference<List<UserCartolaMovimiento>>(){});
 			movimientos = movementsResponseEntity.getBody();
 		} catch (Exception e) {
-			movimientos.add(new UserCartolaMovimiento("1", "2019-05-01", "Canje de puntos a traves del portal", "+ $1.158", "99999"));
-			movimientos.add(new UserCartolaMovimiento("2", "2019-04-15", "MASTERCARD NACIONAL PLATINIUM", "+ $3.189", "99998"));
-			movimientos.add(new UserCartolaMovimiento("3", "2019-02-28", "SCOTIACLUB GRANDES TIENDAS Y ZAPATERIAS", "- $11.330", "99997"));
-			//movimientos.clear();
+			movimientos.clear();
 		}
-		System.out.println("Movimientos: " + movimientos.toString());
 		UserCartola miCartola = new UserCartola();
 		miCartola.setNombre(scotiauser.getFirstname());
 		miCartola.setApellido(scotiauser.getLastname());

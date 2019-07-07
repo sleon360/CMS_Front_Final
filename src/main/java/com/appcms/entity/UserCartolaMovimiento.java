@@ -4,32 +4,25 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserCartolaMovimiento {
 	
-	@JsonProperty("card_id")
-	String cardId;
-	
 	String date;
 	
 	String description;
 	
-	String id;
+	String type;
 	
-	@JsonProperty("available_points")
-	String availablePoints;
-
-	public UserCartolaMovimiento(String cardId, String date, String description, String id, String availablePoints) {
-		this.cardId = cardId;
+	@JsonProperty("card_id")
+	String cardId;
+	
+	int points;
+	
+	int pointsBalance;
+	
+	public UserCartolaMovimiento(String date, String description, String type, int points, int pointsBalance) {
 		this.date = date;
 		this.description = description;
-		this.id = id;
-		this.availablePoints = availablePoints;
-	}
-
-	public String getCardId() {
-		return cardId;
-	}
-
-	public void setCardId(String cardId) {
-		this.cardId = cardId;
+		this.type = type;
+		this.points = points;
+		this.pointsBalance = pointsBalance;
 	}
 
 	public String getDate() {
@@ -48,20 +41,36 @@ public class UserCartolaMovimiento {
 		this.description = description;
 	}
 
-	public String getId() {
-		return id;
+	public String getType() {
+		return type;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setType(String type) {
+		this.type = type;
 	}
 
-	public String getAvailablePoints() {
-		return availablePoints;
+	public String getCardId() {
+		return cardId;
 	}
 
-	public void setAvailablePoints(String availablePoints) {
-		this.availablePoints = availablePoints;
+	public void setCardId(String cardId) {
+		this.cardId = cardId;
+	}
+
+	public int getPoints() {
+		return points;
+	}
+
+	public void setPoints(int points) {
+		this.points = points;
+	}
+
+	public int getPointsBalance() {
+		return pointsBalance;
+	}
+
+	public void setPointsBalance(int pointsBalance) {
+		this.pointsBalance = pointsBalance;
 	}
 
 }
