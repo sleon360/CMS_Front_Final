@@ -512,6 +512,7 @@ public class DataServer {
 			expiringPoints.setPoints(-1);
 			expiringPoints.setExpirationDate("N/A");
 			points.setExpiringPoints(expiringPoints);
+			points.setRegisteredPoints(-1);
 		}
 
 		/* SE RECUPERAN LOS MOVIMIENTOS DE CLIENTE */
@@ -532,6 +533,7 @@ public class DataServer {
 		miCartola.setPuntosDisponibles(points.getAvailablePoints());
 		miCartola.setPuntosPorVencer(points.getExpiringPoints().getPoints());
 		miCartola.setFechaVencimiento(points.getExpiringPoints().getExpirationDate());
+		miCartola.setPuntosInscritos(points.getRegisteredPoints());
 		miCartola.setMovimientos(movimientos);
 		return miCartola;
 	}

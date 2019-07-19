@@ -10,6 +10,7 @@ public class UserCartola {
 	int puntosDisponibles;
 	int puntosPorVencer;
 	String fechaVencimiento;
+	int puntosInscritos;
 	public List<UserCartolaMovimiento> movimientos = new ArrayList<>();
 	
 	public UserCartola() {
@@ -74,6 +75,14 @@ public class UserCartola {
 
 	public void setFechaVencimiento(String fechaVencimiento) {
 		this.fechaVencimiento = fechaVencimiento;
+	}
+	
+	public int getPuntosInscritos() {
+		return puntosInscritos;
+	}
+
+	public void setPuntosInscritos(int puntosInscritos) {
+		this.puntosInscritos = puntosInscritos;
 	}
 
 	public List<UserCartolaMovimiento> getMovimientos() {

@@ -11,7 +11,7 @@ public class Points {
 	private ExpiringPoints expiringPoints;
 	
 	@JsonProperty("registered_points")
-	private ExpiringPoints registeredPoints;
+	private int registeredPoints;
 
 	public int getAvailablePoints() {
 		return availablePoints;
@@ -29,11 +29,11 @@ public class Points {
 		this.expiringPoints = expiringPoints;
 	}
 
-	public ExpiringPoints getRegisteredPoints() {
+	public int getRegisteredPoints() {
 		return registeredPoints;
 	}
 
-	public void setRegisteredPoints(ExpiringPoints registeredPoints) {
+	public void setRegisteredPoints(int registeredPoints) {
 		this.registeredPoints = registeredPoints;
 	}
 
