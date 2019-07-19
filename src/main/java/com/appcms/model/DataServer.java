@@ -499,9 +499,11 @@ public class DataServer {
 
 		/* SE RECUPERAN LOS PUNTOS DE CLIENTE */
 		Points points = new Points();
-		SimpleDateFormat formatter = new SimpleDateFormat("'al' dd 'de' MMMM 'de' yyyy", new Locale("es_ES"));
+		SimpleDateFormat formatter = new SimpleDateFormat("'al' dd 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
 		Date date = new Date(System.currentTimeMillis());
+		
 		String fechaActual = formatter.format(date);
+		System.out.println(fechaActual);
 		try {
 			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/points",
 					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
