@@ -59,14 +59,28 @@ public class DataServer {
 		this.apiUrl = apiUrl;
 	}
 
-	@Cacheable(cacheNames = "menu")
-	public List<Scmenu> loadScmenu(HttpServletRequest rq) {
-
+	public Scmenu loadScmenuByName(HttpServletRequest rq, String scmenuName) {
 		HttpHeaders headers = new HttpHeaders();
-//		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
+		RestTemplate restTemplate = new RestTemplate();
 
-		RestAuthentication xrestAuthentication = new RestAuthentication();
-//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
+		String url = apiUrl + "/get/scmenuByName/" + scmenuName;
+
+		ResponseEntity<Scmenu> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+				new ParameterizedTypeReference<Scmenu>() {
+				});
+		if (xresponse.getStatusCodeValue() == 200) {
+			return xresponse.getBody();
+		} else {
+			return null;
+		}
+
+	}
+	
+	@Cacheable(cacheNames = "menu")
+	public List<Scmenu> loadAllScmenu(HttpServletRequest rq) {
+		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
@@ -76,9 +90,6 @@ public class DataServer {
 		ResponseEntity<List<Scmenu>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 				new ParameterizedTypeReference<List<Scmenu>>() {
 				});
-
-//        System.out.println("requestxn: "+xresponse.getBody());   
-
 		if (xresponse.getStatusCodeValue() == 200) {
 			return xresponse.getBody();
 		} else {
@@ -268,7 +279,7 @@ public class DataServer {
 		RestTemplate restTemplate = new RestTemplate();
 
 		String url = apiUrl + "/get/productoCategoriaConProductos/" + categoria + "/" + idsubmenu;
-
+		System.out.println("URL para obtener categorias con productos: " + url);
 		ResponseEntity<List<ProductoCategoria>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 				new ParameterizedTypeReference<List<ProductoCategoria>>() {
 				});
@@ -294,7 +305,7 @@ public class DataServer {
 		RestTemplate restTemplate = new RestTemplate();
 
 		String url = apiUrl + "/get/bannerAll/" + responsive;
-		System.out.println(url);
+		System.out.println("Banners: " + url);
 
 		ResponseEntity<List<Banner>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 				new ParameterizedTypeReference<List<Banner>>() {
@@ -419,7 +430,7 @@ public class DataServer {
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = apiUrl + "/get/ProductoById/" + idProd;
+		String url = apiUrl + "/producto/get/" + idProd;
 
 //			ResponseEntity<List<ProductoTipoLike>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 //					new ParameterizedTypeReference<List<ProductoTipoLike>>() {
@@ -485,7 +496,7 @@ public class DataServer {
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
-		
+
 		/* SE RECUPERAN LOS PUNTOS DE CLIENTE */
 		Points points = new Points();
 		SimpleDateFormat formatter = new SimpleDateFormat("'al' dd 'de' MMMM 'de' yyyy", new Locale("es_ES"));
@@ -502,12 +513,14 @@ public class DataServer {
 			expiringPoints.setExpirationDate("N/A");
 			points.setExpiringPoints(expiringPoints);
 		}
-		
+
 		/* SE RECUPERAN LOS MOVIMIENTOS DE CLIENTE */
 		List<UserCartolaMovimiento> movimientos = new ArrayList<>();
 		try {
-			ResponseEntity<List<UserCartolaMovimiento>> movementsResponseEntity = restTemplate.exchange(apiUrl + "v1/customer/exchanges",
-					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), new ParameterizedTypeReference<List<UserCartolaMovimiento>>(){});
+			ResponseEntity<List<UserCartolaMovimiento>> movementsResponseEntity = restTemplate.exchange(
+					apiUrl + "v1/customer/exchanges", HttpMethod.GET, new HttpEntity<Object>(httpHeaders),
+					new ParameterizedTypeReference<List<UserCartolaMovimiento>>() {
+					});
 			movimientos = movementsResponseEntity.getBody();
 		} catch (Exception e) {
 			movimientos.clear();
@@ -544,30 +557,6 @@ public class DataServer {
 			points.setExpiringPoints(expiringPoints);
 			return points;
 		}
-	}
-
-	public String loadIdUserByRut(String rut, HttpServletRequest rq) {
-
-		HttpHeaders headers = new HttpHeaders();
-
-		RestAuthentication xrestAuthentication = new RestAuthentication();
-//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
-		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
-		RestTemplate restTemplate = new RestTemplate();
-
-		String url = apiUrl + "/get/userid/" + rut;
-
-		ResponseEntity<String> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
-
-		System.out.println("requestxn: " + xresponse.getBody());
-
-		if (xresponse.getStatusCodeValue() == 200) {
-			return xresponse.getBody();
-		} else {
-			return null;
-		}
-
 	}
 
 	public List<UserCupon> loadCupones(int idUser, HttpServletRequest rq) {

@@ -218,4 +218,16 @@ public class Scsubmenu {
 		this.visibleOnlyLogin = visibleOnlyLogin;
 	}
 
+	@Override
+	public String toString() {
+		return "Scsubmenu [id=" + id + ", nombre=" + nombre + ", strIndex=" + strIndex + ", link=" + link + ", color="
+				+ color + ", color_hover=" + color_hover + ", color_borde=" + color_borde + ", tipo=" + tipo
+				+ ", icono=" + icono + ", imagen=" + imagen + ", titulo_descripcion=" + titulo_descripcion
+				+ ", descripcion=" + descripcion + ", fecha_creacion=" + fecha_creacion + ", fecha_modificacion="
+				+ fecha_modificacion + ", estado=" + estado + ", informationsubmenu=" + informationsubmenu
+				+ ", productosLikeLista=" + productosLikeLista + ", categoriaProductoLista=" + categoriaProductoLista
+				+ ", TarjetaClienteLista=" + TarjetaClienteLista + ", informationHtml=" + informationHtml
+				+ ", visibleTop=" + visibleTop + ", visibleOnlyLogin=" + visibleOnlyLogin + "]";
+	}
+
 }

@@ -313,7 +313,7 @@ public class Emudata {
 			{ 
 				if(catesel.getStrIndex().equalsIgnoreCase(strIndexCategoria) ) {			
 					
-					catesel.productosList = Emudata.getProductoseEcomerceTest();
+					catesel.productos = Emudata.getProductoseEcomerceTest();
 					
 					catelistResult.add(catesel); // se encuentra la categoria y se inserta					
 					

@@ -2,6 +2,8 @@ package com.appcms.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ProductoTipoLike {
 
 	int id;
@@ -9,13 +11,14 @@ public class ProductoTipoLike {
 	String titulo;
 	String subtitulo;
 	String imagen;
+	@JsonProperty("porcentaje_info")
 	String porcentajeInfo;
 	String direccionTxt1;
 	String direccionTxt2;
 	String direccionTxt3;
 	int like;
 	int precio;
-	int equiPesos;
+	int equipesos;
 	String fecha_creacion;
 	String fecha_fin;
 	String titulo_detalles;
@@ -54,7 +57,7 @@ public class ProductoTipoLike {
 
 	public ProductoTipoLike(int id, String nombre, String titulo, String subtitulo, String imagen,
 			String porcentajeInfo, String direccionTxt1, String direccionTxt2, String direccionTxt3, int like,
-			int precio, int equiPesos, String fecha_creacion, String fecha_fin, String titulo_detalles,
+			int precio, int equipesos, String fecha_creacion, String fecha_fin, String titulo_detalles,
 			String tutulo_direcciones, String codigo) {
 		super();
 		this.id = id;
@@ -68,7 +71,7 @@ public class ProductoTipoLike {
 		this.direccionTxt3 = direccionTxt3;
 		this.like = like;
 		this.precio = precio;
-		this.equiPesos = equiPesos;
+		this.equipesos = equipesos;
 		this.fecha_creacion = fecha_creacion;
 		this.fecha_fin = fecha_fin;
 		this.titulo_detalles = titulo_detalles;
@@ -167,7 +170,7 @@ public class ProductoTipoLike {
 
 
 	public ProductoTipoLike(int id, String nombre, String titulo, String subtitulo, String imagen,
-			String porcentajeInfo, int precio, int equiPesos, String titulo_detalles, String tutulo_direcciones,List<FormatoDetalle> detalles,List<FormatoDetalle> direcciones) {
+			String porcentajeInfo, int precio, int equipesos, String titulo_detalles, String tutulo_direcciones,List<FormatoDetalle> detalles,List<FormatoDetalle> direcciones) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
@@ -176,7 +179,7 @@ public class ProductoTipoLike {
 		this.imagen = imagen;
 		this.porcentajeInfo = porcentajeInfo;
 		this.precio = precio;
-		this.equiPesos = equiPesos;
+		this.equipesos = equipesos;
 		this.titulo_detalles = titulo_detalles;
 		this.tutulo_direcciones = tutulo_direcciones;
 		this.detalles = detalles;
@@ -303,12 +306,12 @@ public class ProductoTipoLike {
 		this.tutulo_direcciones = tutulo_direcciones;
 	}
 
-	public int getEquiPesos() {
-		return equiPesos;
+	public int getEquipesos() {
+		return equipesos;
 	}
 
-	public void setEquiPesos(int equiPesos) {
-		this.equiPesos = equiPesos;
+	public void setEquipesos(int equipesos) {
+		this.equipesos = equipesos;
 	}
 
 	public List<FormatoDetalle> getDetalles() {
@@ -340,7 +343,7 @@ public class ProductoTipoLike {
 		return "ProductoTipoLike [id=" + id + ", nombre=" + nombre + ", titulo=" + titulo + ", subtitulo=" + subtitulo
 				+ ", imagen=" + imagen + ", porcentajeInfo=" + porcentajeInfo + ", direccionTxt1=" + direccionTxt1
 				+ ", direccionTxt2=" + direccionTxt2 + ", direccionTxt3=" + direccionTxt3 + ", like=" + like
-				+ ", precio=" + precio + ", equiPesos=" + equiPesos + ", fecha_creacion=" + fecha_creacion
+				+ ", precio=" + precio + ", equiPesos=" + equipesos + ", fecha_creacion=" + fecha_creacion
 				+ ", fecha_fin=" + fecha_fin + ", titulo_detalles=" + titulo_detalles + ", tutulo_direcciones="
 				+ tutulo_direcciones + ", detalles=" + detalles + ", direcciones=" + direcciones + ", codigo=" + codigo
 				+ ", stock=" + stock + ", canjeados=" + canjeados + "]";

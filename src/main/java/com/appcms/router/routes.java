@@ -81,20 +81,8 @@ public class routes {
 		this.apiUrl = apiUrl;
 	}
 
-	@RequestMapping("/home")
-	public ModelAndView index(HttpServletRequest rq) {
-		ViewApp vi = new ViewApp(rq, apiUrl);
-		vi.addView("head");
-		vi.addView("home");
-		vi.addView("footer");
-
-		ModelAndView mav = new ModelAndView(vi.render());
-		this.setHeaderx(mav, rq);
-		return mav;
-	}
-
 	public void setHeaderx(ModelAndView mav, HttpServletRequest rq) {
-		mav.addObject("menuesHeader", dtserver.loadScmenu(rq));
+		mav.addObject("menuesHeader", dtserver.loadAllScmenu(rq));
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
 		System.out.println("esta login: " + resolver.isAnonymous(auth));
@@ -232,10 +220,8 @@ public class routes {
 		// return new ModelAndView("redirect:/home");
 		ViewApp vi = new ViewApp(rq, apiUrl);
 		vi.addView("head");
-		// vi.addView("home");
 		vi.addView("index");
 		vi.addView("footer");
-
 		ModelAndView mav = new ModelAndView(vi.render());
 		mav.addObject("banners", dtserver.loadBannerAll(0, rq)); // Emudata.getBanners()
 		mav.addObject("banners_resp", dtserver.loadBannerAll(1, rq));
@@ -252,24 +238,13 @@ public class routes {
 			HttpServletRequest rq) throws UnsupportedEncodingException {
 		// ModelAndView mav = new ModelAndView("categorias");
 		ViewApp vi = new ViewApp(rq, apiUrl);
-
-		Scmenu scmenuurl = new Scmenu();
+		
+		Scmenu scmenu = dtserver.loadScmenuByName(rq, menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 
-		List<Scmenu> categiriasmenu = new ArrayList<>();
-		categiriasmenu = dtserver.loadScmenu(rq);// Emudata.getmenuCategorias();
-
-		for (Scmenu menusel : categiriasmenu) // buscamos el menu que seleccionó
-		{
-			if (menusel.getStrIndex().equalsIgnoreCase(menu)) {
-				scmenuurl = menusel;
-				break;
-			}
-		}
-
 		try {
-			if (scmenuurl != null) {
-				for (Scsubmenu scmenuurlsubtemp : scmenuurl.getSubmenues()) // buscamos el submenu que seleccionó
+			if (scmenu != null) {
+				for (Scsubmenu scmenuurlsubtemp : scmenu.getSubmenues()) // buscamos el submenu que seleccionó
 				{
 					if (scmenuurlsubtemp.getStrIndex().equalsIgnoreCase(submenu)) {
 						scmenuurlsub = scmenuurlsubtemp;
@@ -294,7 +269,7 @@ public class routes {
 			scmenuurlsub.informationsubmenu = dtserver.loadInformatioSub(scmenuurlsub.getId(), rq);// Emudata.getInformatiotest();
 			break;
 		case 2:
-			System.out.println("Tipo 2"); // TIPO PRODUCTO CON LIKE
+			System.out.println("Tipo 2:" + scmenuurlsub.getId()); // TIPO PRODUCTO CON LIKE
 			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId(), rq);// Emudata.getProductosLikeTest();
 			break;
 		case 3:
@@ -334,7 +309,7 @@ public class routes {
 		vi.addView("footer");
 
 		ModelAndView mav = new ModelAndView(vi.render());
-		mav.addObject("menuurl", scmenuurl);
+		mav.addObject("menuurl", scmenu);
 		mav.addObject("submenuurl", scmenuurlsub);
 
 		this.setHeaderx(mav, rq);
@@ -355,22 +330,13 @@ public class routes {
 		vi.addView("footer");
 		ModelAndView mav = new ModelAndView(vi.render());
 
-		Scmenu scmenuurl = new Scmenu();
+		
+		Scmenu scmenu = dtserver.loadScmenuByName(rq, menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 
-		List<Scmenu> categiriasmenu = new ArrayList<>();
-		categiriasmenu = dtserver.loadScmenu(rq);// Emudata.getmenuCategorias();
-
-		for (Scmenu menusel : categiriasmenu) // buscamos el menu que seleccionó
-		{
-			if (menusel.getStrIndex().equalsIgnoreCase(menu)) {
-				scmenuurl = menusel;
-				break;
-			}
-		}
 		try {
-			if (scmenuurl != null) {
-				for (Scsubmenu scmenuurlsubtemp : scmenuurl.getSubmenues()) // buscamos el submenu que seleccionó
+			if (scmenu != null) {
+				for (Scsubmenu scmenuurlsubtemp : scmenu.getSubmenues()) // buscamos el submenu que seleccionó
 				{
 					if (scmenuurlsubtemp.getStrIndex().equalsIgnoreCase(submenu)) {
 						scmenuurlsub = scmenuurlsubtemp;
@@ -395,6 +361,7 @@ public class routes {
 			System.out.println("Tipo 5"); // TIPO CANJE CON CATEGORIAS
 			scmenuurlsub.categoriaProductoLista = dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(),
 					categoria, rq);// Emudata.getCateProductosFromCategoria(categoria);
+			System.out.println("Lista de productos de categoria: " + scmenuurlsub.categoriaProductoLista.toString());
 			mav.addObject("verProductosCategoria", true);
 			break;
 
@@ -425,7 +392,7 @@ public class routes {
 //		mav.addObject("csrf_token", csrf_token);
 //		this.setHeaderx(mav,rq);
 
-		mav.addObject("menuurl", scmenuurl);
+		mav.addObject("menuurl", scmenu);
 		mav.addObject("submenuurl", scmenuurlsub);
 		mav.addObject("csrf_token", csrf_token);
 
@@ -446,22 +413,12 @@ public class routes {
 		vi.addView("FOOTER");
 		ModelAndView mav = new ModelAndView(vi.render());
 
-		Scmenu scmenuurl = new Scmenu();
+		Scmenu scmenu = dtserver.loadScmenuByName(rq, menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
-
-		List<Scmenu> categiriasmenu = new ArrayList<>();
-		categiriasmenu = dtserver.loadScmenu(rq);// Emudata.getmenuCategorias();
-
-		for (Scmenu menusel : categiriasmenu) // buscamos el menu que seleccionó
-		{
-			if (menusel.getStrIndex().equalsIgnoreCase(menu)) {
-				scmenuurl = menusel;
-				break;
-			}
-		}
+		
 		try {
-			if (scmenuurl != null) {
-				for (Scsubmenu scmenuurlsubtemp : scmenuurl.getSubmenues()) // buscamos el submenu que seleccionó
+			if (scmenu != null) {
+				for (Scsubmenu scmenuurlsubtemp : scmenu.getSubmenues()) // buscamos el submenu que seleccionó
 				{
 					if (scmenuurlsubtemp.getStrIndex().equalsIgnoreCase(submenu)) {
 						scmenuurlsub = scmenuurlsubtemp;
@@ -485,7 +442,7 @@ public class routes {
 //		mav.addObject("csrf_token", csrf_token);
 //		mav.addObject("menuurl", scmenuurl);
 //		mav.addObject("submenuurl", scmenuurlsub);
-		mav.addObject("menuurl", scmenuurl);
+		mav.addObject("menuurl", scmenu);
 		mav.addObject("submenuurl", scmenuurlsub);
 		mav.addObject("csrf_token", csrf_token);
 
@@ -521,22 +478,12 @@ public class routes {
 		vi.addView("FOOTER");
 		ModelAndView mav = new ModelAndView(vi.render());
 
-		Scmenu scmenuurl = new Scmenu();
+		Scmenu scmenu = dtserver.loadScmenuByName(rq, menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
-
-		List<Scmenu> categiriasmenu = new ArrayList<>();
-		categiriasmenu = dtserver.loadScmenu(rq);// Emudata.getmenuCategorias();
-
-		for (Scmenu menusel : categiriasmenu) // buscamos el menu que seleccionó
-		{
-			if (menusel.getStrIndex().equalsIgnoreCase(menu)) {
-				scmenuurl = menusel;
-				break;
-			}
-		}
+		
 		try {
-			if (scmenuurl != null) {
-				for (Scsubmenu scmenuurlsubtemp : scmenuurl.getSubmenues()) // buscamos el submenu que seleccionó
+			if (scmenu != null) {
+				for (Scsubmenu scmenuurlsubtemp : scmenu.getSubmenues()) // buscamos el submenu que seleccionó
 				{
 					if (scmenuurlsubtemp.getStrIndex().equalsIgnoreCase(submenu)) {
 						scmenuurlsub = scmenuurlsubtemp;
@@ -675,7 +622,7 @@ public class routes {
 			return new ModelAndView("redirect:/404");
 
 		}
-		mav.addObject("menuurl", scmenuurl);
+		mav.addObject("menuurl", scmenu);
 		mav.addObject("submenuurl", scmenuurlsub);
 		mav.addObject("csrf_token", csrf_token);
 
@@ -707,22 +654,12 @@ public class routes {
 		
 		ModelAndView mav = new ModelAndView(vi.render());
 
-		Scmenu scmenuurl = new Scmenu();
+		Scmenu scmenu = dtserver.loadScmenuByName(rq, menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
-
-		List<Scmenu> categiriasmenu = new ArrayList<>();
-		categiriasmenu = dtserver.loadScmenu(rq);// Emudata.getmenuCategorias();
-
-		for (Scmenu menusel : categiriasmenu) // buscamos el menu que seleccionó
-		{
-			if (menusel.getStrIndex().equalsIgnoreCase(menu)) {
-				scmenuurl = menusel;
-				break;
-			}
-		}
+		
 		try {
-			if (scmenuurl != null) {
-				for (Scsubmenu scmenuurlsubtemp : scmenuurl.getSubmenues()) // buscamos el submenu que seleccionó
+			if (scmenu != null) {
+				for (Scsubmenu scmenuurlsubtemp : scmenu.getSubmenues()) // buscamos el submenu que seleccionó
 				{
 					if (scmenuurlsubtemp.getStrIndex().equalsIgnoreCase(submenu)) {
 						scmenuurlsub = scmenuurlsubtemp;
@@ -793,7 +730,7 @@ public class routes {
 //
 //		return mav;
 
-		mav.addObject("menuurl", scmenuurl);
+		mav.addObject("menuurl", scmenu);
 		mav.addObject("submenuurl", scmenuurlsub);
 
 		this.setHeaderx(mav, rq);
