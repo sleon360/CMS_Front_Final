@@ -495,6 +495,7 @@ public class DataServer {
 		Scotiauser scotiauser = credencialesEntity.getScotiauser();
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("Authorization", "Bearer " + credencialesEntity.getTOKENONE());
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
 
 		/* SE RECUPERAN LOS PUNTOS DE CLIENTE */
@@ -505,10 +506,12 @@ public class DataServer {
 		String fechaActual = formatter.format(date);
 		System.out.println(fechaActual);
 		try {
+			System.out.println("Consultando puntos a la URL " + apiUrl + "/v1/customer/points");
 			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/points",
 					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
 			points = pointsResponseEntity.getBody();
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 			points.setAvailablePoints(-1);
 			ExpiringPoints expiringPoints = new ExpiringPoints();
 			expiringPoints.setPoints(-1);
@@ -521,7 +524,7 @@ public class DataServer {
 		List<UserCartolaMovimiento> movimientos = new ArrayList<>();
 		try {
 			ResponseEntity<List<UserCartolaMovimiento>> movementsResponseEntity = restTemplate.exchange(
-					apiUrl + "v1/customer/exchanges", HttpMethod.GET, new HttpEntity<Object>(httpHeaders),
+					apiUrl + "/v1/customer/exchanges", HttpMethod.GET, new HttpEntity<Object>(httpHeaders),
 					new ParameterizedTypeReference<List<UserCartolaMovimiento>>() {
 					});
 			movimientos = movementsResponseEntity.getBody();
