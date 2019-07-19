@@ -15,6 +15,7 @@ public class UserCartolaMovimiento {
 	
 	int points;
 	
+	@JsonProperty("points_balance")
 	int pointsBalance;
 	
 	public UserCartolaMovimiento(String date, String description, String type, int points, int pointsBalance) {
