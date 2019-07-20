@@ -39,15 +39,11 @@ public class ResourceRoutes {
 
 			HttpHeaders headers = new HttpHeaders();
 			headers.set("Authorization", request.getSession().getAttribute("TOKENONE").toString());
-
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(apiUrl + "/resource/" + folder + "/get")
-			        .queryParam("name", resourceName);
 			
 			HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 			RestTemplate restTemplate = new RestTemplate();
 			ResponseEntity<ResourceEntity> xresponse = restTemplate
-					.exchange(builder.toUriString(), HttpMethod.GET, httpEntity, ResourceEntity.class);
-
+					.exchange(apiUrl + "/resource/" + folder + "/get?name={name}", HttpMethod.GET, httpEntity, ResourceEntity.class, resourceName);
 			if (xresponse.getStatusCode() == HttpStatus.OK) {
 				ResourceEntity rEntity = xresponse.getBody();
 				return ResponseEntity.ok().contentType(MediaType.parseMediaType(rEntity.getMime_resource()))

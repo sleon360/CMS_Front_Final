@@ -1,8 +1,10 @@
 package com.appcms.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ResourceEntity {
 
-
+	@JsonProperty("id_resource")
 	private String id;
 	private String nombre_resource;
 	private String mime_resource;
