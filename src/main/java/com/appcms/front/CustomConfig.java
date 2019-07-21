@@ -1,7 +1,5 @@
 package com.appcms.front;
 
-import java.sql.SQLException;
-
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -11,16 +9,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
-import org.thymeleaf.spring5.SpringTemplateEngine;
-import org.thymeleaf.spring5.view.ThymeleafViewResolver;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.thymeleaf.templateresolver.StringTemplateResolver;
 import org.thymeleaf.dialect.IDialect;
+import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
+import org.thymeleaf.spring4.SpringTemplateEngine;
+import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 
 @Configuration
 @EnableWebMvc
-public class CustomConfig implements WebMvcConfigurer {
+public class CustomConfig extends WebMvcConfigurerAdapter {
 
 	@Bean
 	public ViewResolver viewResolver() {
@@ -55,7 +53,7 @@ public class CustomConfig implements WebMvcConfigurer {
 	}
 	
 	@Bean(name = "apiUrl")
-    public String getApiUrl() throws NamingException, SQLException {
+    public String getApiUrl() throws NamingException {
 		Context ctx = new InitialContext();
 		String apiUrl = (String) ctx.lookup("apiUrl");
 		return apiUrl;

@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.thymeleaf.dialect.AbstractProcessorDialect;
-import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
 import org.thymeleaf.processor.IProcessor;
 
 public class LoadViewProcesor extends AbstractProcessorDialect {
