@@ -66,7 +66,7 @@ import com.google.gson.JsonParser;
 
 @Controller
 public class routes {
-
+///
 	public final String csrf_token = "afxn123xnx360";
 
 	@RequestMapping("/home")
@@ -466,8 +466,8 @@ public class routes {
 											// CATEGORIAPRODUCTOS ASOCIADA
 		case 5:
 			System.out.println("Tipo 5"); // TIPO CANJE CON CATEGORIAS
-			scmenuurlsub.categoriaProductoLista = dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(),
-					categoria);// Emudata.getCateProductosFromCategoria(categoria);
+			scmenuurlsub.categoriaProductoLista = dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(), categoria);// Emudata.getCateProductosFromCategoria(categoria);
+			System.out.println("tostrresult: "+scmenuurlsub.categoriaProductoLista.get(0).productos.toString());
 			mav.addObject("verProductosCategoria", true);
 			break;
 
@@ -660,15 +660,19 @@ public class routes {
 //					return new ModelAndView("redirect:/");
 				} else {
 
+					//DESCRIPCION DEL CANJE
 					String descipcionAbono = "Canje: " + detalleProducto.getTitulo();
-					int totalPuntos = detalleProducto.getPrecio() * producto.getCantidad();
 					java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+					
+					//SETEO DE PUNTOS
+					int totalPuntos = detalleProducto.getPrecio() * producto.getCantidad();
 					Scotiauser usuario = credentialUser.getScotiauser();
 					usuario.setPoints(dtserver.loadUserPoints().getAvailablePoints());
 
+					//SET STOCK DE PRODUCTO
 					StockTicket stockticket = dtserver.loadStockTicket(detalleProducto.getNombre());
-					System.out.println("activosticket: " + stockticket.toString());
-					System.out.println("puntos canje: " + totalPuntos + "puntos disponibles: " + usuario.getPoints());
+//					System.out.println("activosticket: " + stockticket.toString());
+//					System.out.println("puntos canje: " + totalPuntos + "puntos disponibles: " + usuario.getPoints());
 					int stockProducto = stockticket.getActivo();
 
 					if (stockProducto < 1) {// sin stock
@@ -760,6 +764,59 @@ public class routes {
 		return mav;
 	}
 
+	
+	
+	@PostMapping("/categoria/canje")
+	public ModelAndView canjeDirecto(@ModelAttribute("producto") CanjeProducto producto, HttpServletRequest rq,
+			@RequestHeader(value = "referer", required = false) final String referer)
+			throws NamingException, ErrorControllerExection {
+		// ModelAndView mav = new ModelAndView("canjes");
+
+		producto.setCantidad(1);
+
+		CredencialesEntity credentialUser = new CredencialesEntity();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
+//		if (!resolver.isAnonymous(auth)) {
+//			credentialUser = (CredencialesEntity) auth.getPrincipal();
+//		} else {
+//			System.out.println("User no login");
+//			return new ModelAndView("redirect:" + referer + "?login");
+//		}
+
+		ViewApp vi = new ViewApp(rq);
+//		if(true) return new ModelAndView("redirect:/404");
+		DataServer dtserver = new DataServer(rq);
+
+		vi.addView("HEAD");
+		vi.addView("CANJEDIRECTO");
+		vi.addView("FOOTER");
+		ModelAndView mav = new ModelAndView(vi.render());
+
+		Scmenu scmenuurl = new Scmenu();
+		Scsubmenu scmenuurlsub = new Scsubmenu();
+
+		List<Scmenu> categiriasmenu = new ArrayList<>();
+		categiriasmenu = dtserver.loadScmenu();// Emudata.getmenuCategorias();
+
+
+		
+		System.out.println(producto.toString());
+		
+		
+
+		mav.addObject("menuurl", scmenuurl);
+		mav.addObject("submenuurl", scmenuurlsub);
+
+		this.setHeaderx(mav, rq);
+
+		return mav;
+	}
+	
+	
+	
+	
+	
 	@GetMapping("/user/{menu}/{submenu}")
 	public ModelAndView menuUser(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu,
 			HttpServletRequest rq, @RequestHeader(value = "referer", required = false) final String referer)
@@ -1032,6 +1089,11 @@ public class routes {
 				.body(new ByteArrayResource(response));
 
 //	    return new FileSystemResource("https://www.soundczech.cz/temp/lorem-ipsum.pdf"); 
+		
+		
+		
+		
+		
 
 	}
 
