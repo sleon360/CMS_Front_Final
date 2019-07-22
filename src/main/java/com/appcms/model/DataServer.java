@@ -4,11 +4,16 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -18,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -35,43 +41,55 @@ import com.appcms.entity.StockTicket;
 import com.appcms.entity.UserCartola;
 import com.appcms.entity.UserCartolaMovimiento;
 import com.appcms.entity.UserCupon;
+import com.appcms.entity.points.ExpiringPoints;
 import com.appcms.entity.points.Points;
 import com.appcms.security.RestAuthentication;
-import com.appcms.model.ConfigJNDIModel;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
+@Component
 public class DataServer {
 
-	private final String urlServer = ConfigJNDIModel.getVar("apiURL");
+	private String apiUrl;
 
 	StringBuilder sb = new StringBuilder("");
-	private HttpServletRequest rqx;
 
-	public DataServer(HttpServletRequest rq) {
-		rqx = rq;
+	@Autowired
+	public DataServer(@Qualifier("apiUrl") String apiUrl) {
+		this.apiUrl = apiUrl;
 	}
 
-	@Cacheable(cacheNames = "menu")
-	public List<Scmenu> loadScmenu() {
-
+	public Scmenu loadScmenuByName(HttpServletRequest rq, String scmenuName) {
 		HttpHeaders headers = new HttpHeaders();
-//		headers.setContentType(MediaType.APPLICATION_JSON);
-
-		RestAuthentication xrestAuthentication = new RestAuthentication();
-//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
-		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = urlServer + "/cmsrest/get/scmenu";
+		String url = apiUrl + "/get/scmenuByName/" + scmenuName;
+
+		ResponseEntity<Scmenu> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+				new ParameterizedTypeReference<Scmenu>() {
+				});
+		if (xresponse.getStatusCodeValue() == 200) {
+			return xresponse.getBody();
+		} else {
+			return null;
+		}
+
+	}
+	
+	@Cacheable(cacheNames = "menu")
+	public List<Scmenu> loadAllScmenu(HttpServletRequest rq) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
+		RestTemplate restTemplate = new RestTemplate();
+
+		String url = apiUrl + "/get/scmenu";
 
 		ResponseEntity<List<Scmenu>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 				new ParameterizedTypeReference<List<Scmenu>>() {
 				});
-
-//        System.out.println("requestxn: "+xresponse.getBody());   
-
 		if (xresponse.getStatusCodeValue() == 200) {
 			return xresponse.getBody();
 		} else {
@@ -80,18 +98,18 @@ public class DataServer {
 
 	}
 
-	public Scinformacionsubmenu loadInformatioSub(int idsubmenu) {
+	public Scinformacionsubmenu loadInformatioSub(int idsubmenu, HttpServletRequest rq) {
 
 		HttpHeaders headers = new HttpHeaders();
 //		headers.setContentType(MediaType.APPLICATION_JSON);
 
 		RestAuthentication xrestAuthentication = new RestAuthentication();
 		System.out.println(xrestAuthentication.getTOKENONE() + " loadInformatioSub");
-		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = urlServer + "/cmsrest/get/informationsubmenu/" + idsubmenu;
+		String url = apiUrl + "/get/informationsubmenu/" + idsubmenu;
 
 		ResponseEntity<Scinformacionsubmenu> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 				Scinformacionsubmenu.class);
@@ -118,17 +136,17 @@ public class DataServer {
 
 	}
 
-	public List<ProductoTipoLike> loadProductosLike(int idsubmenu) {
+	public List<ProductoTipoLike> loadProductosLike(int idsubmenu, HttpServletRequest rq) {
 
 		HttpHeaders headers = new HttpHeaders();
 
 		RestAuthentication xrestAuthentication = new RestAuthentication();
 //		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
-		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = urlServer + "/cmsrest/get/productosSubmenu/" + idsubmenu;
+		String url = apiUrl + "/get/productosSubmenu/" + idsubmenu;
 
 		ResponseEntity<List<ProductoTipoLike>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 				new ParameterizedTypeReference<List<ProductoTipoLike>>() {
@@ -144,17 +162,18 @@ public class DataServer {
 
 	}
 
-	public List<ProductoTipoLike> loadProductosLikeSubmenuCategoria(int idsubmenu, String categoria) {
+	public List<ProductoTipoLike> loadProductosLikeSubmenuCategoria(int idsubmenu, String categoria,
+			HttpServletRequest rq) {
 
 		HttpHeaders headers = new HttpHeaders();
 
 		RestAuthentication xrestAuthentication = new RestAuthentication();
 //		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
-		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = urlServer + "/cmsrest/get/productosSubmenuCategoria/" + categoria + "/" + idsubmenu;
+		String url = apiUrl + "/get/productosSubmenuCategoria/" + categoria + "/" + idsubmenu;
 
 		ResponseEntity<List<ProductoTipoLike>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 				new ParameterizedTypeReference<List<ProductoTipoLike>>() {
@@ -169,18 +188,18 @@ public class DataServer {
 		}
 
 	}
-	
-	public List<Scinformacionsubmenu> loadscmenuinformationFomScmenu(int idscbmenu) {
+
+	public List<Scinformacionsubmenu> loadscmenuinformationFomScmenu(int idscbmenu, HttpServletRequest rq) {
 
 		HttpHeaders headers = new HttpHeaders();
 
 		RestAuthentication xrestAuthentication = new RestAuthentication();
 //		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
-		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = urlServer + "/cmsrest/get/informationsubmenuList/" +idscbmenu;
+		String url = apiUrl + "/get/informationsubmenuList/" + idscbmenu;
 
 		ResponseEntity<List<Scinformacionsubmenu>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 				new ParameterizedTypeReference<List<Scinformacionsubmenu>>() {
@@ -196,17 +215,17 @@ public class DataServer {
 
 	}
 
-	public List<ProductoTipoLike> loadProductosDetalle(int idproducto) {
+	public List<ProductoTipoLike> loadProductosDetalle(int idproducto, HttpServletRequest rq) {
 
 		HttpHeaders headers = new HttpHeaders();
 
 		RestAuthentication xrestAuthentication = new RestAuthentication();
 //		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
-		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = urlServer + "/cmsrest/get/detalleProducto/" + idproducto;
+		String url = apiUrl + "/get/detalleProducto/" + idproducto;
 
 		ResponseEntity<List<ProductoTipoLike>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 				new ParameterizedTypeReference<List<ProductoTipoLike>>() {
@@ -222,17 +241,17 @@ public class DataServer {
 
 	}
 
-	public List<ProductoCategoria> loadCateProductosFromCategoria(int idsubmenu) {
+	public List<ProductoCategoria> loadCateProductosFromCategoria(int idsubmenu, HttpServletRequest rq) {
 
 		HttpHeaders headers = new HttpHeaders();
 
 		RestAuthentication xrestAuthentication = new RestAuthentication();
 //		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
-		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = urlServer + "/cmsrest/get/productoCategoria/" + idsubmenu;
+		String url = apiUrl + "/get/productoCategoria/" + idsubmenu;
 
 		ResponseEntity<List<ProductoCategoria>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 				new ParameterizedTypeReference<List<ProductoCategoria>>() {
@@ -248,18 +267,19 @@ public class DataServer {
 
 	}
 
-	public List<ProductoCategoria> loadproductoCategoriaConProductos(int idsubmenu, String categoria) {
+	public List<ProductoCategoria> loadproductoCategoriaConProductos(int idsubmenu, String categoria,
+			HttpServletRequest rq) {
 
 		HttpHeaders headers = new HttpHeaders();
 
 		RestAuthentication xrestAuthentication = new RestAuthentication();
 //		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
-		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = urlServer + "/cmsrest/get/productoCategoriaConProductos/" + categoria + "/" + idsubmenu;
-
+		String url = apiUrl + "/get/productoCategoriaConProductos/" + categoria + "/" + idsubmenu;
+		System.out.println("URL para obtener categorias con productos: " + url);
 		ResponseEntity<List<ProductoCategoria>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 				new ParameterizedTypeReference<List<ProductoCategoria>>() {
 				});
@@ -274,18 +294,18 @@ public class DataServer {
 
 	}
 
-	public List<Banner> loadBannerAll(int responsive) {
-
+	public List<Banner> loadBannerAll(int responsive, HttpServletRequest rq) {
+		System.out.println(this.apiUrl);
 		HttpHeaders headers = new HttpHeaders();
 
 		RestAuthentication xrestAuthentication = new RestAuthentication();
 //		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
-		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = urlServer + "/cmsrest/get/bannerAll/"+responsive;
-		System.out.println(url);
+		String url = apiUrl + "/get/bannerAll/" + responsive;
+		System.out.println("Banners: " + url);
 
 		ResponseEntity<List<Banner>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 				new ParameterizedTypeReference<List<Banner>>() {
@@ -301,19 +321,17 @@ public class DataServer {
 
 	}
 
-	
-	
-	public Information loadInformationScsubmenu(int idsubmenu) {
+	public Information loadInformationScsubmenu(int idsubmenu, HttpServletRequest rq) {
 
 		HttpHeaders headers = new HttpHeaders();
 
 		RestAuthentication xrestAuthentication = new RestAuthentication();
 //		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
-		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = urlServer + "/cmsrest/get/informationScsubmenu/" + idsubmenu;
+		String url = apiUrl + "/get/informationScsubmenu/" + idsubmenu;
 
 		ResponseEntity<Information> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 				Information.class);
@@ -328,17 +346,17 @@ public class DataServer {
 
 	}
 
-	public Information loadInformationByName(String idsubmenu) {
+	public Information loadInformationByName(String idsubmenu, HttpServletRequest rq) {
 
 		HttpHeaders headers = new HttpHeaders();
 
 		RestAuthentication xrestAuthentication = new RestAuthentication();
 //		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
-		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = urlServer + "/cmsrest/get/informationByName/" + idsubmenu;
+		String url = apiUrl + "/get/informationByName/" + idsubmenu;
 
 		ResponseEntity<Information> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 				Information.class);
@@ -353,16 +371,16 @@ public class DataServer {
 
 	}
 
-	public String setReward(CustomerReward reward, String nombreTicket, String rut) {
+	public String setReward(CustomerReward reward, String nombreTicket, String rut, HttpServletRequest rq) {
 		System.out.println("Cambiando puntos");
-		
+
 		HttpHeaders headers = new HttpHeaders();
 
 		RestAuthentication xrestAuthentication = new RestAuthentication();
 //		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
-		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 
-		String url = urlServer + "/cmsrest/customerreward/set";
+		String url = apiUrl + "/customerreward/set";
 		System.out.println("data param: " + reward.toString());
 
 		MultiValueMap<String, String> xparam = new LinkedMultiValueMap<String, String>();
@@ -402,17 +420,17 @@ public class DataServer {
 
 	}
 
-	public ProductoTipoLike loadProductoById(int idProd) {
+	public ProductoTipoLike loadProductoById(int idProd, HttpServletRequest rq) {
 
 		HttpHeaders headers = new HttpHeaders();
 
 		RestAuthentication xrestAuthentication = new RestAuthentication();
 //			System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
-		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = urlServer + "/cmsrest/get/ProductoById/" + idProd;
+		String url = apiUrl + "/producto/get/" + idProd;
 
 //			ResponseEntity<List<ProductoTipoLike>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 //					new ParameterizedTypeReference<List<ProductoTipoLike>>() {
@@ -430,19 +448,16 @@ public class DataServer {
 		}
 
 	}
-	
-	
-	
-	
-	public String testLogin(String rut, String pass) {
+
+	public String testLogin(String rut, String pass, HttpServletRequest rq) {
 
 		HttpHeaders headers = new HttpHeaders();
 
 		RestAuthentication xrestAuthentication = new RestAuthentication();
 //		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
-		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 
-		String url = urlServer + "/v1/login_customer";
+		String url = apiUrl + "/v1/login_customer";
 
 		MultiValueMap<String, String> xparam = new LinkedMultiValueMap<String, String>();
 		xparam.add("userCostumer", rut);
@@ -465,9 +480,7 @@ public class DataServer {
 			System.out.println("error: " + ex.getMessage());
 			return null;
 		}
-		
 
-	
 //		if (xresponse.getStatusCodeValue() == 200) {
 //			return xresponse.getBody();
 //		} else {
@@ -475,94 +488,95 @@ public class DataServer {
 //		}
 
 	}
-	
-	
+
 	public UserCartola loadUserCartola() {
-		
-		List<UserCartolaMovimiento> movimientos = new ArrayList<>();
-		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "REDCOMPRA", "Abono", "+ $1.158", "$40.158"));
-		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "MASTERCARD NACIONAL PLATINIUM	", "Abono", "+ $3.189", "$40.158"));
-		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "SCOTIACLUB GRANDES TIENDAS Y ZAPATERIAS	", "Cargo", "- $11.330", "$40.158"));		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
 		Scotiauser scotiauser = credencialesEntity.getScotiauser();
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("Authorization", "Bearer " + credencialesEntity.getTOKENONE());
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
+
+		/* SE RECUPERAN LOS PUNTOS DE CLIENTE */
+		Points points = new Points();
+		SimpleDateFormat formatter = new SimpleDateFormat("'al' dd 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
+		Date date = new Date(System.currentTimeMillis());
+		
+		String fechaActual = formatter.format(date);
+		System.out.println(fechaActual);
 		try {
-			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange(ConfigJNDIModel.getVar("apiURL")+"/cmsrest/v1/customer/points", HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
-			Points points = pointsResponseEntity.getBody();
-			UserCartola miCartola = new UserCartola(scotiauser.getFirstname(), scotiauser.getLastname(), "al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints(), points.getExpiringPointsDate(), movimientos);				 
-			return miCartola;
-		} catch(Exception e) {
-			Points points = new Points();
-			points.setAvailablePoints(10000);
-//			points.setAvailablePoints(-1);
-			points.setExpiringPoints(-1);
-			points.setExpiringPointsDate("N/A");
-			UserCartola miCartola = new UserCartola(scotiauser.getFirstname(), scotiauser.getLastname(), "al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints(), points.getExpiringPointsDate(), movimientos);				 
-			return miCartola;
+			System.out.println("Consultando puntos a la URL " + apiUrl + "/v1/customer/points");
+			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/points",
+					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
+			points = pointsResponseEntity.getBody();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			points.setAvailablePoints(-1);
+			ExpiringPoints expiringPoints = new ExpiringPoints();
+			expiringPoints.setPoints(-1);
+			expiringPoints.setExpirationDate("N/A");
+			points.setExpiringPoints(expiringPoints);
+			points.setRegisteredPoints(-1);
 		}
+
+		/* SE RECUPERAN LOS MOVIMIENTOS DE CLIENTE */
+		List<UserCartolaMovimiento> movimientos = new ArrayList<>();
+		try {
+			ResponseEntity<List<UserCartolaMovimiento>> movementsResponseEntity = restTemplate.exchange(
+					apiUrl + "/v1/customer/exchanges", HttpMethod.GET, new HttpEntity<Object>(httpHeaders),
+					new ParameterizedTypeReference<List<UserCartolaMovimiento>>() {
+					});
+			movimientos = movementsResponseEntity.getBody();
+		} catch (Exception e) {
+			movimientos.clear();
+		}
+		UserCartola miCartola = new UserCartola();
+		miCartola.setNombre(scotiauser.getFirstname());
+		miCartola.setApellido(scotiauser.getLastname());
+		miCartola.setStrFecha(fechaActual);
+		miCartola.setPuntosDisponibles(points.getAvailablePoints());
+		miCartola.setPuntosPorVencer(points.getExpiringPoints().getPoints());
+		miCartola.setFechaVencimiento(points.getExpiringPoints().getExpirationDate());
+		miCartola.setPuntosInscritos(points.getRegisteredPoints());
+		miCartola.setMovimientos(movimientos);
+		return miCartola;
 	}
 
 	public Points loadUserPoints() {
-		
-		
+
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
 		try {
-			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange(ConfigJNDIModel.getVar("apiURL")+"/cmsrest/v1/customer/points", HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
+			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/points",
+					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
 			Points points = pointsResponseEntity.getBody();
 			return points;
-		} catch(Exception e) {
+		} catch (Exception e) {
 			Points points = new Points();
-			points.setAvailablePoints(10000);
-//			points.setAvailablePoints(-1);
-			points.setExpiringPoints(-1);
-			points.setExpiringPointsDate("N/A");
+			points.setAvailablePoints(-1);
+			ExpiringPoints expiringPoints = new ExpiringPoints();
+			expiringPoints.setPoints(-1);
+			expiringPoints.setExpirationDate("N/A");
+			points.setExpiringPoints(expiringPoints);
 			return points;
 		}
 	}
-	
-	public String loadIdUserByRut(String rut) {
+
+	public List<UserCupon> loadCupones(int idUser, HttpServletRequest rq) {
 
 		HttpHeaders headers = new HttpHeaders();
 
 		RestAuthentication xrestAuthentication = new RestAuthentication();
 //		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
-		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = urlServer + "/cmsrest/get/userid/" + rut;
-
-		ResponseEntity<String> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
-				String.class);
-
-		System.out.println("requestxn: " + xresponse.getBody());
-
-		if (xresponse.getStatusCodeValue() == 200) {
-			return xresponse.getBody();
-		} else {
-			return null;
-		}
-
-	}
-	
-	public List<UserCupon> loadCupones(int idUser) {
-
-		HttpHeaders headers = new HttpHeaders();
-
-		RestAuthentication xrestAuthentication = new RestAuthentication();
-//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
-		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
-		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
-		RestTemplate restTemplate = new RestTemplate();
-
-		String url = urlServer + "/cmsrest/get/usercupones/"+idUser;
+		String url = apiUrl + "/get/usercupones/" + idUser;
 
 		ResponseEntity<List<UserCupon>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 				new ParameterizedTypeReference<List<UserCupon>>() {
@@ -577,84 +591,75 @@ public class DataServer {
 		}
 
 	}
-	
-	
-	public byte[] loadCuponPdf(int idUser, int idReward) {
-		
+
+	public byte[] loadCuponPdf(int idUser, int idReward, HttpServletRequest rq) {
+
 		HttpHeaders headers = new HttpHeaders();
 
 		RestAuthentication xrestAuthentication = new RestAuthentication();
 //		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
-		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = urlServer + "/cmsrest/get/usercuponjosticket/"+idUser+"/"+idReward;
+		String url = apiUrl + "/get/usercuponjosticket/" + idUser + "/" + idReward;
 
-		ResponseEntity<UserCupon> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
-				UserCupon.class);
+		ResponseEntity<UserCupon> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity, UserCupon.class);
 
 		System.out.println("requestxnfr: " + xresponse.getBody());
-		
+
 		if (xresponse.getStatusCodeValue() == 200) {
 //			return xresponse.getBody();		CENCOSUD_TEST
 
-			UserCupon cuponusr =  new UserCupon();
+			UserCupon cuponusr = new UserCupon();
 			cuponusr = xresponse.getBody();
-			
-			 URL urlTicketera;
-			  byte[] response =  null;
+
+			URL urlTicketera;
+			byte[] response = null;
 			try {
-				//http://ticket.clubadelante.cl/getPDHtml/CENCOSUD/000000/000000
-				//http://ticket.clubadelante.cl/getPDF/:empresa/:codigo/:idcliente
+				// http://ticket.clubadelante.cl/getPDHtml/CENCOSUD/000000/000000
+				// http://ticket.clubadelante.cl/getPDF/:empresa/:codigo/:idcliente
 //				urlTicketera = new URL("http://ticket.clubadelante.cl/getPDF/"+cuponusr.getNombre()+"/"+cuponusr.getId_cupon()+"/177824577");
 //				urlTicketera = new URL("http://206.189.70.163/test/lorem-ipsum.pdf");
-							
-				System.out.println(urlServer + "/cmsrest/get/getPDFile/"+cuponusr.getNombre()+"/"+cuponusr.getCodigo()+"/"+cuponusr.getImagen());
-				urlTicketera = new URL("http://ticket.clubadelante.cl/getPDFile/"+cuponusr.getNombre()+"/"+cuponusr.getCodigo()+"/"+cuponusr.getImagen());
-//				urlTicketera = new URL(urlServer + "/cmsrest/get/getPDFile/"+cuponusr.getNombre()+"/"+cuponusr.getCodigo()+"/"+cuponusr.getImagen());
-				
-			 InputStream in = new BufferedInputStream(urlTicketera.openStream());
-			   ByteArrayOutputStream out = new ByteArrayOutputStream();
-			   byte[] buf = new byte[2048];
-			   int n = 0;
-			   while (-1!=(n=in.read(buf)))
-			   {
-			      out.write(buf, 0, n);
-			   }
-			   out.close();
-			   in.close();
-			   response = out.toByteArray();
-			
-			
+
+				System.out.println(apiUrl + "/get/getPDFile/" + cuponusr.getNombre() + "/" + cuponusr.getCodigo() + "/"
+						+ cuponusr.getImagen());
+				urlTicketera = new URL("http://ticket.clubadelante.cl/getPDFile/" + cuponusr.getNombre() + "/"
+						+ cuponusr.getCodigo() + "/" + cuponusr.getImagen());
+//				urlTicketera = new URL(urlServer + "/get/getPDFile/"+cuponusr.getNombre()+"/"+cuponusr.getCodigo()+"/"+cuponusr.getImagen());
+
+				InputStream in = new BufferedInputStream(urlTicketera.openStream());
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				byte[] buf = new byte[2048];
+				int n = 0;
+				while (-1 != (n = in.read(buf))) {
+					out.write(buf, 0, n);
+				}
+				out.close();
+				in.close();
+				response = out.toByteArray();
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			  return response;			
-			
-			
+			return response;
+
 		} else {
 			return null;
 		}
-				
-		
-		
-		
-		
 	}
-	
-	
-	public StockTicket loadStockTicket(String empresa) {
+
+	public StockTicket loadStockTicket(String empresa, HttpServletRequest rq) {
 
 		HttpHeaders headers = new HttpHeaders();
 
 		RestAuthentication xrestAuthentication = new RestAuthentication();
 //			System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
-		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = urlServer + "/cmsrest/get/stockticket/" + empresa;
+		String url = apiUrl + "/get/stockticket/" + empresa;
 
 //			ResponseEntity<List<ProductoTipoLike>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 //					new ParameterizedTypeReference<List<ProductoTipoLike>>() {
@@ -672,9 +677,5 @@ public class DataServer {
 		}
 
 	}
-	
-	
-	
-	
 
 }

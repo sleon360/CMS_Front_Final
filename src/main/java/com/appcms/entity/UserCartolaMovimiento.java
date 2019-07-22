@@ -1,65 +1,77 @@
 package com.appcms.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class UserCartolaMovimiento {
-	String fecha;
-	String transaccion;
-	String movimiento;
-	String monto;
-	String saldo;
-
 	
+	String date;
 	
-	public UserCartolaMovimiento() {
-		super();
+	String description;
+	
+	String type;
+	
+	@JsonProperty("card_id")
+	String cardId;
+	
+	int points;
+	
+	@JsonProperty("points_balance")
+	int pointsBalance;
+	
+	public UserCartolaMovimiento(String date, String description, String type, int points, int pointsBalance) {
+		this.date = date;
+		this.description = description;
+		this.type = type;
+		this.points = points;
+		this.pointsBalance = pointsBalance;
 	}
 
-	public UserCartolaMovimiento(String fecha, String transaccion, String movimiento, String monto, String saldo) {
-		super();
-		this.fecha = fecha;
-		this.transaccion = transaccion;
-		this.movimiento = movimiento;
-		this.monto = monto;
-		this.saldo = saldo;
+	public String getDate() {
+		return date;
 	}
 
-	public String getFecha() {
-		return fecha;
+	public void setDate(String date) {
+		this.date = date;
 	}
 
-	public void setFecha(String fecha) {
-		this.fecha = fecha;
+	public String getDescription() {
+		return description;
 	}
 
-	public String getTransaccion() {
-		return transaccion;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
-	public void setTransaccion(String transaccion) {
-		this.transaccion = transaccion;
+	public String getType() {
+		return type;
 	}
 
-	public String getMovimiento() {
-		return movimiento;
+	public void setType(String type) {
+		this.type = type;
 	}
 
-	public void setMovimiento(String movimiento) {
-		this.movimiento = movimiento;
+	public String getCardId() {
+		return cardId;
 	}
 
-	public String getMonto() {
-		return monto;
+	public void setCardId(String cardId) {
+		this.cardId = cardId;
 	}
 
-	public void setMonto(String monto) {
-		this.monto = monto;
+	public int getPoints() {
+		return points;
 	}
 
-	public String getSaldo() {
-		return saldo;
+	public void setPoints(int points) {
+		this.points = points;
 	}
 
-	public void setSaldo(String saldo) {
-		this.saldo = saldo;
+	public int getPointsBalance() {
+		return pointsBalance;
+	}
+
+	public void setPointsBalance(int pointsBalance) {
+		this.pointsBalance = pointsBalance;
 	}
 
 }

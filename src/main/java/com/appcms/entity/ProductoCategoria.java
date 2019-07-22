@@ -3,8 +3,11 @@ package com.appcms.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ProductoCategoria {
 
+	@JsonProperty("id_categoria_producto")
 	int id;
 	String nombre;
 	String strIndex;
@@ -18,21 +21,21 @@ public class ProductoCategoria {
 		super();
 	}
 
-	public ProductoCategoria(int id, String strIndex, String nombre, String descripccion, String imagen, int tipo) {
+	public ProductoCategoria(int id, String strIndex, String nombre, String descripcion, String imagen, int tipo) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.strIndex = strIndex;
-		this.descripccion = descripccion;
+		this.descripccion = descripcion;
 		this.imagen = imagen;
 		this.tipo = tipo;
 	}
-	public ProductoCategoria(int id, String strIndex, String nombre, String descripccion, String imagen, int tipo,String colorHover) {
+	public ProductoCategoria(int id, String strIndex, String nombre, String descripcion, String imagen, int tipo,String colorHover) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.strIndex = strIndex;
-		this.descripccion = descripccion;
+		this.descripccion = descripcion;
 		this.imagen = imagen;
 		this.tipo = tipo;
 		this.colorHover = colorHover;
@@ -91,6 +94,21 @@ public class ProductoCategoria {
 
 	public void setTipo(int tipo) {
 		this.tipo = tipo;
+	}
+
+	public List<ProductoTipoLike> getProductos() {
+		return productos;
+	}
+
+	public void setProductos(List<ProductoTipoLike> productos) {
+		this.productos = productos;
+	}
+
+	@Override
+	public String toString() {
+		return "ProductoCategoria [id=" + id + ", nombre=" + nombre + ", strIndex=" + strIndex + ", descripccion="
+				+ descripccion + ", imagen=" + imagen + ", colorHover=" + colorHover + ", tipo=" + tipo
+				+ ", productosList=" + productos + "]";
 	}
 
 }

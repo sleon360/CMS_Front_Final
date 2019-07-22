@@ -3,9 +3,6 @@ package com.cms.errors;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-
-
 public class ApiError{
 
 	private static final long serialVersionUID = 1L;
@@ -27,9 +24,5 @@ public class ApiError{
         return message;
     }
 
-    @Override
-	public String toString() {
-		return  new ToStringBuilder(this).append(code).append(message).toString();
-	}
     
 }

@@ -8,10 +8,10 @@ public class Points {
 	private int availablePoints;
 
 	@JsonProperty("expiring_points")
-	private int expiringPoints;
-
-	@JsonProperty("expiring_points_date")
-	private String expiringPointsDate;
+	private ExpiringPoints expiringPoints;
+	
+	@JsonProperty("registered_points")
+	private int registeredPoints;
 
 	public int getAvailablePoints() {
 		return availablePoints;
@@ -21,19 +21,20 @@ public class Points {
 		this.availablePoints = availablePoints;
 	}
 
-	public int getExpiringPoints() {
+	public ExpiringPoints getExpiringPoints() {
 		return expiringPoints;
 	}
 
-	public void setExpiringPoints(int expiringPoints) {
+	public void setExpiringPoints(ExpiringPoints expiringPoints) {
 		this.expiringPoints = expiringPoints;
 	}
 
-	public String getExpiringPointsDate() {
-		return expiringPointsDate;
+	public int getRegisteredPoints() {
+		return registeredPoints;
 	}
 
-	public void setExpiringPointsDate(String expiringPointsDate) {
-		this.expiringPointsDate = expiringPointsDate;
+	public void setRegisteredPoints(int registeredPoints) {
+		this.registeredPoints = registeredPoints;
 	}
+
 }

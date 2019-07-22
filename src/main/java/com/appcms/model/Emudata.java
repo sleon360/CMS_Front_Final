@@ -3,12 +3,15 @@ package com.appcms.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.HtmlUtils;
 
@@ -28,14 +31,20 @@ import com.appcms.entity.UserCartola;
 import com.appcms.entity.UserCartolaMovimiento;
 import com.appcms.entity.UserGusto;
 import com.appcms.entity.UserInscripcion;
+import com.appcms.entity.points.ExpiringPoints;
 import com.appcms.entity.points.Points;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
-
+@Component
 public class Emudata {
 	
-	public static String serverIp = ConfigJNDIModel.getVar("apiURL");
+	private static String apiUrl;
+	
+	@Autowired
+	public Emudata(@Qualifier("apiUrl") String apiUrl) {
+		this.apiUrl = apiUrl;
+	}
 	
 	public static List<Menutop> getmenuHeader() {
 
@@ -380,9 +389,9 @@ public class Emudata {
 	public static UserCartola getUserCartola() {
 		
 		List<UserCartolaMovimiento> movimientos = new ArrayList<>();
-		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "REDCOMPRA", "Abono", "+ $1.158", "$40.158"));
-		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "MASTERCARD NACIONAL PLATINIUM	", "Abono", "+ $3.189", "$40.158"));
-		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "SCOTIACLUB GRANDES TIENDAS Y ZAPATERIAS	", "Cargo", "- $11.330", "$40.158"));
+		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "REDCOMPRA", "Abono", 1158, 40158));
+		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "MASTERCARD NACIONAL PLATINIUM	", "Abono", 3189, 40158));
+		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "SCOTIACLUB GRANDES TIENDAS Y ZAPATERIAS", "Cargo", -11330, 40158));
 		
 		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -392,16 +401,17 @@ public class Emudata {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
 		try {
-			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange(ConfigJNDIModel.getVar("apiURL")+"/cmsrest/v1/customer/points", HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
+			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/points", HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
 			Points points = pointsResponseEntity.getBody();
-			UserCartola miCartola = new UserCartola(scotiauser.getFirstname(), scotiauser.getLastname(), "al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints(), points.getExpiringPointsDate(), movimientos);				 
+			UserCartola miCartola = new UserCartola(scotiauser.getFirstname(), scotiauser.getLastname(), "al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints().getPoints(), points.getExpiringPoints().getExpirationDate(), movimientos);				 
 			return miCartola;
 		} catch(Exception e) {
 			Points points = new Points();
 			points.setAvailablePoints(-1);
-			points.setExpiringPoints(-1);
-			points.setExpiringPointsDate("N/A");
-			UserCartola miCartola = new UserCartola(scotiauser.getFirstname(), scotiauser.getLastname(), "al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints(), points.getExpiringPointsDate(), movimientos);				 
+			ExpiringPoints expiringPoints = new ExpiringPoints();
+			expiringPoints.setPoints(-1);
+			expiringPoints.setExpirationDate("N/A");
+			UserCartola miCartola = new UserCartola(scotiauser.getFirstname(), scotiauser.getLastname(), "al 20 de diciembre 2018", points.getAvailablePoints(), points.getExpiringPoints().getPoints(), points.getExpiringPoints().getExpirationDate(), movimientos);				 
 			return miCartola;
 		}
 		

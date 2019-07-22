@@ -1,5 +1,7 @@
 package com.appcms.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -14,10 +16,18 @@ import org.springframework.web.client.RestTemplate;
 import com.appcms.entity.CustomerEntity;
 import com.appcms.entity.Scotiauser;
 import com.appcms.entity.customer.Customer;
-import com.appcms.model.ConfigJNDIModel;
 
 @Component
 public class CustomerAuthentication {
+
+	static String apiUrl;
+	
+	@Autowired
+	public CustomerAuthentication(@Qualifier("apiUrl") String apiUrl) {
+		CustomerAuthentication.apiUrl = apiUrl;
+	}
+
+
 
 	static Customer CustomerAuth(String username, String password, String token) {
 		try {
@@ -32,7 +42,7 @@ public class CustomerAuthentication {
 			HttpEntity<?> httpEntity = new HttpEntity<Object>(xlogin, headers);
 			RestTemplate restTemplate = new RestTemplate();
 			ResponseEntity<CustomerEntity> response = restTemplate.exchange(
-					ConfigJNDIModel.getVar("apiURL")+"/cmsrest/v1/login_customer", HttpMethod.POST, httpEntity,
+					apiUrl + "/v1/login_customer", HttpMethod.POST, httpEntity,
 					CustomerEntity.class);
 			TOKENTWO = response.getHeaders().getFirst("Authorization");
 			CustomerEntity customerEntity = response.getBody();
