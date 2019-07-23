@@ -1,12 +1,21 @@
 package com.appcms.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class CustomerReward {
 
+	@JsonProperty("id_customer_reward")
 	int customer_reward_id;
+	
+	@JsonProperty("id_customer")
 	int customer_id;
+	
+	@JsonProperty("id_producto")
 	int order_id;
 	String description;
+	
 	int points;
+	
 	String date_added;
 	String date_vencimiento;
 	int id_campana;
