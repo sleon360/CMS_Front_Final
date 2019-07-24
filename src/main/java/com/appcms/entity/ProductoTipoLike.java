@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ProductoTipoLike {
 
+	@JsonProperty("id_producto")
 	int id;
 	String nombre;
 	String titulo;
@@ -25,6 +26,8 @@ public class ProductoTipoLike {
 	String titulo_detalles;
 	@JsonProperty("titulo_tipo2")
 	String tutulo_direcciones;
+	@JsonProperty("formatos_detalles")
+	public List<FormatoDetalle> formatosDetalles;
 	public List<FormatoDetalle> detalles = null;
 	public List<FormatoDetalle> direcciones = null;
 	String codigo;
@@ -315,6 +318,14 @@ public class ProductoTipoLike {
 	public void setEquipesos(int equipesos) {
 		this.equipesos = equipesos;
 	}
+	
+	public List<FormatoDetalle> getFormatosDetalles() {
+		return formatosDetalles;
+	}
+
+	public void setFormatosDetalles(List<FormatoDetalle> formatosDetalles) {
+		this.formatosDetalles = formatosDetalles;
+	}
 
 	public List<FormatoDetalle> getDetalles() {
 		return detalles;
@@ -345,11 +356,11 @@ public class ProductoTipoLike {
 		return "ProductoTipoLike [id=" + id + ", nombre=" + nombre + ", titulo=" + titulo + ", subtitulo=" + subtitulo
 				+ ", imagen=" + imagen + ", porcentajeInfo=" + porcentajeInfo + ", direccionTxt1=" + direccionTxt1
 				+ ", direccionTxt2=" + direccionTxt2 + ", direccionTxt3=" + direccionTxt3 + ", like=" + like
-				+ ", precio=" + precio + ", equiPesos=" + equipesos + ", fecha_creacion=" + fecha_creacion
+				+ ", precio=" + precio + ", equipesos=" + equipesos + ", fecha_creacion=" + fecha_creacion
 				+ ", fecha_fin=" + fecha_fin + ", titulo_detalles=" + titulo_detalles + ", tutulo_direcciones="
-				+ tutulo_direcciones + ", detalles=" + detalles + ", direcciones=" + direcciones + ", codigo=" + codigo
-				+ ", stock=" + stock + ", canjeados=" + canjeados + "]";
+				+ tutulo_direcciones + ", formatosDetalles=" + formatosDetalles + ", detalles=" + detalles
+				+ ", direcciones=" + direcciones + ", codigo=" + codigo + ", stock=" + stock + ", canjeados="
+				+ canjeados + "]";
 	}
 	
-
 }

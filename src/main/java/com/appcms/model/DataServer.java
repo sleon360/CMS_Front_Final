@@ -31,6 +31,7 @@ import org.springframework.web.client.RestTemplate;
 import com.appcms.entity.Banner;
 import com.appcms.entity.CredencialesEntity;
 import com.appcms.entity.CustomerReward;
+import com.appcms.entity.FormatoDetalle;
 import com.appcms.entity.Information;
 import com.appcms.entity.ProductoCategoria;
 import com.appcms.entity.ProductoTipoLike;
@@ -227,14 +228,31 @@ public class DataServer {
 
 		String url = apiUrl + "/get/detalleProducto/" + idproducto;
 
-		ResponseEntity<List<ProductoTipoLike>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
-				new ParameterizedTypeReference<List<ProductoTipoLike>>() {
+		ResponseEntity<ProductoTipoLike> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+				new ParameterizedTypeReference<ProductoTipoLike>() {
 				});
 
 		System.out.println("requestxn: " + xresponse.getBody());
 
+		ProductoTipoLike producto = xresponse.getBody();
+		List<FormatoDetalle> formatosDetalles = producto.getFormatosDetalles();
+		
+		ArrayList<FormatoDetalle> detalles = new ArrayList<>();
+		ArrayList<FormatoDetalle> direcciones = new ArrayList<>();
+		for (int i = 0; i < formatosDetalles.size(); i++) {
+			FormatoDetalle formatoDetalle = formatosDetalles.get(i);
+			if (formatoDetalle.getTipo() == 1) { //Si es tipo 1 es detalle
+				detalles.add(formatoDetalle);
+			} else { // Si es tipo 2 (u otro) es direccion
+				direcciones.add(formatoDetalle);
+			}
+		}
+		producto.setDetalles(detalles);
+		producto.setDirecciones(direcciones);
 		if (xresponse.getStatusCodeValue() == 200) {
-			return xresponse.getBody();
+			ArrayList<ProductoTipoLike> productoList = new ArrayList<>();
+			productoList.add(producto);
+			return productoList;
 		} else {
 			return null;
 		}
