@@ -639,7 +639,7 @@ public class routes {
 	}
 
 	
-	
+//	
 //	@PostMapping("/categoria/canje")
 //	public ModelAndView canjeDirecto(@ModelAttribute("producto") CanjeProducto producto, HttpServletRequest rq,
 //			@RequestHeader(value = "referer", required = false) final String referer)
@@ -685,7 +685,7 @@ public class routes {
 //
 //		return mav;
 //	}
-//	
+	
 	
 	
 	

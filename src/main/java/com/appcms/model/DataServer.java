@@ -648,6 +648,74 @@ public class DataServer {
 			return null;
 		}
 	}
+	
+	
+	
+	public byte[] loadCuponPdf2(int idUser, int idReward, HttpServletRequest rq) {
+
+		HttpHeaders headers = new HttpHeaders();
+
+		RestAuthentication xrestAuthentication = new RestAuthentication();
+//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
+		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
+		RestTemplate restTemplate = new RestTemplate();
+		try {
+			String url = apiUrl + "/get/usercuponjosticket/" + idReward;
+
+//		ResponseEntity<UserCupon> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+//		ResponseEntity<String> xresponse = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+
+//		System.out.println("requestxnfr: " + xresponse.getBody());
+
+//		if (xresponse.getStatusCodeValue() == 200) {
+//			return xresponse.getBody();		CENCOSUD_TEST
+
+//			UserCupon cuponusr = new UserCupon();
+//			cuponusr = xresponse.getBody();
+
+			URL urlTicketera;
+			byte[] response = null;
+
+			// http://ticket.clubadelante.cl/getPDHtml/CENCOSUD/000000/000000
+			// http://ticket.clubadelante.cl/getPDF/:empresa/:codigo/:idcliente
+//				urlTicketera = new URL("http://ticket.clubadelante.cl/getPDF/"+cuponusr.getNombre()+"/"+cuponusr.getId_cupon()+"/177824577");
+//				urlTicketera = new URL("http://206.189.70.163/test/lorem-ipsum.pdf");
+
+//				System.out.println(apiUrl + "/get/getPDFile/" + cuponusr.getNombre() + "/" + cuponusr.getCodigo() + "/"
+//						+ cuponusr.getImagen());
+//				urlTicketera = new URL("http://ticket.clubadelante.cl/getPDFile/" + cuponusr.getNombre() + "/"
+//						+ cuponusr.getCodigo() + "/" + cuponusr.getImagen());
+
+			urlTicketera = new URL(apiUrl + "/get/usercuponjosticket/" + idReward);
+
+//				urlTicketera = new URL(urlServer + "/get/getPDFile/"+cuponusr.getNombre()+"/"+cuponusr.getCodigo()+"/"+cuponusr.getImagen());
+
+			InputStream in = new BufferedInputStream(urlTicketera.openStream());
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			byte[] buf = new byte[2048];
+			int n = 0;
+			while (-1 != (n = in.read(buf))) {
+				out.write(buf, 0, n);
+			}
+			out.close();
+			in.close();
+			response = out.toByteArray();
+
+			return response;
+
+//		} else {
+//			return null;
+//		}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
+	
 
 	public StockTicket loadStockTicket(String empresa, HttpServletRequest rq) {
 
