@@ -21,7 +21,9 @@ public class ProductoTipoLike {
 	int equipesos;
 	String fecha_creacion;
 	String fecha_fin;
+	@JsonProperty("titulo_tipo1")
 	String titulo_detalles;
+	@JsonProperty("titulo_tipo2")
 	String tutulo_direcciones;
 	public List<FormatoDetalle> detalles = null;
 	public List<FormatoDetalle> direcciones = null;
