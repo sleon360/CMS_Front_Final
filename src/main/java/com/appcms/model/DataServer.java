@@ -7,6 +7,7 @@ import java.net.URL;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -39,6 +40,7 @@ import com.appcms.entity.Scinformacionsubmenu;
 import com.appcms.entity.Scmenu;
 import com.appcms.entity.Scotiauser;
 import com.appcms.entity.StockTicket;
+import com.appcms.entity.Tarjetas;
 import com.appcms.entity.UserCartola;
 import com.appcms.entity.UserCartolaMovimiento;
 import com.appcms.entity.UserCupon;
@@ -239,14 +241,16 @@ public class DataServer {
 		
 		ArrayList<FormatoDetalle> detalles = new ArrayList<>();
 		ArrayList<FormatoDetalle> direcciones = new ArrayList<>();
-		for (int i = 0; i < formatosDetalles.size(); i++) {
-			FormatoDetalle formatoDetalle = formatosDetalles.get(i);
-			if (formatoDetalle.getTipo() == 1) { //Si es tipo 1 es detalle
-				detalles.add(formatoDetalle);
-			} else { // Si es tipo 2 (u otro) es direccion
-				direcciones.add(formatoDetalle);
+		if (formatosDetalles != null) {
+			for (int i = 0; i < formatosDetalles.size(); i++) {
+				FormatoDetalle formatoDetalle = formatosDetalles.get(i);
+				if (formatoDetalle.getTipo() == 1) { //Si es tipo 1 es detalle
+					detalles.add(formatoDetalle);
+				} else { // Si es tipo 2 (u otro) es direccion
+					direcciones.add(formatoDetalle);
+				}
 			}
-		}
+		}		
 		producto.setDetalles(detalles);
 		producto.setDirecciones(direcciones);
 		if (xresponse.getStatusCodeValue() == 200) {
@@ -390,7 +394,6 @@ public class DataServer {
 	}
 
 	public String setReward(CustomerReward reward, String nombreTicket, String rut, HttpServletRequest rq) {
-		System.out.println("Cambiando puntos");
 
 		HttpHeaders headers = new HttpHeaders();
 
@@ -520,16 +523,12 @@ public class DataServer {
 		Points points = new Points();
 		SimpleDateFormat formatter = new SimpleDateFormat("'al' dd 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
 		Date date = new Date(System.currentTimeMillis());
-		
 		String fechaActual = formatter.format(date);
-		System.out.println(fechaActual);
 		try {
-			System.out.println("Consultando puntos a la URL " + apiUrl + "/v1/customer/points");
 			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/points",
 					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
 			points = pointsResponseEntity.getBody();
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
 			points.setAvailablePoints(-1);
 			ExpiringPoints expiringPoints = new ExpiringPoints();
 			expiringPoints.setPoints(-1);
@@ -540,9 +539,10 @@ public class DataServer {
 
 		/* SE RECUPERAN LOS MOVIMIENTOS DE CLIENTE */
 		List<UserCartolaMovimiento> movimientos = new ArrayList<>();
+		int year = Calendar.getInstance().get(Calendar.YEAR);
 		try {
 			ResponseEntity<List<UserCartolaMovimiento>> movementsResponseEntity = restTemplate.exchange(
-					apiUrl + "/v1/customer/exchanges", HttpMethod.GET, new HttpEntity<Object>(httpHeaders),
+					apiUrl + "/v1/customer/transactions?year=" + year, HttpMethod.GET, new HttpEntity<Object>(httpHeaders),
 					new ParameterizedTypeReference<List<UserCartolaMovimiento>>() {
 					});
 			movimientos = movementsResponseEntity.getBody();
@@ -567,6 +567,7 @@ public class DataServer {
 		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("Authorization", "Bearer " + credencialesEntity.getTOKENONE());
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
 		try {
 			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/points",
@@ -762,6 +763,27 @@ public class DataServer {
 			return responsenull;
 		}
 
+	}
+	
+	public Tarjetas loadUserTarjetas() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("Authorization", "Bearer " + credencialesEntity.getTOKENONE());
+		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
+		try {
+			ResponseEntity<Tarjetas> tarjetasResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/cards",
+					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Tarjetas.class);
+			System.out.println(tarjetasResponseEntity.getBody());
+			return tarjetasResponseEntity.getBody();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			Tarjetas tarjetas = new Tarjetas();
+			tarjetas.setTarjetasCliente(new ArrayList<>());
+			tarjetas.setTipoCliente("NORMAL");
+			return tarjetas;
+		}
 	}
 
 }

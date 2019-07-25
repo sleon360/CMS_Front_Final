@@ -59,6 +59,7 @@ import com.appcms.entity.Scmenu;
 import com.appcms.entity.Scotiauser;
 import com.appcms.entity.Scsubmenu;
 import com.appcms.entity.StockTicket;
+import com.appcms.entity.Tarjetas;
 import com.appcms.model.DataServer;
 import com.appcms.model.Emudata;
 import com.appcms.security.ErrorControllerExection;
@@ -291,7 +292,7 @@ public class routes {
 			break;
 		case 7:
 			System.out.println("Tipo 7"); // TIPO CANJE CASHBACK
-			scmenuurlsub.TarjetaClienteLista = Emudata.getTarjetasCliente();
+			scmenuurlsub.tarjetasCliente = dtserver.loadUserTarjetas().getTarjetasCliente();
 			break;
 		case 8:
 			System.out.println("Tipo 8"); // TIPO CANJE DESCUENTOS
@@ -376,6 +377,9 @@ public class routes {
 					categoria, rq);// Emudata.getProductosLikeTest();
 			mav.addObject("producto", new CanjeProducto());
 			mav.addObject("verProductosCategoria", true);
+			
+			//Se agregan las tarjetas del cliente
+			scmenuurlsub.tarjetasCliente = dtserver.loadUserTarjetas().getTarjetasCliente();
 			break;
 		case 8:
 			System.out.println("Tipo 8"); // TIPO CANJE CON CATEGORIAS

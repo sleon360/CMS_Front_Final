@@ -320,13 +320,6 @@ public class Emudata {
 			}
 		 
 		 return catelistResult;
-	} 
-	
-	public static List<TarjetaCliente> getTarjetasCliente() {
-		 List<TarjetaCliente> catelist =  new ArrayList<>();
-		 catelist.add( new TarjetaCliente(1, "Master-Card", "Tarjeta xxxx 1234") );
-		 catelist.add( new TarjetaCliente(2, "Master-Card", "Tarjeta xxxx 5678") );
-		 return catelist;
 	}
 	
 	public static Information getInformationHtml() {
@@ -389,9 +382,7 @@ public class Emudata {
 	public static UserCartola getUserCartola() {
 		
 		List<UserCartolaMovimiento> movimientos = new ArrayList<>();
-		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "REDCOMPRA", "Abono", 1158, 40158));
-		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "MASTERCARD NACIONAL PLATINIUM	", "Abono", 3189, 40158));
-		movimientos.add(new UserCartolaMovimiento("13 - 06 - 2018", "SCOTIACLUB GRANDES TIENDAS Y ZAPATERIAS", "Cargo", -11330, 40158));
+
 		
 		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
