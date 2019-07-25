@@ -1,36 +1,29 @@
 package com.appcms.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class TarjetaCliente {
-	int id;
-	String nombre;
-	String codigo;
 	
-	public TarjetaCliente() {
-		super();
+	@JsonProperty("card_number")
+	String numero;
+	
+	@JsonProperty("card_key")
+	String key;
+	
+	public String getNumero() {
+		return numero;
 	}
-	public TarjetaCliente(int id, String nombre, String codigo) {
-		super();
-		this.id = id;
-		this.nombre = nombre;
-		this.codigo = codigo;
+	
+	public void setNumero(String numero) {
+		this.numero = numero;
 	}
-	public int getId() {
-		return id;
+	
+	public String getKey() {
+		return key;
 	}
-	public void setId(int id) {
-		this.id = id;
-	}
-	public String getNombre() {
-		return nombre;
-	}
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-	public String getCodigo() {
-		return codigo;
-	}
-	public void setCodigo(String codigo) {
-		this.codigo = codigo;
+	
+	public void setKey(String key) {
+		this.key = key;
 	}
 
 }

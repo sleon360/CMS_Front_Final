@@ -320,13 +320,6 @@ public class Emudata {
 			}
 		 
 		 return catelistResult;
-	} 
-	
-	public static List<TarjetaCliente> getTarjetasCliente() {
-		 List<TarjetaCliente> catelist =  new ArrayList<>();
-		 catelist.add( new TarjetaCliente(1, "Master-Card", "Tarjeta xxxx 1234") );
-		 catelist.add( new TarjetaCliente(2, "Master-Card", "Tarjeta xxxx 5678") );
-		 return catelist;
 	}
 	
 	public static Information getInformationHtml() {

@@ -23,7 +23,7 @@ public class Scsubmenu {
 	public Scinformacionsubmenu informationsubmenu = null;
 	public List<ProductoTipoLike> productosLikeLista = new ArrayList<>();
 	public List<ProductoCategoria> categoriaProductoLista = new ArrayList<>();
-	public List<TarjetaCliente> TarjetaClienteLista = new ArrayList<>();
+	public List<TarjetaCliente> tarjetasCliente = new ArrayList<>();
 	public Information informationHtml = null;
 	boolean visibleTop = true;
 	boolean visibleOnlyLogin = false;
@@ -226,7 +226,7 @@ public class Scsubmenu {
 				+ ", descripcion=" + descripcion + ", fecha_creacion=" + fecha_creacion + ", fecha_modificacion="
 				+ fecha_modificacion + ", estado=" + estado + ", informationsubmenu=" + informationsubmenu
 				+ ", productosLikeLista=" + productosLikeLista + ", categoriaProductoLista=" + categoriaProductoLista
-				+ ", TarjetaClienteLista=" + TarjetaClienteLista + ", informationHtml=" + informationHtml
+				+ ", TarjetaClienteLista=" + tarjetasCliente + ", informationHtml=" + informationHtml
 				+ ", visibleTop=" + visibleTop + ", visibleOnlyLogin=" + visibleOnlyLogin + "]";
 	}
 

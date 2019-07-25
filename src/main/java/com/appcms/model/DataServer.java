@@ -40,6 +40,7 @@ import com.appcms.entity.Scinformacionsubmenu;
 import com.appcms.entity.Scmenu;
 import com.appcms.entity.Scotiauser;
 import com.appcms.entity.StockTicket;
+import com.appcms.entity.Tarjetas;
 import com.appcms.entity.UserCartola;
 import com.appcms.entity.UserCartolaMovimiento;
 import com.appcms.entity.UserCupon;
@@ -393,7 +394,6 @@ public class DataServer {
 	}
 
 	public String setReward(CustomerReward reward, String nombreTicket, String rut, HttpServletRequest rq) {
-		System.out.println("Cambiando puntos");
 
 		HttpHeaders headers = new HttpHeaders();
 
@@ -567,6 +567,7 @@ public class DataServer {
 		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("Authorization", "Bearer " + credencialesEntity.getTOKENONE());
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
 		try {
 			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/points",
@@ -694,6 +695,27 @@ public class DataServer {
 			return responsenull;
 		}
 
+	}
+	
+	public Tarjetas loadUserTarjetas() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("Authorization", "Bearer " + credencialesEntity.getTOKENONE());
+		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
+		try {
+			ResponseEntity<Tarjetas> tarjetasResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/cards",
+					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Tarjetas.class);
+			System.out.println(tarjetasResponseEntity.getBody());
+			return tarjetasResponseEntity.getBody();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			Tarjetas tarjetas = new Tarjetas();
+			tarjetas.setTarjetasCliente(new ArrayList<>());
+			tarjetas.setTipoCliente("NORMAL");
+			return tarjetas;
+		}
 	}
 
 }
