@@ -184,16 +184,8 @@ public class routes {
 //		return "error";
 	}
 
-	@RequestMapping("/login")
-	public ModelAndView login(HttpServletRequest rq) {
-		ViewApp vi = new ViewApp(rq, apiUrl);
-		vi.addView("header");
-		vi.addView("login");
-		ModelAndView mav = new ModelAndView(vi.render());
-		return mav;
-	}
 
-	@RequestMapping("/logout")
+	@GetMapping("/logout")
 	public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth != null) {
@@ -218,7 +210,7 @@ public class routes {
 
 	@RequestMapping("/")
 	public ModelAndView home(HttpServletRequest rq) {
-		// return new ModelAndView("redirect:/home");
+		// return new ModelAndView("redirect:/home");	
 		ViewApp vi = new ViewApp(rq, apiUrl);
 		vi.addView("head");
 		vi.addView("index");
@@ -472,7 +464,7 @@ public class routes {
 		if (!resolver.isAnonymous(auth)) {
 			credentialUser = (CredencialesEntity) auth.getPrincipal();
 		} else {
-			System.out.println("User no login");
+			System.out.println("User no login, redirect");
 			return new ModelAndView("redirect:" + referer + "?login");
 		}
 
@@ -603,6 +595,7 @@ public class routes {
 			break;
 		case 5: // TIPO CANJE CON CATEGORIAS
 			if (producto.getActionx().equalsIgnoreCase("finish")) {
+				
 				mav.addObject("canjeExito", true);
 			} else {
 				producto.setActionx("finish");
@@ -612,13 +605,17 @@ public class routes {
 
 			break;
 		case 6: // TIPO CANJE CON CATEGORIAS PARA FORMULARIO
+			System.out.println("canje T6");
 			if (producto.getActionx().equalsIgnoreCase("finish")) {
-				mav.addObject("canjeExito", true);
+				return new ModelAndView("redirect:/404");
+//				mav.addObject("canjeExito", true);
 			} else {
+//				return new ModelAndView("redirect:/404");
 				producto.setActionx("finish");
 			}
 
 			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto(), rq);// Emudata.getProductoSearchById(producto.getIdProducto());
+			
 			mav.addObject("producto", producto);
 			break;
 		case 7: // TIPO CANJE CASHBACK

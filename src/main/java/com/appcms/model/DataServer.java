@@ -177,12 +177,12 @@ public class DataServer {
 		RestTemplate restTemplate = new RestTemplate();
 
 		String url = apiUrl + "/get/productosSubmenuCategoria/" + categoria + "/" + idsubmenu;
-
+		System.out.println("strreq: "+apiUrl + "/get/productosSubmenuCategoria/" + categoria + "/" + idsubmenu);
 		ResponseEntity<List<ProductoTipoLike>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 				new ParameterizedTypeReference<List<ProductoTipoLike>>() {
 				});
 
-		System.out.println("requestxn: " + xresponse.getBody());
+		System.out.println("requestxn: " + xresponse.getBody().toString());
 
 		if (xresponse.getStatusCodeValue() == 200) {
 			return xresponse.getBody();

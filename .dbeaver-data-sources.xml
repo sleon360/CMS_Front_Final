@@ -38,7 +38,7 @@
 		</connection>
 	</data-source>
 	<data-source id="microsoft-16a459b15c9-360fab74e68a2a6a" provider="sqlserver" driver="microsoft" name="MS SQL Server - cms360 Enmanuel" save-password="true" read-only="false">
-		<connection host="192.168.248.27" port="1433" server="" database="cms360" url="jdbc:sqlserver://;serverName=192.168.248.27;databaseName=cms360" user="sa" password="QlZVQKA=" type="dev">
+		<connection host="10.235.211.33" port="1433" server="" database="cms360" url="jdbc:sqlserver://;serverName=10.235.211.33;databaseName=cms360" user="sa" password="QlZVQKA=" type="dev">
 			<property name="trustServerCertificate" value="true"/>
 			<provider-property name="@dbeaver-authentication@" value="SQL_SERVER_PASSWORD"/>
 			<provider-property name="@dbeaver-show-all-schemas@" value="false"/>
