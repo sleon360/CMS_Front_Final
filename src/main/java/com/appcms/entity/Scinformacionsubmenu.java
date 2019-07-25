@@ -3,10 +3,15 @@ package com.appcms.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Scinformacionsubmenu {
 
+	@JsonProperty("id_scsubmenu_informacion")
 	int id;
 	int id_submenu;
+	@JsonProperty("submenu_strindex")
+	String submenuStrindex;
 	String nombre;
 	int tipo;
 	String imagen;
@@ -86,6 +91,15 @@ public class Scinformacionsubmenu {
 	public void setId_submenu(int id_submenu) {
 		this.id_submenu = id_submenu;
 	}
+	
+	public String getSubmenuStrindex() {
+		return submenuStrindex;
+	}
+
+	public void setSubmenuStrindex(String submenuStrindex) {
+		this.submenuStrindex = submenuStrindex;
+	}
+
 	public String getNombre() {
 		return nombre;
 	}
