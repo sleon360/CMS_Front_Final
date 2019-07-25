@@ -766,19 +766,18 @@ public class DataServer {
 	}
 	
 	public Tarjetas loadUserTarjetas() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
-		RestTemplate restTemplate = new RestTemplate();
-		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.set("Authorization", "Bearer " + credencialesEntity.getTOKENONE());
-		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
+		//Se coloca el try acá arriba porque en caso de un usuario no autenticado, no se deben mostrar tarjetas
 		try {
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+			RestTemplate restTemplate = new RestTemplate();
+			HttpHeaders httpHeaders = new HttpHeaders();
+			httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
+		
 			ResponseEntity<Tarjetas> tarjetasResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/cards",
 					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Tarjetas.class);
-			System.out.println(tarjetasResponseEntity.getBody());
 			return tarjetasResponseEntity.getBody();
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
 			Tarjetas tarjetas = new Tarjetas();
 			tarjetas.setTarjetasCliente(new ArrayList<>());
 			tarjetas.setTipoCliente("NORMAL");
