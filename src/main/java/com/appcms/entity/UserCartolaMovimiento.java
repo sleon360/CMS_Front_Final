@@ -17,14 +17,6 @@ public class UserCartolaMovimiento {
 	
 	@JsonProperty("points_balance")
 	int pointsBalance;
-	
-	public UserCartolaMovimiento(String date, String description, String type, int points, int pointsBalance) {
-		this.date = date;
-		this.description = description;
-		this.type = type;
-		this.points = points;
-		this.pointsBalance = pointsBalance;
-	}
 
 	public String getDate() {
 		return date;

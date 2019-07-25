@@ -7,6 +7,7 @@ import java.net.URL;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -522,16 +523,12 @@ public class DataServer {
 		Points points = new Points();
 		SimpleDateFormat formatter = new SimpleDateFormat("'al' dd 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
 		Date date = new Date(System.currentTimeMillis());
-		
 		String fechaActual = formatter.format(date);
-		System.out.println(fechaActual);
 		try {
-			System.out.println("Consultando puntos a la URL " + apiUrl + "/v1/customer/points");
 			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/points",
 					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
 			points = pointsResponseEntity.getBody();
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
 			points.setAvailablePoints(-1);
 			ExpiringPoints expiringPoints = new ExpiringPoints();
 			expiringPoints.setPoints(-1);
@@ -542,9 +539,10 @@ public class DataServer {
 
 		/* SE RECUPERAN LOS MOVIMIENTOS DE CLIENTE */
 		List<UserCartolaMovimiento> movimientos = new ArrayList<>();
+		int year = Calendar.getInstance().get(Calendar.YEAR);
 		try {
 			ResponseEntity<List<UserCartolaMovimiento>> movementsResponseEntity = restTemplate.exchange(
-					apiUrl + "/v1/customer/exchanges", HttpMethod.GET, new HttpEntity<Object>(httpHeaders),
+					apiUrl + "/v1/customer/transactions?year=" + year, HttpMethod.GET, new HttpEntity<Object>(httpHeaders),
 					new ParameterizedTypeReference<List<UserCartolaMovimiento>>() {
 					});
 			movimientos = movementsResponseEntity.getBody();
