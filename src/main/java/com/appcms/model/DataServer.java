@@ -239,14 +239,16 @@ public class DataServer {
 		
 		ArrayList<FormatoDetalle> detalles = new ArrayList<>();
 		ArrayList<FormatoDetalle> direcciones = new ArrayList<>();
-		for (int i = 0; i < formatosDetalles.size(); i++) {
-			FormatoDetalle formatoDetalle = formatosDetalles.get(i);
-			if (formatoDetalle.getTipo() == 1) { //Si es tipo 1 es detalle
-				detalles.add(formatoDetalle);
-			} else { // Si es tipo 2 (u otro) es direccion
-				direcciones.add(formatoDetalle);
+		if (formatosDetalles != null) {
+			for (int i = 0; i < formatosDetalles.size(); i++) {
+				FormatoDetalle formatoDetalle = formatosDetalles.get(i);
+				if (formatoDetalle.getTipo() == 1) { //Si es tipo 1 es detalle
+					detalles.add(formatoDetalle);
+				} else { // Si es tipo 2 (u otro) es direccion
+					direcciones.add(formatoDetalle);
+				}
 			}
-		}
+		}		
 		producto.setDetalles(detalles);
 		producto.setDirecciones(direcciones);
 		if (xresponse.getStatusCodeValue() == 200) {
