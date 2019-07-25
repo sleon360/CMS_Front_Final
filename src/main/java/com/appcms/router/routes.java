@@ -184,7 +184,6 @@ public class routes {
 //		return "error";
 	}
 
-
 	@GetMapping("/logout")
 	public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
