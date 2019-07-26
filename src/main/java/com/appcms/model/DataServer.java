@@ -143,8 +143,6 @@ public class DataServer {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		RestAuthentication xrestAuthentication = new RestAuthentication();
-//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
 		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
@@ -170,8 +168,6 @@ public class DataServer {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		RestAuthentication xrestAuthentication = new RestAuthentication();
-//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
 		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
@@ -196,8 +192,6 @@ public class DataServer {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		RestAuthentication xrestAuthentication = new RestAuthentication();
-//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
 		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
@@ -222,8 +216,6 @@ public class DataServer {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		RestAuthentication xrestAuthentication = new RestAuthentication();
-//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
 		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
@@ -267,8 +259,6 @@ public class DataServer {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		RestAuthentication xrestAuthentication = new RestAuthentication();
-//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
 		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
@@ -294,8 +284,6 @@ public class DataServer {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		RestAuthentication xrestAuthentication = new RestAuthentication();
-//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
 		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
@@ -320,8 +308,6 @@ public class DataServer {
 		System.out.println(this.apiUrl);
 		HttpHeaders headers = new HttpHeaders();
 
-		RestAuthentication xrestAuthentication = new RestAuthentication();
-//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
 		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
@@ -347,8 +333,6 @@ public class DataServer {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		RestAuthentication xrestAuthentication = new RestAuthentication();
-//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
 		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
@@ -372,8 +356,6 @@ public class DataServer {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		RestAuthentication xrestAuthentication = new RestAuthentication();
-//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
 		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
@@ -397,8 +379,6 @@ public class DataServer {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		RestAuthentication xrestAuthentication = new RestAuthentication();
-//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
 		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 
 		String url = apiUrl + "/customerreward/set";
@@ -445,8 +425,6 @@ public class DataServer {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		RestAuthentication xrestAuthentication = new RestAuthentication();
-//			System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
 		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
@@ -474,8 +452,6 @@ public class DataServer {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		RestAuthentication xrestAuthentication = new RestAuthentication();
-//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
 		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 
 		String url = apiUrl + "/v1/login_customer";
@@ -616,11 +592,15 @@ public class DataServer {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+		headers.set("Authorization", "Bearer " + credencialesEntity.getTOKENONE());
+		headers.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
+		
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = apiUrl + "/get/usercuponjosticket/" + idUser + "/" + idReward;
+		String url = apiUrl + "v1/customer/" + idUser + "/cupones/" + idReward;
 
 		ResponseEntity<UserCupon> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity, UserCupon.class);
 
@@ -739,8 +719,6 @@ public class DataServer {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		RestAuthentication xrestAuthentication = new RestAuthentication();
-//			System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
 		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
