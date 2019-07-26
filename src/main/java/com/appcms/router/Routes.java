@@ -68,7 +68,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
 @Controller
-public class routes {
+public class Routes {
 ///
 	public final String csrf_token = "afxn123xnx360";
 
@@ -78,7 +78,7 @@ public class routes {
 	DataServer dtserver;
 
 	@Autowired
-	public routes(@Qualifier("apiUrl") String apiUrl) {
+	public Routes(@Qualifier("apiUrl") String apiUrl) {
 		this.apiUrl = apiUrl;
 	}
 
