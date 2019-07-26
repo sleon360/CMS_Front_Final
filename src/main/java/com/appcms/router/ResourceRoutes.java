@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.appcms.entity.ResourceEntity;
 
@@ -36,7 +35,6 @@ public class ResourceRoutes {
 	public Object resource(@PathVariable("resourceid") String resourceName, @PathVariable("folder") String folder,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
-
 			HttpHeaders headers = new HttpHeaders();
 			headers.set("Authorization", request.getSession().getAttribute("TOKENONE").toString());
 			
@@ -47,8 +45,6 @@ public class ResourceRoutes {
 			if (xresponse.getStatusCode() == HttpStatus.OK) {
 				ResourceEntity rEntity = xresponse.getBody();
 				return ResponseEntity.ok().contentType(MediaType.parseMediaType(rEntity.getMime_resource()))
-						// .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +
-						// rEntity.getNombre_resource() + "\"")
 						.body(new ByteArrayResource(rEntity.getData()));
 			} else {
 				request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);

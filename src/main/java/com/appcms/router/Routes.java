@@ -917,36 +917,19 @@ public class Routes {
 //	    }
 //	}
 
-	@RequestMapping(value = "/getcupon/{id_rew}", method = RequestMethod.GET)
-	@ResponseBody
+	@GetMapping("/getcupon/{id_rew}")
 	public Object getFile(@PathVariable("id_rew") int id_rew, HttpServletRequest rq,
 			@RequestHeader(value = "referer", required = false) final String referer) {
-
 		CredencialesEntity credentialUser = new CredencialesEntity();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
 		if (!resolver.isAnonymous(auth)) {
 			credentialUser = (CredencialesEntity) auth.getPrincipal();
 		} else {
-			System.out.println("User no login");
 			return new ModelAndView("redirect: /?login");
 		}
-
-//		 byte[] response =  null;
-		byte[] response = dtserver.loadCuponPdf(credentialUser.getScotiauser().getId_cliente(), id_rew, rq);
-
-		return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/pdf"))
-				// .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +
-				// rEntity.getNombre_resource() + "\"")
-				.body(new ByteArrayResource(response));
-
-//	    return new FileSystemResource("https://www.soundczech.cz/temp/lorem-ipsum.pdf"); 
-		
-		
-		
-		
-		
-
+		byte[] response = dtserver.loadCuponAsPdf(credentialUser.getScotiauser().getId_cliente(), id_rew, rq);
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).body(new ByteArrayResource(response));
 	}
 
 }
