@@ -589,13 +589,14 @@ public class DataServer {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		RestAuthentication xrestAuthentication = new RestAuthentication();
-//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+		headers.set("Authorization", "Bearer " + credencialesEntity.getTOKENONE());
+		headers.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = apiUrl + "/get/usercupones/" + idUser;
+		String url = apiUrl + "v1//get/" + idUser + "/cupones"  ;
 
 		ResponseEntity<List<UserCupon>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 				new ParameterizedTypeReference<List<UserCupon>>() {
@@ -615,8 +616,6 @@ public class DataServer {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		RestAuthentication xrestAuthentication = new RestAuthentication();
-//		System.out.println(xrestAuthentication.getTOKENONE() + " 666666666666666666666666666666666666666xn");
 		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
@@ -772,8 +771,8 @@ public class DataServer {
 			CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
 			RestTemplate restTemplate = new RestTemplate();
 			HttpHeaders httpHeaders = new HttpHeaders();
-			httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
-		
+			httpHeaders.set("Authorization", credencialesEntity.getTOKENTWO());
+			httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());		
 			ResponseEntity<Tarjetas> tarjetasResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/cards",
 					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Tarjetas.class);
 			return tarjetasResponseEntity.getBody();
