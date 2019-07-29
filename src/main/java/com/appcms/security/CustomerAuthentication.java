@@ -44,7 +44,7 @@ public class CustomerAuthentication {
 			ResponseEntity<CustomerEntity> response = restTemplate.exchange(
 					apiUrl + "/v1/login_customer", HttpMethod.POST, httpEntity,
 					CustomerEntity.class);
-			TOKENTWO = response.getHeaders().getFirst("Authorization");
+			TOKENTWO = response.getHeaders().getFirst("Authorization").replace("Bearer ", "");
 			CustomerEntity customerEntity = response.getBody();
 			Scotiauser scotiauser = new Scotiauser(customerEntity.getId(), customerEntity.getRut(),
 					customerEntity.getPrimerNombre(), customerEntity.getPrimerApellido(), customerEntity.getEmail(),

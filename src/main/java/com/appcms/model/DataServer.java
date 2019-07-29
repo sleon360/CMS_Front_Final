@@ -503,6 +503,7 @@ public class DataServer {
 					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
 			points = pointsResponseEntity.getBody();
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 			points.setAvailablePoints(-1);
 			ExpiringPoints expiringPoints = new ExpiringPoints();
 			expiringPoints.setPoints(-1);
