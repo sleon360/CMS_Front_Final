@@ -17,6 +17,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,6 +41,7 @@ import com.appcms.entity.Tarjetas;
 import com.appcms.entity.UserCartola;
 import com.appcms.entity.UserCartolaMovimiento;
 import com.appcms.entity.UserCupon;
+import com.appcms.entity.UserGusto;
 import com.appcms.entity.points.ExpiringPoints;
 import com.appcms.entity.points.Points;
 import com.appcms.security.RestAuthentication;
@@ -76,7 +78,7 @@ public class DataServer {
 		}
 
 	}
-	
+
 	@Cacheable(cacheNames = "menu")
 	public List<Scmenu> loadAllScmenu(HttpServletRequest rq) {
 		HttpHeaders headers = new HttpHeaders();
@@ -169,7 +171,7 @@ public class DataServer {
 		RestTemplate restTemplate = new RestTemplate();
 
 		String url = apiUrl + "/get/productosSubmenuCategoria/" + categoria + "/" + idsubmenu;
-		System.out.println("strreq: "+apiUrl + "/get/productosSubmenuCategoria/" + categoria + "/" + idsubmenu);
+		System.out.println("strreq: " + apiUrl + "/get/productosSubmenuCategoria/" + categoria + "/" + idsubmenu);
 		ResponseEntity<List<ProductoTipoLike>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 				new ParameterizedTypeReference<List<ProductoTipoLike>>() {
 				});
@@ -226,19 +228,19 @@ public class DataServer {
 
 		ProductoTipoLike producto = xresponse.getBody();
 		List<FormatoDetalle> formatosDetalles = producto.getFormatosDetalles();
-		
+
 		ArrayList<FormatoDetalle> detalles = new ArrayList<>();
 		ArrayList<FormatoDetalle> direcciones = new ArrayList<>();
 		if (formatosDetalles != null) {
 			for (int i = 0; i < formatosDetalles.size(); i++) {
 				FormatoDetalle formatoDetalle = formatosDetalles.get(i);
-				if (formatoDetalle.getTipo() == 1) { //Si es tipo 1 es detalle
+				if (formatoDetalle.getTipo() == 1) { // Si es tipo 1 es detalle
 					detalles.add(formatoDetalle);
 				} else { // Si es tipo 2 (u otro) es direccion
 					direcciones.add(formatoDetalle);
 				}
 			}
-		}		
+		}
 		producto.setDetalles(detalles);
 		producto.setDirecciones(direcciones);
 		if (xresponse.getStatusCodeValue() == 200) {
@@ -514,8 +516,8 @@ public class DataServer {
 		int year = Calendar.getInstance().get(Calendar.YEAR);
 		try {
 			ResponseEntity<List<UserCartolaMovimiento>> movementsResponseEntity = restTemplate.exchange(
-					apiUrl + "/v1/customer/transactions?year=" + year, HttpMethod.GET, new HttpEntity<Object>(httpHeaders),
-					new ParameterizedTypeReference<List<UserCartolaMovimiento>>() {
+					apiUrl + "/v1/customer/transactions?year=" + year, HttpMethod.GET,
+					new HttpEntity<Object>(httpHeaders), new ParameterizedTypeReference<List<UserCartolaMovimiento>>() {
 					});
 			movimientos = movementsResponseEntity.getBody();
 		} catch (Exception e) {
@@ -568,7 +570,7 @@ public class DataServer {
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = apiUrl + "/v1/customer/" + idUser + "/cupones"  ;
+		String url = apiUrl + "/v1/customer/" + idUser + "/cupones";
 
 		System.out.println("URL DE CONSULTA:" + url);
 		ResponseEntity<List<UserCupon>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
@@ -593,7 +595,7 @@ public class DataServer {
 		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
 		headers.set("Authorization", "Bearer " + credencialesEntity.getTOKENONE());
 		headers.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
-		
+
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -601,7 +603,7 @@ public class DataServer {
 
 		ResponseEntity<byte[]> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity, byte[].class);
 		return xresponse.getBody();
-	}	
+	}
 
 	public StockTicket loadStockTicket(String empresa, HttpServletRequest rq) {
 
@@ -629,16 +631,17 @@ public class DataServer {
 		}
 
 	}
-	
+
 	public Tarjetas loadUserTarjetas() {
-		//Se coloca el try acá arriba porque en caso de un usuario no autenticado, no se deben mostrar tarjetas
+		// Se coloca el try acá arriba porque en caso de un usuario no autenticado, no
+		// se deben mostrar tarjetas
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
 			RestTemplate restTemplate = new RestTemplate();
 			HttpHeaders httpHeaders = new HttpHeaders();
-			httpHeaders.set("Authorization", credencialesEntity.getTOKENTWO());
-			httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());		
+			httpHeaders.set("Authorization", credencialesEntity.getTOKENONE());
+			httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
 			ResponseEntity<Tarjetas> tarjetasResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/cards",
 					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Tarjetas.class);
 			return tarjetasResponseEntity.getBody();
@@ -648,6 +651,69 @@ public class DataServer {
 			tarjetas.setTipoCliente("NORMAL");
 			return tarjetas;
 		}
+	}
+
+	public List<UserGusto> loadGustos() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("Authorization", credencialesEntity.getTOKENONE());
+		try {
+			ResponseEntity<List<UserGusto>> gustosResponseEntity = restTemplate.exchange(
+					apiUrl + "/active_customer_gustos", HttpMethod.GET, new HttpEntity<Object>(httpHeaders),
+					new ParameterizedTypeReference<List<UserGusto>>() {
+					});
+			return gustosResponseEntity.getBody();
+		} catch (Exception e) {
+			return new ArrayList<>();
+		}
+	}
+
+	public List<UserGusto> loadCustomerGustos() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("Authorization", credencialesEntity.getTOKENONE());
+		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
+		int id = credencialesEntity.getScotiauser().getId_cliente();
+		try {
+			ResponseEntity<List<UserGusto>> customerGustosResponseEntity = restTemplate.exchange(
+					apiUrl + "/v1/customer/" + id + "/customer_gustos", HttpMethod.GET,
+					new HttpEntity<Object>(httpHeaders), new ParameterizedTypeReference<List<UserGusto>>() {
+					});
+			return customerGustosResponseEntity.getBody();
+		} catch (Exception e) {
+			return new ArrayList<>();
+		}
+	}
+
+	public String saveCustomerGustos(String[] gustos) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("Authorization", credencialesEntity.getTOKENONE());
+		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
+		int id = credencialesEntity.getScotiauser().getId_cliente();
+
+		httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		for (int i = 0; i < gustos.length; i++) {
+			map.add("gusto", gustos[i]);
+		}
+		System.out.println("Consultando al back");
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map,httpHeaders);
+		try {
+			ResponseEntity<String> customerGustosResponseEntity = restTemplate
+				.postForEntity(apiUrl + "/v1/customer/" + id + "/customer_gustos/save", request, String.class);
+			return customerGustosResponseEntity.getBody();
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			return null;
+		}
+		
 	}
 
 }

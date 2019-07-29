@@ -3,6 +3,8 @@ package com.appcms.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Scsubmenu {
 
 	int id;
@@ -12,6 +14,7 @@ public class Scsubmenu {
 	String color;
 	String color_hover;
 	String color_borde;
+	@JsonProperty("id_tipo_submenu")
 	int tipo;
 	String icono;
 	String imagen;

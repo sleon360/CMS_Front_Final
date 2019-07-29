@@ -12,6 +12,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.naming.NamingException;
@@ -44,6 +45,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.ModelAndView;
@@ -60,6 +62,7 @@ import com.appcms.entity.Scotiauser;
 import com.appcms.entity.Scsubmenu;
 import com.appcms.entity.StockTicket;
 import com.appcms.entity.Tarjetas;
+import com.appcms.entity.UserGusto;
 import com.appcms.model.DataServer;
 import com.appcms.model.Emudata;
 import com.appcms.security.ErrorControllerExection;
@@ -694,7 +697,6 @@ public class Routes {
 	public ModelAndView menuUser(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu,
 			HttpServletRequest rq, @RequestHeader(value = "referer", required = false) final String referer)
 			throws UnsupportedEncodingException {
-		System.out.println("Dentro de controlador");
 		
 		CredencialesEntity credentialUser = new CredencialesEntity();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -767,8 +769,19 @@ public class Routes {
 			vi.addView("mis-preferencias");
 			vi.addView("FOOTER");
 			mav = new ModelAndView(vi.render());
-			mav.addObject("gustos", Emudata.getGustos());
-			mav.addObject("gustosUser", Emudata.getGustos());
+			List<UserGusto> gustos = dtserver.loadGustos();
+			List<UserGusto> gustosCliente = dtserver.loadCustomerGustos();
+			for (int i = 0; i < gustos.size(); i++) {
+				UserGusto gusto = gustos.get(i);
+				for (int j = 0; j < gustosCliente.size(); j++) {
+					UserGusto gustoCliente = gustosCliente.get(j);
+					if (gusto.getId() == gustoCliente.getId()) {
+						gusto.setGustado(true);
+						break;
+					}
+				}
+			}
+			mav.addObject("gustos", gustos);
 			break;
 		case 24: // information
 			System.out.println("Tipo 24"); // TIPO TRANSFERIR
@@ -878,44 +891,11 @@ public class Routes {
 
 		ModelAndView mav = new ModelAndView(vi.render());
 
-//		Information informationhtml = new Information();
-
-//		informationhtml = dtserver.loadInformationByName(nombreInformation);
-//		System.out.println("inforxn"+informationhtml); 
-//		if(informationhtml == null) {
-//			return new ModelAndView("redirect:/404");
-//		}
-//		
-//		mav.addObject("informationhtml", informationhtml);
-
 		this.setHeaderx(mav, rq);
 
 		return mav;
 
 	}
-
-//	@RequestMapping(value = "/getpdf/{pdf}", method = RequestMethod.GET)
-//	public  void getPdf(@PathVariable("pdf") String fileName, HttpServletResponse response) throws IOException {
-//
-//	    try {
-//	        File file = new File(FileConstant.BOOKINGPDFFILE + fileName+ ".pdf");
-//
-//	        if (file.exists()) {
-//	            // here I use Commons IO API to copy this file to the response output stream, I don't know which API you use.
-//	            FileUtils.copyFile(file, response.getOutputStream());
-//
-//	            // here we define the content of this file to tell the browser how to handle it
-//	            response.setContentType("application/pdf");
-//	            response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".pdf");
-//	            response.flushBuffer();
-//	        } else {
-//	            System.out.println("Contract Not Found");
-//	        }
-//	    } catch (IOException exception) {
-//	        System.out.println("Contract Not Found");
-//	        System.out.println(exception.getMessage());
-//	    }
-//	}
 
 	@GetMapping("/getcupon/{id_rew}")
 	public Object getFile(@PathVariable("id_rew") int id_rew, HttpServletRequest rq,
@@ -930,6 +910,17 @@ public class Routes {
 		}
 		byte[] response = dtserver.loadCuponAsPdf(credentialUser.getScotiauser().getId_cliente(), id_rew, rq);
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).body(new ByteArrayResource(response));
+	}
+	
+	@PostMapping("/gustos/actualizar")
+	public ModelAndView actualizarGustos(@RequestParam(value = "gusto", required = false) String[] gustos) {
+		System.out.println("Se llega al front");
+		if (gustos == null) {
+			gustos = new String[0];
+		}
+		System.out.println("consultando al dtserver");
+		String success = dtserver.saveCustomerGustos(gustos);
+		return null;
 	}
 
 }

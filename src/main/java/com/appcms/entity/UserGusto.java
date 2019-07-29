@@ -4,6 +4,7 @@ public class UserGusto {
 	int id;
 	String nombre;
 	String imagen;
+	boolean gustado = false;
 
 	public UserGusto() {
 		super();
@@ -38,6 +39,14 @@ public class UserGusto {
 
 	public void setImagen(String imagen) {
 		this.imagen = imagen;
+	}
+
+	public boolean isGustado() {
+		return gustado;
+	}
+
+	public void setGustado(boolean gustado) {
+		this.gustado = gustado;
 	}
 
 }
