@@ -107,7 +107,7 @@ public class Routes {
 		// mav.addObject("usuario",Emudata.getUsusarioOff());
 	}
 
-	@RequestMapping("/404")
+	@RequestMapping("/404", method = GET)
 	public ModelAndView notfound(HttpServletRequest rq) {
 
 		ViewApp vi = new ViewApp(rq, apiUrl);
@@ -126,7 +126,7 @@ public class Routes {
 //	@ExceptionHandler(value = {Exception.class,MultipartException.class,NestedServletException.class,NestedServletException.class,ConnectException.class })
 	@ExceptionHandler(value = { Exception.class, MultipartException.class, NestedServletException.class,
 			NestedServletException.class, ConnectException.class, RequestRejectedException.class })
-	@RequestMapping("/errores")
+	@RequestMapping("/errores", method = GET)
 	public String error(HttpServletRequest rq) {
 		try {
 			int code = (Integer) rq.getAttribute("javax.servlet.error.status_code");
@@ -201,7 +201,7 @@ public class Routes {
 		return "redirect:/";
 	}
 
-	@RequestMapping("/admin")
+	@RequestMapping("/admin", method = GET)
 	public ModelAndView admin(HttpServletRequest rq) {
 		ViewApp vi = new ViewApp(rq, apiUrl);
 		vi.addView("header");
@@ -210,7 +210,7 @@ public class Routes {
 		return mav;
 	}
 
-	@RequestMapping("/")
+	@RequestMapping("/", method = GET)
 	public ModelAndView home(HttpServletRequest rq) {
 		// return new ModelAndView("redirect:/home");	
 		ViewApp vi = new ViewApp(rq, apiUrl);
@@ -312,7 +312,7 @@ public class Routes {
 		return mav;
 	}
 
-	@RequestMapping("/categoria/{menu}/{submenu}/productos/{categoria}")
+	@RequestMapping("/categoria/{menu}/{submenu}/productos/{categoria}", method = GET)
 	public ModelAndView menuProductoCategoria(@PathVariable("menu") String menu,
 			@PathVariable("submenu") String submenu, @PathVariable("categoria") String categoria, HttpServletRequest rq)
 			throws UnsupportedEncodingException {
