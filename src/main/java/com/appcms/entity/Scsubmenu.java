@@ -30,7 +30,8 @@ public class Scsubmenu {
 	public Information informationHtml = null;
 	boolean visibleTop = true;
 	boolean visibleOnlyLogin = false;
-
+	public List<TagProducto> tagsProductos = new ArrayList<>();
+	
 	public Scsubmenu() {
 		super();
 	}

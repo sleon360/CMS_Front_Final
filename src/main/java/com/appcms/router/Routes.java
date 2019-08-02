@@ -291,6 +291,8 @@ public class Routes {
 		case 8:
 			System.out.println("Tipo 8"); // TIPO CANJE DESCUENTOS
 			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId(), rq);// Emudata.getProductosLikeTest();
+			//scmenuurlsub.tagsProductos = dtserver.loadTagsProductos(rq);// Emudata.getProductosLikeTest();
+			//System.out.println("<<<<< " + scmenuurlsub.tagsProductos + " >>>>>");
 			break;
 		case 9:
 			System.out.println("Tipo 9"); // TIPO VISTA INFORMATION
@@ -513,6 +515,7 @@ public class Routes {
 			mav.addObject("canjeExito", true);
 			break;
 		case 4: // TIPO PRODUCTO E-COMERCE
+			System.out.println("Tipo 4");
 			// efectuar canje, datos en objeto "producto"
 
 			try {
