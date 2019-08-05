@@ -54,7 +54,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 			
 			System.out.println("TokenTwo: " + customer.getJwt().replace("Bearer ", ""));
 			if (customer != null) {
-				System.out.println("PASOLOGIN");
+				System.out.println("PASOLOGIN+++++++++++++++++++++++++++++++");
 				List<SimpleGrantedAuthority> grantedAuths = new ArrayList<>();
 				// grantedAuths.add(new SimpleGrantedAuthority("USER"));
 				grantedAuths.add(new SimpleGrantedAuthority("ROLE_ADMIN"));

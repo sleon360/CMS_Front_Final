@@ -41,10 +41,10 @@ public class CustomConfig extends WebMvcConfigurerAdapter {
 		return templateEngine;
 	}
 
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+	/*public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/WEB-INF/resources/**").addResourceLocations("/WEB-INF/resources/");
 
-	}
+*/
 
 	@Bean
 	public IDialect springSecurityDialect() {
@@ -54,9 +54,11 @@ public class CustomConfig extends WebMvcConfigurerAdapter {
 	
 	@Bean(name = "apiUrl")
     public String getApiUrl() throws NamingException {
-		Context ctx = new InitialContext();
-		String apiUrl = (String) ctx.lookup("apiUrl");
-		return apiUrl;
+		//Context ctx = new InitialContext();
+		//String apiUrl = (String) ctx.lookup("apiUrl");
+		//return apiUrl;
+		
+		return "http://142.93.62.102:9080/cmsrest";
     }
 
 }

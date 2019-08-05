@@ -2,6 +2,7 @@ package com.cms.views;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -10,21 +11,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import com.appcms.entity.ViewEntity;
+import com.appcms.security.CustomerAuthentication;
 import com.appcms.security.RestAuthentication;
 
 public class ViewApp {
 
 	StringBuilder sb = new StringBuilder("");
 	private HttpServletRequest rqx;
-	private String apiUrl;
+	private static String apiUrl;
 
-	public ViewApp(String apiUrl) {
-		this.apiUrl = apiUrl;
+	public ViewApp(@Qualifier("apiUrl") String apiUrl) {
+		ViewApp.apiUrl = apiUrl;
 	}
 
-	public ViewApp(HttpServletRequest rq, String apiUrl) {
+	public ViewApp(HttpServletRequest rq, @Qualifier("apiUrl") String apiUrl) {
 		this.rqx = rq;
-		this.apiUrl = apiUrl;
+		ViewApp.apiUrl = apiUrl;
 	}
 
 	private String loadView(String view) {

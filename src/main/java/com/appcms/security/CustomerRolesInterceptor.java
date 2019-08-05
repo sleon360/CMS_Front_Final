@@ -11,12 +11,6 @@ public class CustomerRolesInterceptor extends HandlerInterceptorAdapter {
 
  @Override
  public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object object) throws Exception {
-	 System.out.println("preROLES");
-	// String codigo=request.getHeader("AuthorizationCustomer");
-	// if (codigo == null) {
-	//	throw new ErrorControllerExection(403,"Error en AuthorizationCustomer");
-	//}
-	// return JwtUtil.getAuthenticationCutomer(request);
 	 return true;
  }
 

@@ -29,7 +29,7 @@ public class CustomerAuthentication {
 
 
 
-	static Customer CustomerAuth(String username, String password, String token) {
+	public static Customer CustomerAuth(String username, String password, String token) {
 		try {
 			String TOKENTWO;
 			HttpHeaders headers = new HttpHeaders();

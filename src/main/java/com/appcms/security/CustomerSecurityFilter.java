@@ -36,6 +36,8 @@ public class CustomerSecurityFilter extends AbstractAuthenticationProcessingFilt
 		try
 		{
 		CredencialesEntity credenciales =new CredencialesEntity();
+		
+		System.out.println("TOKEN AUTH ONE : "+request.getSession().getAttribute("TOKENONE").toString());
 		credenciales.setTOKENONE(request.getSession().getAttribute("TOKENONE").toString());
 		credenciales.setUserName(request.getParameter("username"));
 		credenciales.setPassword(request.getParameter("password"));

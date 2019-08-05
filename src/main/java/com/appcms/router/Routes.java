@@ -168,6 +168,8 @@ public class Routes {
 			}
 			}
 		} catch (Exception ex) {
+			
+			errorMsg = "Http Error Code: 500. Internal Server Error";
 
 		}
 

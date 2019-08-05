@@ -1,6 +1,7 @@
 package com.appcms.front;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
@@ -10,7 +11,8 @@ import org.springframework.context.annotation.ComponentScan;
 	    "com.appcms.front",
 	    "com.appcms.error",
 	    "com.appcms.router",
-	    "com.appcms.model"
+	    "com.appcms.model",
+	    "com.appcms.services"
 	})
 
 @SpringBootApplication
