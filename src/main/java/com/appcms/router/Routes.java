@@ -293,6 +293,8 @@ public class Routes {
 		case 8:
 			System.out.println("Tipo 8"); // TIPO CANJE DESCUENTOS
 			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId(), rq);// Emudata.getProductosLikeTest();
+			//scmenuurlsub.tagsProductos = dtserver.loadTagsProductos(rq);// Emudata.getProductosLikeTest();
+			//System.out.println("<<<<< " + scmenuurlsub.tagsProductos + " >>>>>");
 			break;
 		case 9:
 			System.out.println("Tipo 9"); // TIPO VISTA INFORMATION
@@ -440,10 +442,7 @@ public class Routes {
 		}
 
 		scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto, rq); // Emudata.getProductoSearch(producto);
-
-//		mav.addObject("csrf_token", csrf_token);
-//		mav.addObject("menuurl", scmenuurl);
-//		mav.addObject("submenuurl", scmenuurlsub);
+		
 		mav.addObject("menuurl", scmenu);
 		mav.addObject("submenuurl", scmenuurlsub);
 		mav.addObject("csrf_token", csrf_token);
@@ -518,6 +517,7 @@ public class Routes {
 			mav.addObject("canjeExito", true);
 			break;
 		case 4: // TIPO PRODUCTO E-COMERCE
+			System.out.println("Tipo 4");
 			// efectuar canje, datos en objeto "producto"
 
 			try {
@@ -607,6 +607,9 @@ public class Routes {
 			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto(), rq);// Emudata.getProductoSearchById(producto.getIdProducto());//dtserver.loadProductosDetalle(scmenuurlsub.getId());//Emudata.getProductoSearchById(producto.getIdProducto());//
 			mav.addObject("producto", producto);
 
+			System.out.println(scmenuurlsub.productosLikeLista.get(0).getEquipesos());
+			System.out.println(scmenuurlsub.productosLikeLista.get(0).getPrecio());
+			
 			break;
 		case 6: // TIPO CANJE CON CATEGORIAS PARA FORMULARIO
 			System.out.println("canje T6");
@@ -619,7 +622,8 @@ public class Routes {
 			}
 
 			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto(), rq);// Emudata.getProductoSearchById(producto.getIdProducto());
-			
+			System.out.println(scmenuurlsub.productosLikeLista.get(0).getEquipesos());
+			System.out.println(scmenuurlsub.productosLikeLista.get(0).getPrecio());
 			mav.addObject("producto", producto);
 			break;
 		case 7: // TIPO CANJE CASHBACK

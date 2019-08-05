@@ -37,6 +37,7 @@ import com.appcms.entity.Scinformacionsubmenu;
 import com.appcms.entity.Scmenu;
 import com.appcms.entity.Scotiauser;
 import com.appcms.entity.StockTicket;
+import com.appcms.entity.TagProducto;
 import com.appcms.entity.Tarjetas;
 import com.appcms.entity.UserCartola;
 import com.appcms.entity.UserCartolaMovimiento;
@@ -427,7 +428,7 @@ public class DataServer {
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = apiUrl + "/producto/get/" + idProd;
+		String url = apiUrl + "/get/detalleProducto/" + idProd;
 
 //			ResponseEntity<List<ProductoTipoLike>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 //					new ParameterizedTypeReference<List<ProductoTipoLike>>() {
@@ -715,6 +716,23 @@ public class DataServer {
 			return null;
 		}
 		
+	}
+
+	public List<TagProducto> loadTagsProductos(HttpServletRequest rq) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("Authorization", credencialesEntity.getTOKENONE());
+		try {
+			ResponseEntity<List<TagProducto>> tagsProductosResponseEntity = restTemplate.exchange(
+					apiUrl + "/tags_productos/getTop10", HttpMethod.GET, new HttpEntity<Object>(httpHeaders),
+					new ParameterizedTypeReference<List<TagProducto>>() {
+					});
+			return tagsProductosResponseEntity.getBody();
+		} catch (Exception e) {
+			return new ArrayList<>();
+		}
 	}
 
 }
