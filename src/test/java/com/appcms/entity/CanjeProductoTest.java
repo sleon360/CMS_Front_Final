@@ -23,6 +23,7 @@ public class CanjeProductoTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
+	
 
 	@Before
 	public void setUp() throws Exception {

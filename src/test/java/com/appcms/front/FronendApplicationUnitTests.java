@@ -143,7 +143,6 @@ public class FronendApplicationUnitTests {
 
 	
 	
-	
 	@Test
 	public void login() throws Exception
 	{
