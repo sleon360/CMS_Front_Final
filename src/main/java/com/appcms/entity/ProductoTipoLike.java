@@ -1,5 +1,6 @@
 package com.appcms.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -28,8 +29,8 @@ public class ProductoTipoLike {
 	String tutulo_direcciones;
 	@JsonProperty("formatos_detalles")
 	public List<FormatoDetalle> formatosDetalles;
-	public List<FormatoDetalle> detalles = null;
-	public List<FormatoDetalle> direcciones = null;
+	public List<FormatoDetalle> detalles;
+	public List<FormatoDetalle> direcciones;
 	String codigo;
 
 	int stock;
@@ -320,7 +321,7 @@ public class ProductoTipoLike {
 	}
 	
 	public List<FormatoDetalle> getFormatosDetalles() {
-		return formatosDetalles;
+		return this.formatosDetalles;
 	}
 
 	public void setFormatosDetalles(List<FormatoDetalle> formatosDetalles) {
@@ -349,18 +350,6 @@ public class ProductoTipoLike {
 
 	public void setCodigo(String codigo) {
 		this.codigo = codigo;
-	}
-
-	@Override
-	public String toString() {
-		return "ProductoTipoLike [id=" + id + ", nombre=" + nombre + ", titulo=" + titulo + ", subtitulo=" + subtitulo
-				+ ", imagen=" + imagen + ", porcentajeInfo=" + porcentajeInfo + ", direccionTxt1=" + direccionTxt1
-				+ ", direccionTxt2=" + direccionTxt2 + ", direccionTxt3=" + direccionTxt3 + ", like=" + like
-				+ ", precio=" + precio + ", equipesos=" + equipesos + ", fecha_creacion=" + fecha_creacion
-				+ ", fecha_fin=" + fecha_fin + ", titulo_detalles=" + titulo_detalles + ", tutulo_direcciones="
-				+ tutulo_direcciones + ", formatosDetalles=" + formatosDetalles + ", detalles=" + detalles
-				+ ", direcciones=" + direcciones + ", codigo=" + codigo + ", stock=" + stock + ", canjeados="
-				+ canjeados + "]";
 	}
 	
 }
