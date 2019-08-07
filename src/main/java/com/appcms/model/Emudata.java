@@ -38,7 +38,7 @@ import com.google.gson.JsonParser;
 
 @Component
 public class Emudata {
-	
+	/*
 	private static String apiUrl;
 	
 	@Autowired
@@ -192,10 +192,7 @@ public class Emudata {
 		Scotiauser usuario = new Scotiauser(2, "177824577", "Fabian", "Gaete", "fgaete@afiniti.cl","1");		
 		return usuario;
 	}
-	public static Scotiauser getUsusarioOff() {
-		Scotiauser usuario = new Scotiauser();		
-		return usuario;
-	}
+	
 	public static int getPoints() {		
 		return 10000;
 	}
@@ -204,21 +201,7 @@ public class Emudata {
 		return 10000;
 	}
 	
-	public static Scinformacionsubmenu getInformatiotest() {
-		Scinformacionsubmenu information = new Scinformacionsubmenu(1,1,"Restorado8",1,"/resource/images/woman-computer.jpg","Obtén desde un","15% dcto. en restaurantes","Reserva ahora y obtén desde un 15% de dcto. en el total de tu cuenta","#","Reserva acá","[\"Restorando les ofrece a miles de comensales la posibilidad de descubrir miles de lugares para salir a comer, acceder a ofertas y beneficios en tiempo real y asegurar su mesa sin tener que esperar para sentarse.\",\"Restorando trabaja junto con los restaurantes para mejorar las experiencias gastron\\u00f3micas de los comensales en latinoam\\u00e9rica.\",\"XXC\",\"t2\"]","2018-12-11 18:15:04","2019-02-13 18:03:57",1);
-		
-		String json = information.getJson_condiciones();
-		JsonArray jsonObject = new JsonParser().parse(json).getAsJsonArray();
 
-	        JsonArray arr = jsonObject.getAsJsonArray();
-	        for (int i = 0; i < arr.size(); i++) {
-	            String post_id = arr.get(i).getAsString();
-	            information.condicioneslista.add(post_id);
-	            //System.out.println(post_id);
-	        }
-		
-		return information;
-	}
 	
 	public static List<ProductoTipoLike> getProductosLikeTest() {
 		 List<ProductoTipoLike> prodlist =  new ArrayList<>();
@@ -410,6 +393,27 @@ public class Emudata {
 				
 	}
 	
+
+	
+	public static List<UserGusto> getGustos() {
+		 List<UserGusto> catelist =  new ArrayList<>();
+		 catelist.add(new UserGusto(1,"Viajes","/resource/images/honeymoon.png") );
+		 catelist.add(new UserGusto(2,"Fútbol","/resource/images/football2.png") );
+		 catelist.add(new UserGusto(3,"Entretención","/resource/images/concert.png") );
+		 catelist.add(new UserGusto(4,"Comida","/resource/images/dish2.png") );
+		 catelist.add(new UserGusto(5,"Concursos","/resource/images/reward.png") );
+//		 catelist.add(new UserGusto(6,"Descuentos","/resource/images/discount.png") );
+		 return catelist;
+	}
+	
+	*/
+	
+	
+	public static Scotiauser getUsusarioOff() {
+		Scotiauser usuario = new Scotiauser();		
+		return usuario;
+	}
+	
 	public static List<UserInscripcion> getInscripciones() {
 		 List<UserInscripcion> catelist =  new ArrayList<>();
 		 catelist.add( new UserInscripcion("Grandes Tiendas", 19000, "XXXX-XXXX-XXXX-1460", 123, "20/02/2018", "13/06/2018") );
@@ -423,15 +427,19 @@ public class Emudata {
 		 return catelist;
 	}
 	
-	public static List<UserGusto> getGustos() {
-		 List<UserGusto> catelist =  new ArrayList<>();
-		 catelist.add(new UserGusto(1,"Viajes","/resource/images/honeymoon.png") );
-		 catelist.add(new UserGusto(2,"Fútbol","/resource/images/football2.png") );
-		 catelist.add(new UserGusto(3,"Entretención","/resource/images/concert.png") );
-		 catelist.add(new UserGusto(4,"Comida","/resource/images/dish2.png") );
-		 catelist.add(new UserGusto(5,"Concursos","/resource/images/reward.png") );
-//		 catelist.add(new UserGusto(6,"Descuentos","/resource/images/discount.png") );
-		 return catelist;
+	public static Scinformacionsubmenu getInformatiotest() {
+		Scinformacionsubmenu information = new Scinformacionsubmenu(1,1,"Restorado8",1,"/resource/images/woman-computer.jpg","Obtén desde un","15% dcto. en restaurantes","Reserva ahora y obtén desde un 15% de dcto. en el total de tu cuenta","#","Reserva acá","[\"Restorando les ofrece a miles de comensales la posibilidad de descubrir miles de lugares para salir a comer, acceder a ofertas y beneficios en tiempo real y asegurar su mesa sin tener que esperar para sentarse.\",\"Restorando trabaja junto con los restaurantes para mejorar las experiencias gastron\\u00f3micas de los comensales en latinoam\\u00e9rica.\",\"XXC\",\"t2\"]","2018-12-11 18:15:04","2019-02-13 18:03:57",1);
+		
+		String json = information.getJson_condiciones();
+		JsonArray jsonObject = new JsonParser().parse(json).getAsJsonArray();
+
+	        JsonArray arr = jsonObject.getAsJsonArray();
+	        for (int i = 0; i < arr.size(); i++) {
+	            String post_id = arr.get(i).getAsString();
+	            information.condicioneslista.add(post_id);
+	            //System.out.println(post_id);
+	        }
+		
+		return information;
 	}
-	
 }

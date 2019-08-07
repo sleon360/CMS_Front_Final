@@ -1,7 +1,6 @@
 package com.appcms.entity;
-
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -58,139 +57,6 @@ public class ProductoTipoLike {
 		super();
 	}
 	
-	
-	
-
-	public ProductoTipoLike(int id, String nombre, String titulo, String subtitulo, String imagen,
-			String porcentajeInfo, String direccionTxt1, String direccionTxt2, String direccionTxt3, int like,
-			int precio, int equipesos, String fecha_creacion, String fecha_fin, String titulo_detalles,
-			String tutulo_direcciones, String codigo) {
-		super();
-		this.id = id;
-		this.nombre = nombre;
-		this.titulo = titulo;
-		this.subtitulo = subtitulo;
-		this.imagen = imagen;
-		this.porcentajeInfo = porcentajeInfo;
-		this.direccionTxt1 = direccionTxt1;
-		this.direccionTxt2 = direccionTxt2;
-		this.direccionTxt3 = direccionTxt3;
-		this.like = like;
-		this.precio = precio;
-		this.equipesos = equipesos;
-		this.fecha_creacion = fecha_creacion;
-		this.fecha_fin = fecha_fin;
-		this.titulo_detalles = titulo_detalles;
-		this.tutulo_direcciones = tutulo_direcciones;
-		this.codigo = codigo;
-	}
-
-
-	public ProductoTipoLike(int id, String nombre, String titulo, String subtitulo, String imagen,
-			String porcentajeInfo, String direccionTxt1, String direccionTxt2, String direccionTxt3, int like, int precio, int stock, int canjeados) { // CONSTRUCTOR TIPO 2
-		super();
-		this.id = id;
-		this.nombre = nombre;
-		this.titulo = titulo;
-		this.subtitulo = subtitulo;
-		this.imagen = imagen;
-		this.porcentajeInfo = porcentajeInfo;
-		this.direccionTxt1 = direccionTxt1;
-		this.direccionTxt2 = direccionTxt2;
-		this.direccionTxt3 = direccionTxt3;
-		this.like = like;
-		this.precio = precio;
-		this.stock = stock;
-		this.canjeados = canjeados;
-	}
-
-
-	public ProductoTipoLike(int id, String nombre, String titulo, String subtitulo, String imagen,
-			String porcentajeInfo, String direccionTxt1, String direccionTxt2, String direccionTxt3, int like) { // CONSTRUCTOR TIPO 2
-		super();
-		this.id = id;
-		this.nombre = nombre;
-		this.titulo = titulo;
-		this.subtitulo = subtitulo;
-		this.imagen = imagen;
-		this.porcentajeInfo = porcentajeInfo;
-		this.direccionTxt1 = direccionTxt1;
-		this.direccionTxt2 = direccionTxt2;
-		this.direccionTxt3 = direccionTxt3;
-		this.like = like;
-	}
-	public ProductoTipoLike(int id, String nombre, String titulo, String subtitulo, String imagen,
-			String porcentajeInfo, String direccionTxt1, String direccionTxt2, String direccionTxt3, int like, int precio) { // CONSTRUCTOR TIPO 2
-		super();
-		this.id = id;
-		this.nombre = nombre;
-		this.titulo = titulo;
-		this.subtitulo = subtitulo;
-		this.imagen = imagen;
-		this.porcentajeInfo = porcentajeInfo;
-		this.direccionTxt1 = direccionTxt1;
-		this.direccionTxt2 = direccionTxt2;
-		this.direccionTxt3 = direccionTxt3;
-		this.like = like;
-		this.precio = precio;
-	}
-	
-
-	public ProductoTipoLike(int id, String nombre, String titulo, String subtitulo, String imagen) { //CONSTRUCTOR TIPO 3
-		super();
-		this.id = id;
-		this.nombre = nombre;
-		this.titulo = titulo;
-		this.subtitulo = subtitulo;
-		this.imagen = imagen;
-	}
-
-	public ProductoTipoLike(int id, String nombre, String titulo, String subtitulo, String imagen,
-			String porcentajeInfo, String direccionTxt1, String direccionTxt2, String direccionTxt3, int like,
-			String fecha_creacion, String fecha_fin) {
-		super();
-		this.id = id;
-		this.nombre = nombre;
-		this.titulo = titulo;
-		this.subtitulo = subtitulo;
-		this.imagen = imagen;
-		this.porcentajeInfo = porcentajeInfo;
-		this.direccionTxt1 = direccionTxt1;
-		this.direccionTxt2 = direccionTxt2;
-		this.direccionTxt3 = direccionTxt3;
-		this.like = like;
-		this.fecha_creacion = fecha_creacion;
-		this.fecha_fin = fecha_fin;
-	}
-	
-	
-
-	public ProductoTipoLike(int id, String titulo, int precio, String imagen) {
-		super();
-		this.id = id;
-		this.titulo = titulo;
-		this.precio = precio;
-		this.imagen = imagen;
-	}
-	
-
-
-	public ProductoTipoLike(int id, String nombre, String titulo, String subtitulo, String imagen,
-			String porcentajeInfo, int precio, int equipesos, String titulo_detalles, String tutulo_direcciones,List<FormatoDetalle> detalles,List<FormatoDetalle> direcciones) {
-		super();
-		this.id = id;
-		this.nombre = nombre;
-		this.titulo = titulo;
-		this.subtitulo = subtitulo;
-		this.imagen = imagen;
-		this.porcentajeInfo = porcentajeInfo;
-		this.precio = precio;
-		this.equipesos = equipesos;
-		this.titulo_detalles = titulo_detalles;
-		this.tutulo_direcciones = tutulo_direcciones;
-		this.detalles = detalles;
-		this.direcciones = direcciones;
-	}
 
 	public int getId() {
 		return id;
@@ -329,7 +195,7 @@ public class ProductoTipoLike {
 	}
 
 	public List<FormatoDetalle> getDetalles() {
-		return detalles;
+		return this.detalles;
 	}
 
 	public void setDetalles(List<FormatoDetalle> detalles) {
@@ -337,7 +203,7 @@ public class ProductoTipoLike {
 	}
 
 	public List<FormatoDetalle> getDirecciones() {
-		return direcciones;
+		return this.direcciones;
 	}
 
 	public void setDirecciones(List<FormatoDetalle> direcciones) {
@@ -351,5 +217,64 @@ public class ProductoTipoLike {
 	public void setCodigo(String codigo) {
 		this.codigo = codigo;
 	}
+	
+	public boolean equalsFormatosDetalles(List<FormatoDetalle> f1) {
+		ListIterator<FormatoDetalle> e1 = f1.listIterator();
+		ListIterator<FormatoDetalle> e2 = this.getFormatosDetalles().listIterator();
+	
+		if(f1.size()!=this.getFormatosDetalles().size())
+		{
+			return false;
+		}
+		
+			while (e1.hasNext()) {
+				FormatoDetalle o1 = e1.next();
+				FormatoDetalle o2 = e2.next();
+			    if (!o1.getDetalle().equals(o2.getDetalle()))
+			    	 return false;
+			  }
+			  return true;
+		}
+	
+	
+	public boolean equalsDirecciones(List<FormatoDetalle> f1) {
+		ListIterator<FormatoDetalle> e1 = f1.listIterator();
+		ListIterator<FormatoDetalle> e2 = this.getDirecciones().listIterator();
+	
+		if(f1.size()!=this.getDirecciones().size())
+		{
+			return false;
+		}
+		
+			while (e1.hasNext()) {
+				FormatoDetalle o1 = e1.next();
+				FormatoDetalle o2 = e2.next();
+			    if (!o1.getDetalle().equals(o2.getDetalle()))
+			    	 return false;
+			  }
+			  return true;
+		}
+
+	
+	
+	public boolean equalsgetDetalles(List<FormatoDetalle> f1) {
+		ListIterator<FormatoDetalle> e1 = f1.listIterator();
+		ListIterator<FormatoDetalle> e2 = this.getDetalles().listIterator();
+	
+		if(f1.size()!=this.getDetalles().size())
+		{
+			return false;
+		}
+		
+			while (e1.hasNext()) {
+				FormatoDetalle o1 = e1.next();
+				FormatoDetalle o2 = e2.next();
+			    if (!o1.getDetalle().equals(o2.getDetalle()))
+			    	 return false;
+			  }
+			  return true;
+		}
+
+	
 	
 }

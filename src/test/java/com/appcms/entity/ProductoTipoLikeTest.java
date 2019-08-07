@@ -9,7 +9,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -21,8 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class ProductoTipoLikeTest {
 
 	private ProductoTipoLike productotipolike;
-	private ProductoTipoLike productotipolikeInt;
-
+	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
@@ -47,6 +45,8 @@ public class ProductoTipoLikeTest {
 		productotipolike.setTitulo_detalles("DETALLE DETALLE DETALLE DETALLE");
 		productotipolike.setTutulo_direcciones("TITULO DIRECCIONES");
 		productotipolike.setEquipesos(5);
+		productotipolike.setStock(100);
+		productotipolike.setCodigo("SD465465765465");
 
 		List<FormatoDetalle> detalles = new ArrayList<FormatoDetalle>();
 		detalles.add(
@@ -75,8 +75,12 @@ public class ProductoTipoLikeTest {
 
 	@Test
 	public final void testGetStock() throws Exception {
-		// TODO
-		throw new RuntimeException("not yet implemented");
+		ProductoTipoLike esperado = mock(ProductoTipoLike.class);
+		ProductoTipoLike noesperado = mock(ProductoTipoLike.class);
+		when(esperado.getStock()).thenReturn(100);
+		when(noesperado.getStock()).thenReturn(10000);
+		assertEquals(productotipolike.getStock(), esperado.getStock());
+		assertNotEquals(noesperado.getStock(), productotipolike.getStock());
 	}
 
 	@Test
@@ -91,56 +95,6 @@ public class ProductoTipoLikeTest {
 		assertNotEquals(noesperado.getCanjeados(), productotipolike.getCanjeados());
 	}
 
-	@Test
-	public final void testProductoTipoLike() throws Exception {
-		// TODO
-		throw new RuntimeException("not yet implemented");
-	}
-
-	@Test
-	public final void testProductoTipoLikeIntStringStringStringStringStringStringStringStringIntIntIntStringStringStringStringString()
-			throws Exception {
-		// TODO
-		throw new RuntimeException("not yet implemented");
-	}
-
-	@Test
-	public final void testProductoTipoLikeIntStringStringStringStringStringStringStringStringIntIntIntInt()
-			throws Exception {
-		// TODO
-		throw new RuntimeException("not yet implemented");
-	}
-
-	@Test
-	public final void testProductoTipoLikeIntStringStringStringStringStringStringStringStringInt() throws Exception {
-		// TODO
-		throw new RuntimeException("not yet implemented");
-	}
-
-	@Test
-	public final void testProductoTipoLikeIntStringStringStringStringStringStringStringStringIntInt() throws Exception {
-		// TODO
-		throw new RuntimeException("not yet implemented");
-	}
-
-	@Test
-	public final void testProductoTipoLikeIntStringStringStringString() throws Exception {
-		// TODO
-		throw new RuntimeException("not yet implemented");
-	}
-
-	@Test
-	public final void testProductoTipoLikeIntStringStringStringStringStringStringStringStringIntStringString()
-			throws Exception {
-		// TODO
-		throw new RuntimeException("not yet implemented");
-	}
-
-	@Test
-	public final void testProductoTipoLikeIntStringIntString() throws Exception {
-		// TODO
-		throw new RuntimeException("not yet implemented");
-	}
 
 	@Test
 	public final void testGetId() throws Exception {
@@ -335,52 +289,123 @@ public class ProductoTipoLikeTest {
 		formatosDetalles.add(new FormatoDetalle("¿Cómo accedo a este descuento?","Beneficio no acumulable con otras promociones y/o descuentos.", 1));
 
 		List<FormatoDetalle> formatosDetallesNoesperado = new ArrayList<FormatoDetalle>();
-		formatosDetallesNoesperado.add(new FormatoDetalle("Condiciones", "Beneficio no acumulable con otras promociones y/o descuentos.", 1));
+		formatosDetallesNoesperado.add(new FormatoDetalle("Condiciones", "Beneficio.", 1));
 		formatosDetallesNoesperado.add(new FormatoDetalle("¿Qué es Mafe Pastelería?", "Beneficio no acumulable.", 1));
 		formatosDetallesNoesperado.add(new FormatoDetalle("¿Cómo descuento?", "Beneficio no acumulable.", 1));
 
 		when(esperado.getFormatosDetalles()).thenReturn(formatosDetalles);
 		when(noesperado.getFormatosDetalles()).thenReturn(formatosDetallesNoesperado);
-
-		assertTrue(equals(productotipolike.getFormatosDetalles(),esperado.getFormatosDetalles()));
-		assertFalse(equals(productotipolike.getFormatosDetalles(),noesperado.getFormatosDetalles()));
+		assertTrue( productotipolike.equalsFormatosDetalles(esperado.getFormatosDetalles()));
+		assertFalse(productotipolike.equalsFormatosDetalles(noesperado.getFormatosDetalles()));
+		
+		
+		formatosDetalles = new ArrayList<FormatoDetalle>();
+		formatosDetallesNoesperado = new ArrayList<FormatoDetalle>();
+		
+		when(esperado.getFormatosDetalles()).thenReturn(formatosDetalles);
+		when(noesperado.getFormatosDetalles()).thenReturn(formatosDetallesNoesperado);
+		
+		assertFalse(productotipolike.equalsFormatosDetalles(esperado.getFormatosDetalles()));
+		assertFalse(productotipolike.equalsFormatosDetalles(noesperado.getFormatosDetalles()));
+		
+		formatosDetalles = new ArrayList<FormatoDetalle>();
+		formatosDetalles.add(null);
+		formatosDetalles.add(null);
+		
+		formatosDetallesNoesperado = new ArrayList<FormatoDetalle>();
+		when(esperado.getFormatosDetalles()).thenReturn(formatosDetalles);
+		when(noesperado.getFormatosDetalles()).thenReturn(formatosDetallesNoesperado);
+		
+		assertFalse(productotipolike.equalsFormatosDetalles(esperado.getFormatosDetalles()));
+		assertFalse(productotipolike.equalsFormatosDetalles(noesperado.getFormatosDetalles()));
+		
+		
+		
+		
 	}
 	
 	
-	private boolean equals(List<FormatoDetalle> f1,List<FormatoDetalle> f2) {
-		ListIterator<FormatoDetalle> e1 = f2.listIterator();
-		ListIterator<FormatoDetalle> e2 = f1.listIterator();
-			while (e1.hasNext() && e2.hasNext()) {
-				FormatoDetalle o1 = e1.next();
-				FormatoDetalle o2 = e2.next();
-			    if (!o1.getDetalle().equals(o2.getDetalle()) || !(o1.getTipo()==o2.getTipo()) || !o1.getTitulo().equals(o2.getTitulo()))
-			    	 return false;
-			  }
-			  return true;
-		}
 
 	@Test
 	public final void testGetDetalles() throws Exception {
-		// TODO
-		throw new RuntimeException("not yet implemented");
+		ProductoTipoLike esperado = mock(ProductoTipoLike.class);
+		ProductoTipoLike noesperado = mock(ProductoTipoLike.class);
+
+		List<FormatoDetalle> detalles = new ArrayList<FormatoDetalle>();
+		detalles.add(new FormatoDetalle("Condiciones","Beneficio no acumulable con otras promociones y/o descuentos.",1));
+		 detalles.add(new FormatoDetalle("¿Qué es Mafe Pastelería?","Beneficio no acumulable con otras promociones y/o descuentos.",1));
+		 detalles.add(new FormatoDetalle("¿Cómo accedo a este descuento?","Beneficio no acumulable con otras promociones y/o descuentos.",1));
+		 
+		
+		List<FormatoDetalle> detallesNoesperado = new ArrayList<FormatoDetalle>();
+		detallesNoesperado.add(new FormatoDetalle("Condiciones","Beneficio no acumulable con otras promociones y/o descuentos.",1));
+		detallesNoesperado.add(new FormatoDetalle("¿Qué es Mafe Pastelería?","Beneficio no acumulable.",1));
+		detallesNoesperado.add(new FormatoDetalle("¿Cómo accedo a este descuento?","Beneficio.",1));
+		 
+
+		when(esperado.getDetalles()).thenReturn(detalles);
+		when(noesperado.getDetalles()).thenReturn(detallesNoesperado);
+		assertTrue(productotipolike.equalsgetDetalles(esperado.getDetalles()));
+		assertFalse(productotipolike.equalsgetDetalles(noesperado.getDetalles()));
+		
+		detalles = new ArrayList<FormatoDetalle>();
+		detallesNoesperado = new ArrayList<FormatoDetalle>();
+		
+		when(esperado.getDetalles()).thenReturn(detalles);
+		when(noesperado.getDetalles()).thenReturn(detallesNoesperado);
+		
+		assertFalse(productotipolike.equalsgetDetalles(esperado.getDetalles()));
+		assertFalse(productotipolike.equalsgetDetalles(noesperado.getDetalles()));
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	@Test
 	public final void testGetDirecciones() throws Exception {
-		// TODO
-		throw new RuntimeException("not yet implemented");
+		ProductoTipoLike esperado = mock(ProductoTipoLike.class);
+		ProductoTipoLike noesperado = mock(ProductoTipoLike.class);
+
+		List<FormatoDetalle> direcciones = new ArrayList<FormatoDetalle>();
+		direcciones.add(new FormatoDetalle("Dirección Web:", "http://google.com/MafePasteleria/", 2));
+		direcciones.add(new FormatoDetalle("Dirección y Teléfono:", "Av Central, Región Metropolitana", 1));
+		
+		List<FormatoDetalle> direccionesNoesperado = new ArrayList<FormatoDetalle>();
+		direccionesNoesperado.add(new FormatoDetalle("Dirección Web:","http://",1));
+		direccionesNoesperado.add(new FormatoDetalle("Dirección:","Macul, Región Metropolitana",1));
+
+		when(esperado.getDirecciones()).thenReturn(direcciones);
+		when(noesperado.getDirecciones()).thenReturn(direccionesNoesperado);
+		assertTrue(productotipolike.equalsDirecciones(esperado.getDirecciones()));
+		assertFalse(productotipolike.equalsDirecciones(noesperado.getDirecciones()));
+		
+		direcciones = new ArrayList<FormatoDetalle>();
+		direccionesNoesperado = new ArrayList<FormatoDetalle>();
+		
+		when(esperado.getDirecciones()).thenReturn(direcciones);
+		when(noesperado.getDirecciones()).thenReturn(direccionesNoesperado);
+		
+		assertFalse(productotipolike.equalsDirecciones(esperado.getDirecciones()));
+		assertFalse(productotipolike.equalsDirecciones(noesperado.getDirecciones()));
+		
+		
 	}
 
 	@Test
 	public final void testGetCodigo() throws Exception {
-		// TODO
-		throw new RuntimeException("not yet implemented");
-	}
+		ProductoTipoLike esperado = mock(ProductoTipoLike.class);
+		ProductoTipoLike noesperado = mock(ProductoTipoLike.class);
 
-	@Test
-	public final void testToString() throws Exception {
-		// TODO
-		throw new RuntimeException("not yet implemented");
+		when(esperado.getCodigo()).thenReturn("SD465465765465");
+		when(noesperado.getCodigo()).thenReturn("00000000000000");
+		assertEquals(productotipolike.getCodigo(), esperado.getCodigo());
+		assertNotEquals(noesperado.getCodigo(), productotipolike.getCodigo());
 	}
 
 }

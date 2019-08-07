@@ -21,25 +21,7 @@ public class ProductoCategoria {
 		super();
 	}
 
-	public ProductoCategoria(int id, String strIndex, String nombre, String descripcion, String imagen, int tipo) {
-		super();
-		this.id = id;
-		this.nombre = nombre;
-		this.strIndex = strIndex;
-		this.descripccion = descripcion;
-		this.imagen = imagen;
-		this.tipo = tipo;
-	}
-	public ProductoCategoria(int id, String strIndex, String nombre, String descripcion, String imagen, int tipo,String colorHover) {
-		super();
-		this.id = id;
-		this.nombre = nombre;
-		this.strIndex = strIndex;
-		this.descripccion = descripcion;
-		this.imagen = imagen;
-		this.tipo = tipo;
-		this.colorHover = colorHover;
-	}
+
 	public int getId() {
 		return id;
 	}

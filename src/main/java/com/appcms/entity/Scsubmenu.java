@@ -36,55 +36,7 @@ public class Scsubmenu {
 		super();
 	}
 
-	public Scsubmenu(String strIndex, String nombre, String link) {
-		super();
-		this.strIndex = strIndex;
-		this.nombre = nombre;
-		this.link = link;
-	}
 
-	public Scsubmenu(String strIndex, int id, String nombre, String link, String color, String color_hover,
-			String color_borde, int tipo, String icono, String imagen, String titulo_descripcion, String descripcion,
-			String fecha_creacion, String fecha_modificacion, int estado) {
-		super();
-		this.strIndex = strIndex;
-		this.id = id;
-		this.nombre = nombre;
-		this.link = link;
-		this.color = color;
-		this.color_hover = color_hover;
-		this.color_borde = color_borde;
-		this.tipo = tipo;
-		this.icono = icono;
-		this.imagen = imagen;
-		this.titulo_descripcion = titulo_descripcion;
-		this.descripcion = descripcion;
-		this.fecha_creacion = fecha_creacion;
-		this.fecha_modificacion = fecha_modificacion;
-		this.estado = estado;
-	}
-
-	public Scsubmenu(String strIndex, int id, String nombre, String link, String color, String color_hover,
-			String color_borde, int tipo, String icono, String imagen, String titulo_descripcion, String descripcion,
-			String fecha_creacion, String fecha_modificacion, int estado,boolean visibleTop ) {
-		super();
-		this.strIndex = strIndex;
-		this.id = id;
-		this.nombre = nombre;
-		this.link = link;
-		this.color = color;
-		this.color_hover = color_hover;
-		this.color_borde = color_borde;
-		this.tipo = tipo;
-		this.icono = icono;
-		this.imagen = imagen;
-		this.titulo_descripcion = titulo_descripcion;
-		this.descripcion = descripcion;
-		this.fecha_creacion = fecha_creacion;
-		this.fecha_modificacion = fecha_modificacion;
-		this.estado = estado;
-		this.visibleTop = visibleTop;
-	}
 	
 	public String getStrIndex() {
 		return strIndex;
