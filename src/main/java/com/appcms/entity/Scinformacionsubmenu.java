@@ -24,7 +24,7 @@ public class Scinformacionsubmenu {
 	String fecha_creacion;
 	String fecha_modificacion;
 	String imagen_logo;
-	public List<String> condicioneslista = new ArrayList<>();
+	public List<String> condicioneslista;
 	int estado;			
 	
 	public Scinformacionsubmenu() {
@@ -50,26 +50,7 @@ public class Scinformacionsubmenu {
 		this.fecha_modificacion = fecha_modificacion;
 		this.estado = estado;
 	}
-	public Scinformacionsubmenu(int id, int id_submenu, String nombre, int tipo, String imagen, String titulo,
-			String subtitulo, String descripcion, String link, String texto_link, String json_condiciones,
-			String fecha_creacion, String fecha_modificacion, int estado,String imagen_logo) {
-		super();
-		this.id = id;
-		this.id_submenu = id_submenu;
-		this.nombre = nombre;
-		this.tipo = tipo;
-		this.imagen = imagen;
-		this.titulo = titulo;
-		this.subtitulo = subtitulo;
-		this.descripcion = descripcion;
-		this.link = link;
-		this.texto_link = texto_link;
-		this.json_condiciones = json_condiciones;
-		this.fecha_creacion = fecha_creacion;
-		this.fecha_modificacion = fecha_modificacion;
-		this.estado = estado;
-		this.imagen_logo = imagen_logo;
-	}
+
 	
 	public String getImagen_logo() {
 		return imagen_logo;

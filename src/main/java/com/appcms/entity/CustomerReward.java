@@ -144,12 +144,5 @@ public class CustomerReward {
 		this.tipo_reward = tipo_reward;
 	}
 
-	@Override
-	public String toString() {
-		return "CustomerReward [customer_reward_id=" + customer_reward_id + ", customer_id=" + customer_id
-				+ ", order_id=" + order_id + ", description=" + description + ", points=" + points + ", date_added="
-				+ date_added + ", date_vencimiento=" + date_vencimiento + ", id_campana=" + id_campana + ", id_trx="
-				+ id_trx + ", id_jos_ticket=" + id_jos_ticket + ", tipo_reward=" + tipo_reward + "]";
-	}
 
 }

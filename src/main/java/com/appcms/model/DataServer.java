@@ -8,10 +8,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -25,7 +22,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
 import com.appcms.entity.Banner;
 import com.appcms.entity.CredencialesEntity;
 import com.appcms.entity.CustomerReward;
@@ -86,7 +82,6 @@ public class DataServer {
 
 	}
 
-	@Cacheable(cacheNames = "menu")
 	public List<Scmenu> loadAllScmenu(HttpServletRequest rq) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());

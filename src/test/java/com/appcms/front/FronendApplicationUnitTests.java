@@ -1,66 +1,33 @@
 package com.appcms.front;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.Map;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpSession;
-
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.FilterChainProxy;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.appcms.entity.CredencialesEntity;
 import com.appcms.entity.ResourceEntity;
-import com.appcms.entity.customer.Customer;
 import com.appcms.router.ResourceRoutes;
-import com.appcms.router.Routes;
-import com.appcms.security.CustomerAuthentication;
 import com.appcms.services.GetRestService;
 
 @RunWith(SpringRunner.class)
@@ -105,6 +72,8 @@ public class FronendApplicationUnitTests {
 	
 	    	ResourceEntity emp = new ResourceEntity();
 	    	emp.setNombre_resource("logo-scotiaclub.png");
+	    	emp.setId("123");
+	    	
 	    	
 	    	when(greetingService.getResouce("images", "logo-scotiaclub.png", "dsfsdfsd")).thenReturn(emp);
 	    	Object httpResponsefalse = controller.resource("logo-scotiaclub.png", "images", request, response);
