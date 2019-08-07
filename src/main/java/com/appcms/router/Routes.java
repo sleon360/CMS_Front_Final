@@ -1,18 +1,9 @@
 package com.appcms.router;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Enumeration;
 import java.util.List;
 
 import javax.naming.NamingException;
@@ -20,13 +11,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.tomcat.util.http.fileupload.FileUtils;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
@@ -46,7 +32,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.NestedServletException;
@@ -61,7 +46,6 @@ import com.appcms.entity.Scmenu;
 import com.appcms.entity.Scotiauser;
 import com.appcms.entity.Scsubmenu;
 import com.appcms.entity.StockTicket;
-import com.appcms.entity.Tarjetas;
 import com.appcms.entity.UserGusto;
 import com.appcms.model.DataServer;
 import com.appcms.model.Emudata;
@@ -75,15 +59,14 @@ public class Routes {
 ///
 	public final String csrf_token = "afxn123xnx360";
 
-	private String apiUrl;
-
+	private final DataServer dtserver;
+	
 	@Autowired
-	DataServer dtserver;
-
-	@Autowired
-	public Routes(@Qualifier("apiUrl") String apiUrl) {
-		this.apiUrl = apiUrl;
-	}
+    public Routes(DataServer dtserver) {
+        this.dtserver = dtserver;
+    }
+	
+	
 
 	public void setHeaderx(ModelAndView mav, HttpServletRequest rq) {
 		mav.addObject("menuesHeader", dtserver.loadAllScmenu(rq));
@@ -110,7 +93,7 @@ public class Routes {
 	@RequestMapping(value = "/404", method = RequestMethod.GET)
 	public ModelAndView notfound(HttpServletRequest rq) {
 
-		ViewApp vi = new ViewApp(rq, apiUrl);
+		ViewApp vi = new ViewApp(rq, dtserver.getApiUrl());
 		vi.addView("head");
 		vi.addView("404");
 		vi.addView("footer");
@@ -173,7 +156,7 @@ public class Routes {
 
 		}
 
-		ViewApp vi = new ViewApp(rq, apiUrl);
+		ViewApp vi = new ViewApp(rq, dtserver.getApiUrl());
 		vi.addView("head");
 		vi.addView("error");
 		vi.addView("footer");
@@ -205,7 +188,7 @@ public class Routes {
 
 	@RequestMapping(value = "/admin", method = RequestMethod.GET)
 	public ModelAndView admin(HttpServletRequest rq) {
-		ViewApp vi = new ViewApp(rq, apiUrl);
+		ViewApp vi = new ViewApp(rq, dtserver.getApiUrl());
 		vi.addView("header");
 		vi.addView("admin");
 		ModelAndView mav = new ModelAndView(vi.render());
@@ -215,7 +198,7 @@ public class Routes {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public ModelAndView home(HttpServletRequest rq) {
 		// return new ModelAndView("redirect:/home");	
-		ViewApp vi = new ViewApp(rq, apiUrl);
+		ViewApp vi = new ViewApp(rq, dtserver.getApiUrl());
 		vi.addView("head");
 		vi.addView("index");
 		vi.addView("footer");
@@ -234,7 +217,7 @@ public class Routes {
 	public ModelAndView menuSubmenu(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu,
 			HttpServletRequest rq) throws UnsupportedEncodingException {
 		// ModelAndView mav = new ModelAndView("categorias");
-		ViewApp vi = new ViewApp(rq, apiUrl);
+		ViewApp vi = new ViewApp(rq, dtserver.getApiUrl());
 		
 		Scmenu scmenu = dtserver.loadScmenuByName(rq, menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
@@ -321,7 +304,7 @@ public class Routes {
 			@PathVariable("submenu") String submenu, @PathVariable("categoria") String categoria, HttpServletRequest rq)
 			throws UnsupportedEncodingException {
 //		ModelAndView mav = new ModelAndView("categorias");
-		ViewApp vi = new ViewApp(rq, apiUrl);
+		ViewApp vi = new ViewApp(rq, dtserver.getApiUrl());
 
 		vi.addView("head");
 		vi.addView("HEADER_CATEGORIAS");
@@ -409,7 +392,7 @@ public class Routes {
 	public ModelAndView menuDetalleProducto(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu,
 			@PathVariable("producto") int producto, HttpServletRequest rq) throws UnsupportedEncodingException {
 //		ModelAndView mav = new ModelAndView("canjes");
-		ViewApp vi = new ViewApp(rq, apiUrl);
+		ViewApp vi = new ViewApp(rq, dtserver.getApiUrl());
 
 		vi.addView("HEAD");
 		vi.addView("HEADER_CATEGORIAS");
@@ -471,7 +454,7 @@ public class Routes {
 			return new ModelAndView("redirect:" + referer + "?login");
 		}
 
-		ViewApp vi = new ViewApp(rq, apiUrl);
+		ViewApp vi = new ViewApp(rq, dtserver.getApiUrl());
 
 		vi.addView("HEAD");
 		vi.addView("HEADER_CATEGORIAS");
@@ -667,7 +650,7 @@ public class Routes {
 ////			return new ModelAndView("redirect:" + referer + "?login");
 ////		}
 //
-//		ViewApp vi = new ViewApp(rq,apiUrl);
+//		ViewApp vi = new ViewApp(rq,dtserver.getApiUrl());
 //
 //
 //		vi.addView("HEAD");
@@ -714,7 +697,7 @@ public class Routes {
 			return new ModelAndView("redirect:" + referer + "?login");
 		}
 
-		ViewApp vi = new ViewApp(rq, apiUrl);
+		ViewApp vi = new ViewApp(rq, dtserver.getApiUrl());
 
 		vi.addView("HEAD");
 		vi.addView("HEADER_CATEGORIAS");
@@ -821,7 +804,7 @@ public class Routes {
 	public ModelAndView getinformation(@PathVariable("nombreInformation") String nombreInformation,
 			HttpServletRequest rq) throws UnsupportedEncodingException {
 //		ModelAndView mav = new ModelAndView("user");
-		ViewApp vi = new ViewApp(rq, apiUrl);
+		ViewApp vi = new ViewApp(rq, dtserver.getApiUrl());
 
 		vi.addView("HEAD");
 		vi.addView("INFORMATION");
@@ -848,7 +831,7 @@ public class Routes {
 	@PostMapping("/user/login")
 	public ModelAndView loginuser(@ModelAttribute("loginForm") LoginUser loginForm, HttpServletRequest rq) {
 //		ModelAndView mav = new ModelAndView("user");
-		ViewApp vi = new ViewApp(rq, apiUrl);
+		ViewApp vi = new ViewApp(rq, dtserver.getApiUrl());
 
 		vi.addView("HEAD");
 //		vi.addView("INFORMATION");
@@ -889,7 +872,7 @@ public class Routes {
 			return new ModelAndView("redirect:" + referer + "?login");
 		}
 
-		ViewApp vi = new ViewApp(rq, apiUrl);
+		ViewApp vi = new ViewApp(rq, dtserver.getApiUrl());
 
 		vi.addView("HEAD");
 		vi.addView("INFORMATION");

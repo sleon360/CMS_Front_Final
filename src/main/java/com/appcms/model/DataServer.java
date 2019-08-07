@@ -56,11 +56,17 @@ public class DataServer {
 
 	StringBuilder sb = new StringBuilder("");
 
-	@Autowired
-	public DataServer(@Qualifier("apiUrl") String apiUrl) {
-		this.apiUrl = apiUrl;
+	public DataServer(@Qualifier("apiUrl") String xapiUrl) {
+		this.apiUrl = xapiUrl;
+		
+		System.out.println(xapiUrl);
 	}
-
+	
+	
+	public String getApiUrl()
+	{
+		return this.apiUrl;
+	}
 	public Scmenu loadScmenuByName(HttpServletRequest rq, String scmenuName) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());

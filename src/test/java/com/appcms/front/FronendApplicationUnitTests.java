@@ -1,7 +1,10 @@
 package com.appcms.front;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -89,7 +92,7 @@ public class FronendApplicationUnitTests {
 		  request = new MockHttpServletRequest();
 		  response = new MockHttpServletResponse();
 		  
-		  greetingService = Mockito.mock(GetRestService.class);
+		  greetingService = mock(GetRestService.class);
 	      controller = new ResourceRoutes(greetingService);
 	  }
 	  
@@ -103,9 +106,9 @@ public class FronendApplicationUnitTests {
 	    	ResourceEntity emp = new ResourceEntity();
 	    	emp.setNombre_resource("logo-scotiaclub.png");
 	    	
-	    	Mockito.when(greetingService.getResouce("images", "logo-scotiaclub.png", "dsfsdfsd")).thenReturn(emp);
+	    	when(greetingService.getResouce("images", "logo-scotiaclub.png", "dsfsdfsd")).thenReturn(emp);
 	    	Object httpResponsefalse = controller.resource("logo-scotiaclub.png", "images", request, response);
-	    	Assert.assertNotNull((ModelAndView) httpResponsefalse);
+	    	assertNotNull((ModelAndView) httpResponsefalse);
 	    	
 	    	
 	    	//Mockito.when(greetingService.getResouce("images", "logo-scotiaclub.png", "123")).thenReturn(emp);
