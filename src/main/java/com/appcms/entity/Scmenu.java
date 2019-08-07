@@ -24,37 +24,7 @@ public class Scmenu {
 		this.id = 0;
 	}
 
-	public Scmenu(String strIndex, String nombre, String link, List<Scsubmenu> submenues) {
-		super();
-		this.strIndex = strIndex;
-		this.nombre = nombre;
-		this.link = link;
-		this.submenues = submenues;
-	}
 
-	public Scmenu(String strIndex, String nombre, String link, List<Scsubmenu> submenues, boolean visibleTop) {
-		super();
-		this.strIndex = strIndex;
-		this.nombre = nombre;
-		this.link = link;
-		this.submenues = submenues;
-		this.visibleTop = visibleTop;
-	}
-
-	public Scmenu(String strIndex, int id, String nombre, String color, int tipo, String link, String fecha_creacion,
-			String fecha_modificacion, int estado, List<Scsubmenu> submenues) {
-		super();
-		this.strIndex = strIndex;
-		 this.id = id;
-		this.nombre = nombre;
-		this.color = color;
-		this.tipo = tipo;
-		this.link = link;
-		this.fecha_creacion = fecha_creacion;
-		this.fecha_modificacion = fecha_modificacion;
-		this.estado = estado;
-		this.submenues = submenues;
-	}
 
 	public String getStrIndex() {
 		return strIndex;

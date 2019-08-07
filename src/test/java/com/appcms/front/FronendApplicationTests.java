@@ -125,8 +125,7 @@ public class FronendApplicationTests {
 	@Test
 	public void logout() throws Exception
 	{
-	  mvc.perform( MockMvcRequestBuilders.get("/logout") )
-	        .andExpect(status().is(302));
+	  mvc.perform( MockMvcRequestBuilders.get("/logout") ).andExpect(status().is(302));
 	}
 	
 	
