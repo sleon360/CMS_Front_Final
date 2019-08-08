@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
@@ -41,7 +40,6 @@ import com.appcms.entity.UserCupon;
 import com.appcms.entity.UserGusto;
 import com.appcms.entity.points.ExpiringPoints;
 import com.appcms.entity.points.Points;
-import com.appcms.security.RestAuthentication;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
@@ -49,13 +47,15 @@ import com.google.gson.JsonParser;
 public class DataServer {
 
 	private String apiUrl;
+	private String TOKENONE;
 
 	StringBuilder sb = new StringBuilder("");
 
-	public DataServer(@Qualifier("apiUrl") String xapiUrl) {
+	public DataServer(@Qualifier("apiUrl") String xapiUrl,@Qualifier("TOKENONE") String xTOKENONE) {
 		this.apiUrl = xapiUrl;
+		this.TOKENONE = xTOKENONE;
 		
-		System.out.println(xapiUrl);
+		System.out.println("AAAAAAAASSSSSSSSSSSSDDDDDDDDDDDFFFFFFFF:"+xTOKENONE);
 	}
 	
 	
@@ -65,7 +65,7 @@ public class DataServer {
 	}
 	public Scmenu loadScmenuByName(HttpServletRequest rq, String scmenuName) {
 		HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -82,9 +82,9 @@ public class DataServer {
 
 	}
 
-	public List<Scmenu> loadAllScmenu(HttpServletRequest rq) {
+	public List<Scmenu> loadAllScmenu() {
 		HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -101,49 +101,34 @@ public class DataServer {
 
 	}
 
-	public Scinformacionsubmenu loadInformatioSub(int idsubmenu, HttpServletRequest rq) {
+	public Scinformacionsubmenu loadInformatioSub(int idsubmenu) {
 
 		HttpHeaders headers = new HttpHeaders();
-//		headers.setContentType(MediaType.APPLICATION_JSON);
-
-		RestAuthentication xrestAuthentication = new RestAuthentication();
-		System.out.println(xrestAuthentication.getTOKENONE() + " loadInformatioSub");
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
-
 		String url = apiUrl + "/get/informationsubmenu/" + idsubmenu;
-
-		ResponseEntity<Scinformacionsubmenu> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
-				Scinformacionsubmenu.class);
-
+		ResponseEntity<Scinformacionsubmenu> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,Scinformacionsubmenu.class);
 		if (xresponse.getStatusCodeValue() == 200) {
-
-			Scinformacionsubmenu information = xresponse.getBody();
-//			System.out.println("requestxn: "+information.getJson_condiciones());  
+			Scinformacionsubmenu information = xresponse.getBody(); 
 			String json = information.getJson_condiciones();
 			JsonArray jsonObject = new JsonParser().parse(json).getAsJsonArray();
 
 			JsonArray arr = jsonObject.getAsJsonArray();
 			for (int i = 0; i < arr.size(); i++) {
 				String post_id = arr.get(i).getAsString();
-//				information.condicioneslista.add(post_id);
 				information.addCondicioneslista(post_id);
 			}
-			System.out.println("toString: " + information.toString());
 			return information;
-
 		} else {
 			return null;
 		}
-
 	}
 
-	public List<ProductoTipoLike> loadProductosLike(int idsubmenu, HttpServletRequest rq) {
+	public List<ProductoTipoLike> loadProductosLike(int idsubmenu) {
 
 		HttpHeaders headers = new HttpHeaders();
-
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -163,12 +148,10 @@ public class DataServer {
 
 	}
 
-	public List<ProductoTipoLike> loadProductosLikeSubmenuCategoria(int idsubmenu, String categoria,
-			HttpServletRequest rq) {
+	public List<ProductoTipoLike> loadProductosLikeSubmenuCategoria(int idsubmenu, String categoria) {
 
 		HttpHeaders headers = new HttpHeaders();
-
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -188,11 +171,10 @@ public class DataServer {
 
 	}
 
-	public List<Scinformacionsubmenu> loadscmenuinformationFomScmenu(int idscbmenu, HttpServletRequest rq) {
+	public List<Scinformacionsubmenu> loadscmenuinformationFomScmenu(int idscbmenu) {
 
 		HttpHeaders headers = new HttpHeaders();
-
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -212,11 +194,10 @@ public class DataServer {
 
 	}
 
-	public List<ProductoTipoLike> loadProductosDetalle(int idproducto, HttpServletRequest rq) {
+	public List<ProductoTipoLike> loadProductosDetalle(int idproducto) {
 
 		HttpHeaders headers = new HttpHeaders();
-
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -255,11 +236,10 @@ public class DataServer {
 
 	}
 
-	public List<ProductoCategoria> loadCateProductosFromCategoria(int idsubmenu, HttpServletRequest rq) {
+	public List<ProductoCategoria> loadCateProductosFromCategoria(int idsubmenu) {
 
 		HttpHeaders headers = new HttpHeaders();
-
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -279,12 +259,10 @@ public class DataServer {
 
 	}
 
-	public List<ProductoCategoria> loadproductoCategoriaConProductos(int idsubmenu, String categoria,
-			HttpServletRequest rq) {
+	public List<ProductoCategoria> loadproductoCategoriaConProductos(int idsubmenu, String categoria) {
 
 		HttpHeaders headers = new HttpHeaders();
-
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -307,8 +285,7 @@ public class DataServer {
 	public List<Banner> loadBannerAll(int responsive, HttpServletRequest rq) {
 		System.out.println(this.apiUrl);
 		HttpHeaders headers = new HttpHeaders();
-
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -329,11 +306,10 @@ public class DataServer {
 
 	}
 
-	public Information loadInformationScsubmenu(int idsubmenu, HttpServletRequest rq) {
+	public Information loadInformationScsubmenu(int idsubmenu) {
 
 		HttpHeaders headers = new HttpHeaders();
-
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -352,11 +328,10 @@ public class DataServer {
 
 	}
 
-	public Information loadInformationByName(String idsubmenu, HttpServletRequest rq) {
-
+	public Information loadInformationByName(String idsubmenu) {
 		HttpHeaders headers = new HttpHeaders();
 
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization",TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -375,11 +350,10 @@ public class DataServer {
 
 	}
 
-	public String setReward(CustomerReward reward, String nombreTicket, String rut, HttpServletRequest rq) {
+	public String setReward(CustomerReward reward, String nombreTicket, String rut) {
 
 		HttpHeaders headers = new HttpHeaders();
-
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", TOKENONE);
 
 		String url = apiUrl + "/customerreward/set";
 		System.out.println("data param: " + reward.toString());
@@ -421,11 +395,10 @@ public class DataServer {
 
 	}
 
-	public ProductoTipoLike loadProductoById(int idProd, HttpServletRequest rq) {
+	public ProductoTipoLike loadProductoById(int idProd) {
 
 		HttpHeaders headers = new HttpHeaders();
-
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -448,11 +421,10 @@ public class DataServer {
 
 	}
 
-	public String testLogin(String rut, String pass, HttpServletRequest rq) {
+	public String testLogin(String rut, String pass) {
 
 		HttpHeaders headers = new HttpHeaders();
-
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", TOKENONE);
 
 		String url = apiUrl + "/v1/login_customer";
 
@@ -492,7 +464,7 @@ public class DataServer {
 		Scotiauser scotiauser = credencialesEntity.getScotiauser();
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.set("Authorization", "Bearer " + credencialesEntity.getTOKENONE());
+		httpHeaders.set("Authorization", "Bearer " + TOKENONE);
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
 
 		/* SE RECUPERAN LOS PUNTOS DE CLIENTE */
@@ -544,7 +516,7 @@ public class DataServer {
 		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.set("Authorization", "Bearer " + credencialesEntity.getTOKENONE());
+		httpHeaders.set("Authorization", "Bearer " + TOKENONE);
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
 		try {
 			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/points",
@@ -562,13 +534,13 @@ public class DataServer {
 		}
 	}
 
-	public List<UserCupon> loadCupones(int idUser, HttpServletRequest rq) {
+	public List<UserCupon> loadCupones(int idUser) {
 
 		HttpHeaders headers = new HttpHeaders();
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
-		headers.set("Authorization", "Bearer " + credencialesEntity.getTOKENONE());
+		headers.set("Authorization", "Bearer " + TOKENONE);
 		headers.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
@@ -590,13 +562,13 @@ public class DataServer {
 
 	}
 
-	public byte[] loadCuponAsPdf(int idUser, int idReward, HttpServletRequest rq) {
+	public byte[] loadCuponAsPdf(int idUser, int idReward) {
 
 		HttpHeaders headers = new HttpHeaders();
-
+		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
-		headers.set("Authorization", "Bearer " + credencialesEntity.getTOKENONE());
+		headers.set("Authorization", "Bearer " + TOKENONE);
 		headers.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
 
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
@@ -608,11 +580,10 @@ public class DataServer {
 		return xresponse.getBody();
 	}
 
-	public StockTicket loadStockTicket(String empresa, HttpServletRequest rq) {
+	public StockTicket loadStockTicket(String empresa) {
 
 		HttpHeaders headers = new HttpHeaders();
-
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -643,7 +614,7 @@ public class DataServer {
 			CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
 			RestTemplate restTemplate = new RestTemplate();
 			HttpHeaders httpHeaders = new HttpHeaders();
-			httpHeaders.set("Authorization", credencialesEntity.getTOKENONE());
+			httpHeaders.set("Authorization", TOKENONE);
 			httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
 			ResponseEntity<Tarjetas> tarjetasResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/cards",
 					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Tarjetas.class);
@@ -657,11 +628,9 @@ public class DataServer {
 	}
 
 	public List<UserGusto> loadGustos() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.set("Authorization", credencialesEntity.getTOKENONE());
+		httpHeaders.set("Authorization", TOKENONE);
 		try {
 			ResponseEntity<List<UserGusto>> gustosResponseEntity = restTemplate.exchange(
 					apiUrl + "/active_customer_gustos", HttpMethod.GET, new HttpEntity<Object>(httpHeaders),
@@ -678,7 +647,7 @@ public class DataServer {
 		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.set("Authorization", credencialesEntity.getTOKENONE());
+		httpHeaders.set("Authorization", TOKENONE);
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
 		int id = credencialesEntity.getScotiauser().getId_cliente();
 		try {
@@ -697,7 +666,7 @@ public class DataServer {
 		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.set("Authorization", credencialesEntity.getTOKENONE());
+		httpHeaders.set("Authorization", TOKENONE);
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
 		int id = credencialesEntity.getScotiauser().getId_cliente();
 
@@ -719,12 +688,10 @@ public class DataServer {
 		
 	}
 
-	public List<TagProducto> loadTagsProductos(HttpServletRequest rq) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+	public List<TagProducto> loadTagsProductos() {
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.set("Authorization", credencialesEntity.getTOKENONE());
+		httpHeaders.set("Authorization", TOKENONE);
 		try {
 			ResponseEntity<List<TagProducto>> tagsProductosResponseEntity = restTemplate.exchange(
 					apiUrl + "/tags_productos/getTop10", HttpMethod.GET, new HttpEntity<Object>(httpHeaders),

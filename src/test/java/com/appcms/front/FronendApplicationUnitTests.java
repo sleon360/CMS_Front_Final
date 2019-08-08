@@ -75,8 +75,8 @@ public class FronendApplicationUnitTests {
 	    	emp.setId("123");
 	    	
 	    	
-	    	when(greetingService.getResouce("images", "logo-scotiaclub.png", "dsfsdfsd")).thenReturn(emp);
-	    	Object httpResponsefalse = controller.resource("logo-scotiaclub.png", "images", request, response);
+	    	when(greetingService.getResouce("images", "logo-scotiaclub.png")).thenReturn(emp);
+	    	Object httpResponsefalse = controller.resource("logo-scotiaclub.png", "images", request);
 	    	assertNotNull((ModelAndView) httpResponsefalse);
 	    	
 	    	

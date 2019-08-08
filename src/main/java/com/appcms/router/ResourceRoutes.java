@@ -27,10 +27,9 @@ public class ResourceRoutes {
     }
 
 	@GetMapping("/resource/{folder}/{resourceid:.+}")
-	public Object resource(@PathVariable("resourceid") String resourceName, @PathVariable("folder") String folder,
-			HttpServletRequest request, HttpServletResponse response) {
+	public Object resource(@PathVariable("resourceid") String resourceName, @PathVariable("folder") String folder,HttpServletRequest request) {
 		try {
-			ResourceEntity rEntity=greetingService.getResouce(folder, resourceName, request.getSession().getAttribute("TOKENONE").toString());
+			ResourceEntity rEntity=greetingService.getResouce(folder, resourceName);
 			return ResponseEntity.ok().contentType(MediaType.parseMediaType(rEntity.getMime_resource())).body(new ByteArrayResource(rEntity.getData()));
 		} catch (Exception ex) {
 			request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);

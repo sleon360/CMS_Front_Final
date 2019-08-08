@@ -15,13 +15,14 @@ import com.appcms.entity.ResourceEntity;
 public class GetRestService {
 
 	private String apiUrl;
-	
-	public GetRestService(@Qualifier("apiUrl") String xapiUrl)
+	private String TOKENONE;
+	public GetRestService(@Qualifier("apiUrl") String xapiUrl,@Qualifier("TOKENONE") String xTOKENONE)
 	{
 		this.apiUrl=xapiUrl;
+		this.TOKENONE = xTOKENONE;
 	}
 	
-	public ResourceEntity getResouce(String folder,String resourceName,String TOKENONE)
+	public ResourceEntity getResouce(String folder,String resourceName)
 	{
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", TOKENONE);

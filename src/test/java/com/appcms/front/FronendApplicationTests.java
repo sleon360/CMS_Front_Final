@@ -87,8 +87,8 @@ public class FronendApplicationTests {
 	    	ResourceEntity emp = new ResourceEntity();
 	    	emp.setNombre_resource("logo-scotiaclub.png");
 	    	
-	    	Mockito.when(greetingService.getResouce("images", "logo-scotiaclub.png", "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzcHJpbmciLCJleHAiOjE1NjQ3Njk1MTF9.Ym6X5tqohNHIw8rGNvtqGa2x4_QGR9y_M4BKO-gUiRQe2nN12VIRXnFo5Mb6YN-1X4Sj1DDBsN5ykz4EFhxtpw")).thenReturn(emp);
-	    	Object httpResponsefalse = controller.resource("logo-scotiaclub.png", "images", request, response);
+	    	Mockito.when(greetingService.getResouce("images", "logo-scotiaclub.png")).thenReturn(emp);
+	    	Object httpResponsefalse = controller.resource("logo-scotiaclub.png", "images", request);
 	    	Assert.assertNotNull((ModelAndView) httpResponsefalse);
 	    	
 	    	

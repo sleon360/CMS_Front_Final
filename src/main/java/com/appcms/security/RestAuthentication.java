@@ -45,8 +45,7 @@ public class RestAuthentication {
 			if (rq.getSession().getAttribute("TOKENONE") == null) {
 				HttpHeaders headers = new HttpHeaders();
 				headers.setContentType(MediaType.APPLICATION_JSON);
-				HttpEntity<String> entity = new HttpEntity<String>("{\"username\":\"spring\",\"password\":\"secret\"}",
-						headers);
+				HttpEntity<String> entity = new HttpEntity<String>("{\"username\":\"spring\",\"password\":\"secret\"}",headers);
 				RestTemplate restTemplate = new RestTemplate();
 				ResponseEntity<String> xresponse = restTemplate.postForEntity(apiUrl + "/login", entity, String.class);
 
@@ -55,11 +54,7 @@ public class RestAuthentication {
 				System.out.println(" XXXXXBBBBB " + xresponse.getHeaders().getFirst("Authorization") + " - " + result);
 				if (xresponse.getStatusCodeValue() == 200) {
 					setTOKENONE(xresponse.getHeaders().getFirst("Authorization").replace("Bearer ", ""));
-					rq.getSession().setAttribute("TOKENONE",
-							xresponse.getHeaders().getFirst("Authorization").replace("Bearer ", ""));
-					// System.out.println(xresponse.getHeaders().getFirst("Authorization")+" -
-					// TOKEEEENNNOK!!!");
-
+					rq.getSession().setAttribute("TOKENONE",xresponse.getHeaders().getFirst("Authorization").replace("Bearer ", ""));
 					return true;
 				} else {
 
@@ -78,6 +73,30 @@ public class RestAuthentication {
 		// redirectStrategy.sendRedirect(rq, response, "/errores");
 		// return true;
 		return true;
+
+	}
+	
+	
+	
+	public String RestAutenticationLayerOne2(String apiUrl)
+			throws NestedServletException, IOException {
+		// RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+		try {
+				HttpHeaders headers = new HttpHeaders();
+				headers.setContentType(MediaType.APPLICATION_JSON);
+				HttpEntity<String> entity = new HttpEntity<String>("{\"username\":\"spring\",\"password\":\"secret\"}",headers);
+				RestTemplate restTemplate = new RestTemplate();
+				ResponseEntity<String> xresponse = restTemplate.postForEntity(apiUrl + "/login", entity, String.class);
+				System.out.println(xresponse.getHeaders());
+				if (xresponse.getStatusCodeValue() == 200) {
+					setTOKENONE(xresponse.getHeaders().getFirst("Authorization").replace("Bearer ", ""));
+					return xresponse.getHeaders().getFirst("Authorization").replace("Bearer ", "");
+				} else {
+					return "0";
+				}
+		} catch (Exception ex) {
+			return "0";
+		}
 
 	}
 

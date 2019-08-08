@@ -68,8 +68,8 @@ public class Routes {
 	
 	
 
-	public void setHeaderx(ModelAndView mav, HttpServletRequest rq) {
-		mav.addObject("menuesHeader", dtserver.loadAllScmenu(rq));
+	public void setHeaderx(ModelAndView mav) {
+		mav.addObject("menuesHeader", dtserver.loadAllScmenu());
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
 		System.out.println("esta login: " + resolver.isAnonymous(auth));
@@ -98,7 +98,7 @@ public class Routes {
 		vi.addView("404");
 		vi.addView("footer");
 		ModelAndView mav = new ModelAndView(vi.render());
-		this.setHeaderx(mav, rq);
+		this.setHeaderx(mav);
 		return mav;
 	}
 
@@ -166,7 +166,7 @@ public class Routes {
 		mav.addObject("descripcion_error", errorMsg);
 		mav.addObject("clean", clean);
 
-		this.setHeaderx(mav, rq);
+		this.setHeaderx(mav);
 		return mav;
 
 //		return "error";
@@ -206,9 +206,9 @@ public class Routes {
 		mav.addObject("banners", dtserver.loadBannerAll(0, rq)); // Emudata.getBanners()
 		mav.addObject("banners_resp", dtserver.loadBannerAll(1, rq));
 
-		mav.addObject("descuentos_destacados", dtserver.loadscmenuinformationFomScmenu(10, rq));
+		mav.addObject("descuentos_destacados", dtserver.loadscmenuinformationFomScmenu(10));
 
-		this.setHeaderx(mav, rq);
+		this.setHeaderx(mav);
 
 		return mav;
 	}
@@ -246,28 +246,28 @@ public class Routes {
 		switch (scmenuurlsub.getTipo()) {
 		case 1: // information
 			System.out.println("Tipo 1:" + scmenuurlsub.getId()); // TIPO INFORMACION
-			scmenuurlsub.informationsubmenu = dtserver.loadInformatioSub(scmenuurlsub.getId(), rq);// Emudata.getInformatiotest();
+			scmenuurlsub.informationsubmenu = dtserver.loadInformatioSub(scmenuurlsub.getId());// Emudata.getInformatiotest();
 			break;
 		case 2:
 			System.out.println("Tipo 2:" + scmenuurlsub.getId()); // TIPO PRODUCTO CON LIKE
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId(), rq);// Emudata.getProductosLikeTest();
+			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId());// Emudata.getProductosLikeTest();
 			break;
 		case 3:
 			System.out.println("Tipo 3"); // TIPO CON CUPON
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId(), rq);// Emudata.getProductosiNFOTest();
+			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId());// Emudata.getProductosiNFOTest();
 			break;
 		case 4:
 			System.out.println("Tipo 4"); // TIPO PRODUCTO E-COMERCE
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId(), rq);// Emudata.getProductoseEcomerceTest();
+			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId());// Emudata.getProductoseEcomerceTest();
 			System.out.println("prodconstock:" + scmenuurlsub.productosLikeLista.toString());
 			break;
 		case 5:
 			System.out.println("Tipo 5"); // TIPO CANJE CON CATEGORIAS
-			scmenuurlsub.categoriaProductoLista = dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId(), rq);// Emudata.getCategoriasProductosTest();//
+			scmenuurlsub.categoriaProductoLista = dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId());// Emudata.getCategoriasProductosTest();//
 			break;
 		case 6:
 			System.out.println("Tipo 6"); // TIPO CANJE CON CATEGORIAS PARA FORMULARIO
-			scmenuurlsub.categoriaProductoLista = dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId(), rq);// Emudata.getCategoriasProductosTestTipo6();
+			scmenuurlsub.categoriaProductoLista = dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId());// Emudata.getCategoriasProductosTestTipo6();
 			break;
 		case 7:
 			System.out.println("Tipo 7"); // TIPO CANJE CASHBACK
@@ -275,13 +275,13 @@ public class Routes {
 			break;
 		case 8:
 			System.out.println("Tipo 8"); // TIPO CANJE DESCUENTOS
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId(), rq);// Emudata.getProductosLikeTest();
+			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId());// Emudata.getProductosLikeTest();
 			//scmenuurlsub.tagsProductos = dtserver.loadTagsProductos(rq);// Emudata.getProductosLikeTest();
 			//System.out.println("<<<<< " + scmenuurlsub.tagsProductos + " >>>>>");
 			break;
 		case 9:
 			System.out.println("Tipo 9"); // TIPO VISTA INFORMATION
-			scmenuurlsub.informationHtml = dtserver.loadInformationScsubmenu(scmenuurlsub.getId(), rq);// Emudata.getInformationHtml();loadInformationScsubmenu
+			scmenuurlsub.informationHtml = dtserver.loadInformationScsubmenu(scmenuurlsub.getId());// Emudata.getInformationHtml();loadInformationScsubmenu
 			break;
 		}
 
@@ -294,7 +294,7 @@ public class Routes {
 		mav.addObject("menuurl", scmenu);
 		mav.addObject("submenuurl", scmenuurlsub);
 
-		this.setHeaderx(mav, rq);
+		this.setHeaderx(mav);
 
 		return mav;
 	}
@@ -342,8 +342,7 @@ public class Routes {
 		case 5:
 			System.out.println("Tipo 5"); // TIPO CANJE CON CATEGORIAS
 
-			scmenuurlsub.categoriaProductoLista = dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(),
-					categoria, rq);// Emudata.getCateProductosFromCategoria(categoria);
+			scmenuurlsub.categoriaProductoLista = dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(),categoria);// Emudata.getCateProductosFromCategoria(categoria);
 			System.out.println("Lista de productos de categoria: " + scmenuurlsub.categoriaProductoLista.toString());
 
 			mav.addObject("verProductosCategoria", true);
@@ -354,8 +353,7 @@ public class Routes {
 			// se pasa la categoria para seleccionar el primer producto de ella, deberia
 			// siempre tener 1 producto MAXIMO por categoria tipo formulario
 
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosLikeSubmenuCategoria(scmenuurlsub.getId(),
-					categoria, rq);// Emudata.getProductosLikeTest();
+			scmenuurlsub.productosLikeLista = dtserver.loadProductosLikeSubmenuCategoria(scmenuurlsub.getId(),categoria);// Emudata.getProductosLikeTest();
 			mav.addObject("producto", new CanjeProducto());
 			mav.addObject("verProductosCategoria", true);
 			
@@ -364,8 +362,7 @@ public class Routes {
 			break;
 		case 8:
 			System.out.println("Tipo 8"); // TIPO CANJE CON CATEGORIAS
-			scmenuurlsub.categoriaProductoLista = dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(),
-					categoria, rq);// Emudata.getCateProductosFromCategoria(categoria);
+			scmenuurlsub.categoriaProductoLista = dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(),categoria);// Emudata.getCateProductosFromCategoria(categoria);
 			mav.addObject("verProductosCategoria", true);
 			break;
 		default:
@@ -383,7 +380,7 @@ public class Routes {
 		mav.addObject("submenuurl", scmenuurlsub);
 		mav.addObject("csrf_token", csrf_token);
 
-		this.setHeaderx(mav, rq);
+		this.setHeaderx(mav);
 
 		return mav;
 	}
@@ -424,13 +421,13 @@ public class Routes {
 
 		}
 
-		scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto, rq); // Emudata.getProductoSearch(producto);
+		scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto); // Emudata.getProductoSearch(producto);
 		
 		mav.addObject("menuurl", scmenu);
 		mav.addObject("submenuurl", scmenuurlsub);
 		mav.addObject("csrf_token", csrf_token);
 
-		this.setHeaderx(mav, rq);
+		this.setHeaderx(mav);
 
 		return mav;
 	}
@@ -505,7 +502,7 @@ public class Routes {
 
 			try {
 				// OBTENEMOS EL PRODUCTO
-				ProductoTipoLike detalleProducto = dtserver.loadProductoById(producto.getIdProducto(), rq);
+				ProductoTipoLike detalleProducto = dtserver.loadProductoById(producto.getIdProducto());
 				int idPruductoCanje = detalleProducto.getId();
 
 				// PRODUCTO DISPONIBLE (NO FUNCIONA)
@@ -526,7 +523,7 @@ public class Routes {
 					usuario.setPoints(dtserver.loadUserPoints().getAvailablePoints());
 
 
-					StockTicket stockticket = dtserver.loadStockTicket(detalleProducto.getNombre(), rq);
+					StockTicket stockticket = dtserver.loadStockTicket(detalleProducto.getNombre());
 					System.out.println("activosticket: " + stockticket.toString());
 					System.out.println("puntos canje: " + totalPuntos + "puntos disponibles: " + usuario.getPoints());
 
@@ -543,8 +540,7 @@ public class Routes {
 						CustomerReward movimientoActual = new CustomerReward(usuario.getId_cliente(),
 								producto.getIdProducto(), descipcionAbono, totalPuntos, date.toString(),
 								date.toString(), 0, 0, 1, 1);
-						String agregado = dtserver.setReward(movimientoActual, detalleProducto.getNombre(),
-								usuario.getRut(), rq);
+						String agregado = dtserver.setReward(movimientoActual, detalleProducto.getNombre(),usuario.getRut());
 						System.out.println("RESULTSETREWARDS: " + agregado);
 						if (agregado != null) {
 							System.out.println("Movimiento agregado");
@@ -587,7 +583,7 @@ public class Routes {
 			} else {
 				producto.setActionx("finish");
 			} // dtserver.loadProductosDetalle(scmenuurlsub.getId());//
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto(), rq);// Emudata.getProductoSearchById(producto.getIdProducto());//dtserver.loadProductosDetalle(scmenuurlsub.getId());//Emudata.getProductoSearchById(producto.getIdProducto());//
+			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto());// Emudata.getProductoSearchById(producto.getIdProducto());//dtserver.loadProductosDetalle(scmenuurlsub.getId());//Emudata.getProductoSearchById(producto.getIdProducto());//
 			mav.addObject("producto", producto);
 
 			System.out.println(scmenuurlsub.productosLikeLista.get(0).getEquipesos());
@@ -604,7 +600,7 @@ public class Routes {
 				producto.setActionx("finish");
 			}
 
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto(), rq);// Emudata.getProductoSearchById(producto.getIdProducto());
+			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto());// Emudata.getProductoSearchById(producto.getIdProducto());
 			System.out.println(scmenuurlsub.productosLikeLista.get(0).getEquipesos());
 			System.out.println(scmenuurlsub.productosLikeLista.get(0).getPrecio());
 			mav.addObject("producto", producto);
@@ -612,7 +608,7 @@ public class Routes {
 		case 7: // TIPO CANJE CASHBACK
 			break;
 		case 8: // TIPO CANJE DESCUENTOS
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto(), rq);// Emudata.getProductoSearchById(producto.getIdProducto());//dtserver.loadProductosDetalle(scmenuurlsub.getId());//Emudata.getProductoSearchById(producto.getIdProducto());
+			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto());// Emudata.getProductoSearchById(producto.getIdProducto());//dtserver.loadProductosDetalle(scmenuurlsub.getId());//Emudata.getProductoSearchById(producto.getIdProducto());
 			mav.addObject("producto", producto);
 			mav.addObject("canjeExito", true);
 			break;
@@ -625,7 +621,7 @@ public class Routes {
 		mav.addObject("submenuurl", scmenuurlsub);
 		mav.addObject("csrf_token", csrf_token);
 
-		this.setHeaderx(mav, rq);
+		this.setHeaderx(mav);
 
 		return mav;
 	}
@@ -749,7 +745,7 @@ public class Routes {
 			vi.addView("FOOTER");
 			mav = new ModelAndView(vi.render());
 			System.out.println("Mis cupones: usr: " + credentialUser.getScotiauser().getId_cliente());
-			mav.addObject("usercupones", dtserver.loadCupones(credentialUser.getScotiauser().getId_cliente(), rq));
+			mav.addObject("usercupones", dtserver.loadCupones(credentialUser.getScotiauser().getId_cliente()));
 
 //			scmenuurlsub.informationsubmenu = Emudata.getInformatiotest();
 			break;
@@ -794,7 +790,7 @@ public class Routes {
 		mav.addObject("menuurl", scmenu);
 		mav.addObject("submenuurl", scmenuurlsub);
 
-		this.setHeaderx(mav, rq);
+		this.setHeaderx(mav);
 
 		return mav;
 
@@ -814,7 +810,7 @@ public class Routes {
 
 		Information informationhtml = new Information();
 
-		informationhtml = dtserver.loadInformationByName(nombreInformation, rq);
+		informationhtml = dtserver.loadInformationByName(nombreInformation);
 		System.out.println("inforxn" + informationhtml);
 		if (informationhtml == null) {
 			return new ModelAndView("redirect:/404");
@@ -822,7 +818,7 @@ public class Routes {
 
 		mav.addObject("informationhtml", informationhtml);
 
-		this.setHeaderx(mav, rq);
+		this.setHeaderx(mav);
 
 		return mav;
 
@@ -841,7 +837,7 @@ public class Routes {
 
 		System.out.println("infologin: " + loginForm);
 
-		String resultlogin = dtserver.testLogin(loginForm.getRut(), loginForm.getPass(), rq);
+		String resultlogin = dtserver.testLogin(loginForm.getRut(), loginForm.getPass());
 		System.out.println("result_login:" + resultlogin);
 
 		if (resultlogin != null) { // token de sesion devuelto
@@ -850,7 +846,7 @@ public class Routes {
 
 		}
 
-		this.setHeaderx(mav, rq);
+		this.setHeaderx(mav);
 
 		return mav;
 
@@ -880,7 +876,7 @@ public class Routes {
 
 		ModelAndView mav = new ModelAndView(vi.render());
 
-		this.setHeaderx(mav, rq);
+		this.setHeaderx(mav);
 
 		return mav;
 
@@ -897,7 +893,7 @@ public class Routes {
 		} else {
 			return new ModelAndView("redirect: /?login");
 		}
-		byte[] response = dtserver.loadCuponAsPdf(credentialUser.getScotiauser().getId_cliente(), id_rew, rq);
+		byte[] response = dtserver.loadCuponAsPdf(credentialUser.getScotiauser().getId_cliente(), id_rew);
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).body(new ByteArrayResource(response));
 	}
 	
