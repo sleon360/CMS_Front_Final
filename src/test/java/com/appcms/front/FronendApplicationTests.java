@@ -76,6 +76,15 @@ public class FronendApplicationTests {
 		  greetingService = Mockito.mock(GetRestService.class);
 	      controller = new ResourceRoutes(greetingService);
 	  }
+	 
+	  
+	  @Test
+		public void contextLoads() {
+		  
+		}
+		
+	  
+	  
 	  
 	  
 	  
@@ -118,9 +127,6 @@ public class FronendApplicationTests {
 	        Assert.assertEquals(emp, employee);      */                                                  
 	  }
 	  
-	@Test
-	public void contextLoads() {
-	}
 	
 	@Test
 	public void logout() throws Exception

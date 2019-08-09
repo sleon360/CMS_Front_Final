@@ -537,9 +537,17 @@ public class Routes {
 						mav.addObject("canjeExito", false);
 						mav.addObject("error_code", 11);// Puntos insuficientes
 					} else {
-						CustomerReward movimientoActual = new CustomerReward(usuario.getId_cliente(),
-								producto.getIdProducto(), descipcionAbono, totalPuntos, date.toString(),
-								date.toString(), 0, 0, 1, 1);
+	
+						CustomerReward movimientoActual=new CustomerReward();
+						movimientoActual.setCustomer_id(usuario.getId_cliente());
+						movimientoActual.setOrder_id(producto.getIdProducto());
+						movimientoActual.setDescription(descipcionAbono);
+						movimientoActual.setPoints(totalPuntos);
+						movimientoActual.setDate_added(date.toString());
+						movimientoActual.setDate_vencimiento(date.toString());
+						movimientoActual.setId_trx(0);			
+						movimientoActual.setTipo_reward(1);
+						
 						String agregado = dtserver.setReward(movimientoActual, detalleProducto.getNombre(),usuario.getRut());
 						System.out.println("RESULTSETREWARDS: " + agregado);
 						if (agregado != null) {

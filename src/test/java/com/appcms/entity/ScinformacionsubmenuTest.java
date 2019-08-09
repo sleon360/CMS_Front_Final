@@ -28,6 +28,8 @@ public class ScinformacionsubmenuTest {
 	@Before
 	public void setUp() throws Exception {
 		scinformacionsubmenu=new Scinformacionsubmenu();
+		scinformacionsubmenu = new Scinformacionsubmenu(1,1,"Restorado8",1,"/resource/images/woman-computer.jpg","Obtén desde un","15% dcto. en restaurantes","Reserva ahora y obtén desde un 15% de dcto. en el total de tu cuenta","#","Reserva acá","[\"Restorando les ofrece a miles de comensales la posibilidad de descubrir miles de lugares para salir a comer, acceder a ofertas y beneficios en tiempo real y asegurar su mesa sin tener que esperar para sentarse.\",\"Restorando trabaja junto con los restaurantes para mejorar las experiencias gastron\\u00f3micas de los comensales en latinoam\\u00e9rica.\",\"XXC\",\"t2\"]","2018-12-11 18:15:04","2019-02-13 18:03:57",1);
+		
 		scinformacionsubmenu.setImagen_logo("/img/imagen.jpg");
 		scinformacionsubmenu.setId(100);
 		scinformacionsubmenu.setId_submenu(500);

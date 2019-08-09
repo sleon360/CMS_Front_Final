@@ -35,7 +35,20 @@ public class ProductoTipoLike {
 	int stock;
 	int canjeados;
 	
-	
+	public ProductoTipoLike(int id, String nombre, String titulo, String subtitulo, String imagen,
+			String porcentajeInfo, String direccionTxt1, String direccionTxt2, String direccionTxt3, int like) { // CONSTRUCTOR TIPO 2
+		super();
+		this.id = id;
+		this.nombre = nombre;
+		this.titulo = titulo;
+		this.subtitulo = subtitulo;
+		this.imagen = imagen;
+		this.porcentajeInfo = porcentajeInfo;
+		this.direccionTxt1 = direccionTxt1;
+		this.direccionTxt2 = direccionTxt2;
+		this.direccionTxt3 = direccionTxt3;
+		this.like = like;
+	}
 	
 	public int getStock() {
 		return stock;

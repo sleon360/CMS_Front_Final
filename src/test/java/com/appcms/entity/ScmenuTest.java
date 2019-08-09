@@ -55,6 +55,72 @@ public class ScmenuTest {
 	}*/
 
 	@Test
+	public final void testGetNombre() throws Exception {
+		Scmenu esperado = mock(Scmenu.class);
+		Scmenu noesperado = mock(Scmenu.class);
+		when(esperado.getNombre()).thenReturn("NOMBRE");
+		when(noesperado.getNombre()).thenReturn("NO_NOMBRE");
+		assertEquals(scmenu.getNombre(), esperado.getNombre());
+		assertNotEquals(noesperado.getNombre(), scmenu.getNombre());
+	}
+	
+	
+	@Test
+	public final void testGetColor() throws Exception {
+		Scmenu esperado = mock(Scmenu.class);
+		Scmenu noesperado = mock(Scmenu.class);
+		when(esperado.getColor()).thenReturn("#ffffff");
+		when(noesperado.getColor()).thenReturn("#000000");
+		assertEquals(scmenu.getColor(), esperado.getColor());
+		assertNotEquals(noesperado.getColor(), scmenu.getColor());
+	}
+	
+	
+	@Test
+	public final void testGetTipo() throws Exception {
+		Scmenu esperado = mock(Scmenu.class);
+		Scmenu noesperado = mock(Scmenu.class);
+		when(esperado.getTipo()).thenReturn(1);
+		when(noesperado.getTipo()).thenReturn(0);
+		assertEquals(scmenu.getTipo(), esperado.getTipo());
+		assertNotEquals(noesperado.getTipo(), scmenu.getTipo());
+	}
+	
+	@Test
+	public final void testGetLink() throws Exception {
+		Scmenu esperado = mock(Scmenu.class);
+		Scmenu noesperado = mock(Scmenu.class);
+		when(esperado.getLink()).thenReturn("http://google.cl");
+		when(noesperado.getLink()).thenReturn("http://123.cl");
+		assertEquals(scmenu.getLink(), esperado.getLink());
+		assertNotEquals(noesperado.getLink(), scmenu.getLink());
+	}
+	
+	
+	@Test
+	public final void testGetisVisibleTop() throws Exception {
+		Scmenu esperado = mock(Scmenu.class);
+		Scmenu noesperado = mock(Scmenu.class);
+		when(esperado.isVisibleTop()).thenReturn(true);
+		when(noesperado.isVisibleTop()).thenReturn(false);
+		assertEquals(scmenu.isVisibleTop(), esperado.isVisibleTop());
+		assertNotEquals(noesperado.isVisibleTop(), scmenu.isVisibleTop());
+	}
+	
+	
+	@Test
+	public final void testGetisUserElement() throws Exception {
+		Scmenu esperado = mock(Scmenu.class);
+		Scmenu noesperado = mock(Scmenu.class);
+		when(esperado.isUserElement()).thenReturn(true);
+		when(noesperado.isUserElement()).thenReturn(false);
+		assertEquals(scmenu.isUserElement(), esperado.isUserElement());
+		assertNotEquals(noesperado.isUserElement(), scmenu.isUserElement());
+	}
+	
+	
+	
+	@Test
 	public final void testGetStrIndex() throws Exception {
 		Scmenu esperado = mock(Scmenu.class);
 		Scmenu noesperado = mock(Scmenu.class);

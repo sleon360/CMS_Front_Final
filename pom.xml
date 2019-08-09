@@ -22,6 +22,7 @@
 		<thymeleaf-extras-springsecurity4.version>3.0.4.RELEASE</thymeleaf-extras-springsecurity4.version>
 		<maven.test.skip>false</maven.test.skip>
 		<surefire.version>2.19.1</surefire.version>
+		<sonar.jacoco.reportPaths>${maven.multiModuleProjectDirectory}/jacoco-aggregate-report/target/aggregate.exec</sonar.jacoco.reportPaths>
     <jacoco.version>0.8.0</jacoco.version>
 	</properties>
 
@@ -106,6 +107,7 @@
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
             <version>0.8.4</version>
+            
             <executions>
                 <execution>
                     <id>default-prepare-agent</id>

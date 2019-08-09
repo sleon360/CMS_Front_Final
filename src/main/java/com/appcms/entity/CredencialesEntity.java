@@ -48,10 +48,5 @@ public class CredencialesEntity {
 		this.scotiauser = scotiauser;
 	}
 
-	@Override
-	public String toString() {
-		return "CredencialesEntity [userName=" + userName + ", password=" + password + ", TOKENONE=" + TOKENONE
-				+ ", TOKENTWO=" + TOKENTWO + ", scotiauser=" + scotiauser + "]";
-	}
 
 }
