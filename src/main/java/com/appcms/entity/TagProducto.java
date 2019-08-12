@@ -11,6 +11,8 @@ public class TagProducto {
 	
 	String descripcion;
 	
+	String icono;
+	
 	boolean estado;
 	
 	public int getIdTagProducto() {
@@ -31,6 +33,14 @@ public class TagProducto {
 
 	public String getDescripcion() {
 		return descripcion;
+	}
+	
+	public String getIcono() {
+		return icono;
+	}
+
+	public void setIcono(String icono) {
+		this.icono = icono;
 	}
 
 	public void setDescripcion(String descripcion) {

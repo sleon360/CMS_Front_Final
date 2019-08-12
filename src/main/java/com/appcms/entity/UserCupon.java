@@ -1,11 +1,15 @@
 package com.appcms.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class UserCupon {
 	int id_cupon;
 	String codigo;
 	String nombre;
 	String valor;
 	String imagen;
+	@JsonProperty("tipo_cupon")
+	int tipoCupon;
 	String fecha_emitido;
 	String fecha_vencimiento;	
 	
@@ -60,6 +64,14 @@ public class UserCupon {
 
 	public void setValor(String valor) {
 		this.valor = valor;
+	}
+	
+	public int getTipoCupon() {
+		return tipoCupon;
+	}
+
+	public void setTipoCupon(int tipoCupon) {
+		this.tipoCupon = tipoCupon;
 	}
 
 	public String getImagen() {

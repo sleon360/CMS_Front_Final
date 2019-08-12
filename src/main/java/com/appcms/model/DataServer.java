@@ -24,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.appcms.entity.Banner;
@@ -278,6 +279,23 @@ public class DataServer {
 
 	}
 
+	public ProductoCategoria loadProductoCategoria(int idProducto, HttpServletRequest rq) {
+
+		HttpHeaders headers = new HttpHeaders();
+
+		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
+		RestTemplate restTemplate = new RestTemplate();
+
+		String url = apiUrl + "/productos/" + idProducto + "/categoria";
+		try {
+			ResponseEntity<ProductoCategoria> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity, ProductoCategoria.class);
+			return xresponse.getBody();
+		} catch(Exception e) {
+			return null;
+		}
+	}
+	
 	public List<ProductoCategoria> loadproductoCategoriaConProductos(int idsubmenu, String categoria,
 			HttpServletRequest rq) {
 
@@ -572,21 +590,17 @@ public class DataServer {
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = apiUrl + "/v1/customer/" + idUser + "/cupones";
+		String url = apiUrl + "/v1/customer/" + idUser + "/cupones" ;
 
-		System.out.println("URL DE CONSULTA:" + url);
-		ResponseEntity<List<UserCupon>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
-				new ParameterizedTypeReference<List<UserCupon>>() {
-				});
-
-		System.out.println("requestxn: " + xresponse.getBody());
-
-		if (xresponse.getStatusCodeValue() == 200) {
+		System.out.println("Consultando a la rest");
+		try {
+			ResponseEntity<List<UserCupon>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+					new ParameterizedTypeReference<List<UserCupon>>() {
+					});
 			return xresponse.getBody();
-		} else {
-			return null;
+		} catch (Exception e) {
+			return new ArrayList<>();
 		}
-
 	}
 
 	public byte[] loadCuponAsPdf(int idUser, int idReward, HttpServletRequest rq) {
@@ -627,7 +641,6 @@ public class DataServer {
 		if (xresponse.getStatusCodeValue() == 200) {
 			return xresponse.getBody();
 		} else {
-			System.out.println("no200xx");
 			StockTicket responsenull = new StockTicket();
 			return responsenull;
 		}
@@ -705,25 +718,22 @@ public class DataServer {
 		for (int i = 0; i < gustos.length; i++) {
 			map.add("gusto", gustos[i]);
 		}
-		System.out.println("Consultando al back");
-		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map,httpHeaders);
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map,
+				httpHeaders);
 		try {
 			ResponseEntity<String> customerGustosResponseEntity = restTemplate
-				.postForEntity(apiUrl + "/v1/customer/" + id + "/customer_gustos/save", request, String.class);
+					.postForEntity(apiUrl + "/v1/customer/" + id + "/customer_gustos/save", request, String.class);
 			return customerGustosResponseEntity.getBody();
-		} catch(Exception e) {
-			System.out.println(e.getMessage());
+		} catch (Exception e) {
 			return null;
 		}
-		
+
 	}
 
 	public List<TagProducto> loadTagsProductos(HttpServletRequest rq) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.set("Authorization", credencialesEntity.getTOKENONE());
+		httpHeaders.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		try {
 			ResponseEntity<List<TagProducto>> tagsProductosResponseEntity = restTemplate.exchange(
 					apiUrl + "/tags_productos/getTop10", HttpMethod.GET, new HttpEntity<Object>(httpHeaders),
@@ -733,6 +743,53 @@ public class DataServer {
 		} catch (Exception e) {
 			return new ArrayList<>();
 		}
+	}
+
+	public CustomerReward realizarCanjeDirecto(int idProducto) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("Authorization", credencialesEntity.getTOKENONE());
+		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
+
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		map.add("id_producto", Integer.toString(idProducto));
+
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map,
+				httpHeaders);
+
+		int id = credencialesEntity.getScotiauser().getId_cliente();
+		ResponseEntity<CustomerReward> tagsProductosResponseEntity = restTemplate.postForEntity(
+				apiUrl + "/v1/customer/{id}/cupones/exchangeDirectly", request, CustomerReward.class, id);
+		return tagsProductosResponseEntity.getBody();
+	}
+
+	public boolean inscribirPuntos(int idProducto, String cardKey, String cardNumber, int quantity) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("Authorization", credencialesEntity.getTOKENONE());
+		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
+
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		map.add("id_producto", Integer.toString(idProducto));
+		map.add("card_key", cardKey);
+		map.add("card_number", cardNumber);
+		map.add("quantity", Integer.toString(quantity));
+
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map,
+				httpHeaders);
+
+		int id = credencialesEntity.getScotiauser().getId_cliente();
+		try {
+			restTemplate.postForEntity(apiUrl + "/v1/customer/{id}/points/inscribe", request, CustomerReward.class, id);
+			return true;
+		} catch(Exception e) {
+			return false;
+		}
+			
 	}
 
 }

@@ -6,6 +6,8 @@ public class CanjeProducto {
 	String rutAsociado; 
 	int cantidad = 1;
 	int monto = 0;
+	String cardNumber;
+	String cardKey;
 	String csrf_token;
 	String actionx = "";
 
@@ -75,6 +77,22 @@ public class CanjeProducto {
 
 	public void setMonto(int monto) {
 		this.monto = monto;
+	}
+	
+	public String getCardNumber() {
+		return cardNumber;
+	}
+
+	public void setCardNumber(String cardNumber) {
+		this.cardNumber = cardNumber;
+	}
+
+	public String getCardKey() {
+		return cardKey;
+	}
+
+	public void setCardKey(String cardKey) {
+		this.cardKey = cardKey;
 	}
 
 	@Override

@@ -35,7 +35,17 @@ public class ProductoTipoLike {
 	int stock;
 	int canjeados;
 	
+	@JsonProperty("tags_producto")
+	public List<TagProducto> tagsProducto;
 	
+	@JsonProperty("genera_canje")
+	public boolean generaCanje;
+	
+	@JsonProperty("cantidad_maxima_canje")
+	int cantidadMaximaCanje;
+	
+	@JsonProperty("id_tipo_canje")
+	int idTipoCanje;
 	
 	public int getStock() {
 		return stock;
@@ -349,6 +359,14 @@ public class ProductoTipoLike {
 
 	public void setCodigo(String codigo) {
 		this.codigo = codigo;
+	}
+	
+	public List<TagProducto> getTagsProducto() {
+		return tagsProducto;
+	}
+
+	public void setTagsProducto(List<TagProducto> tagsProducto) {
+		this.tagsProducto = tagsProducto;
 	}
 
 	@Override
