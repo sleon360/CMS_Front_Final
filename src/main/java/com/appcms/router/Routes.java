@@ -40,6 +40,7 @@ import org.springframework.web.util.NestedServletException;
 
 import com.appcms.entity.CanjeProducto;
 import com.appcms.entity.CredencialesEntity;
+import com.appcms.entity.CustomerInscripcion;
 import com.appcms.entity.CustomerReward;
 import com.appcms.entity.Information;
 import com.appcms.entity.LoginUser;
@@ -87,6 +88,20 @@ public class Routes {
 			 */
 			mav.addObject("usuario", credencialesEntity.getScotiauser());
 			mav.addObject("points", dtserver.loadUserPoints());
+			//Se agregan los gustos del usuario
+			List<UserGusto> gustos = dtserver.loadGustos();
+			List<UserGusto> gustosCliente = dtserver.loadCustomerGustos();
+			for (int i = 0; i < gustos.size(); i++) {
+				UserGusto gusto = gustos.get(i);
+				for (int j = 0; j < gustosCliente.size(); j++) {
+					UserGusto gustoCliente = gustosCliente.get(j);
+					if (gusto.getId() == gustoCliente.getId()) {
+						gusto.setGustado(true);
+						break;
+					}
+				}
+			}
+			mav.addObject("gustos", gustos);
 		} else {
 			mav.addObject("usuario", Emudata.getUsusarioOff());
 		}
@@ -754,7 +769,21 @@ public class Routes {
 			vi.addView("mis-inscripciones");
 			vi.addView("FOOTER");
 			mav = new ModelAndView(vi.render());
-			mav.addObject("inscripciones", Emudata.getInscripciones());
+			List<CustomerInscripcion> inscripciones = dtserver.loadUserInscripciones();
+			Date fechaActual = new Date();
+			for (CustomerInscripcion customerInscripcion : inscripciones) {
+				Date fechaVencimiento = customerInscripcion.getFechaVencimiento();
+				if (fechaVencimiento == null) {
+					customerInscripcion.setVencido(false);
+				} else {
+					if (fechaVencimiento.before(fechaActual)) {
+						customerInscripcion.setVencido(true);
+					} else {
+						customerInscripcion.setVencido(false);
+					}
+				}				
+			}
+			mav.addObject("inscripciones", inscripciones);
 			break;
 		case 22: // information
 			System.out.println("Tipo 22"); // TIPO MIS CUPONES
@@ -762,25 +791,25 @@ public class Routes {
 			vi.addView("FOOTER");
 			mav = new ModelAndView(vi.render());
 			System.out.println("Mis cupones: usr: " + credentialUser.getScotiauser().getId_cliente());
-			List<UserCupon> cupones = dtserver.loadCupones(credentialUser.getScotiauser().getId_cliente(), rq);
+			List<UserCupon> cupones = dtserver.loadCupones();
 			List<UserCupon> giftCards = new ArrayList<UserCupon>();
 			List<UserCupon> entradasCine = new ArrayList<UserCupon>();
 			List<UserCupon> panoramas = new ArrayList<UserCupon>();
+			SimpleDateFormat currentDateFormatCupones = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			SimpleDateFormat newDateFormatCupones = new SimpleDateFormat("yyyy-MM-dd");
 			for (int i = 0; i < cupones.size(); i++) {
 				UserCupon cupon = cupones.get(i);
 				String fechaEmitido = cupon.getFecha_emitido();
 				String fechaVencimiento = cupon.getFecha_vencimiento();
-				SimpleDateFormat currentDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				SimpleDateFormat newDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 				try {
-					Date dateEmitido = currentDateFormat.parse(fechaEmitido);
-					cupon.setFecha_emitido(newDateFormat.format(dateEmitido));
+					Date dateEmitido = currentDateFormatCupones.parse(fechaEmitido);
+					cupon.setFecha_emitido(newDateFormatCupones.format(dateEmitido));
 				} catch (Exception e) {
 					cupon.setFecha_emitido("N/A");
 				}
 				try {
-					Date dateVencimiento = currentDateFormat.parse(fechaVencimiento);
-					cupon.setFecha_vencimiento(newDateFormat.format(dateVencimiento));
+					Date dateVencimiento = currentDateFormatCupones.parse(fechaVencimiento);
+					cupon.setFecha_vencimiento(newDateFormatCupones.format(dateVencimiento));
 				} catch (Exception e) {
 					cupon.setFecha_vencimiento("N/A");
 				}
@@ -798,9 +827,6 @@ public class Routes {
 					break;
 				}
 			}
-			System.out.println(giftCards);
-			System.out.println(entradasCine);
-			System.out.println("Panoramas: " + panoramas);
 			mav.addObject("giftCards", giftCards);
 			mav.addObject("entradasCine", entradasCine);
 			mav.addObject("panoramas", panoramas);
@@ -812,19 +838,7 @@ public class Routes {
 			vi.addView("mis-preferencias");
 			vi.addView("FOOTER");
 			mav = new ModelAndView(vi.render());
-			List<UserGusto> gustos = dtserver.loadGustos();
-			List<UserGusto> gustosCliente = dtserver.loadCustomerGustos();
-			for (int i = 0; i < gustos.size(); i++) {
-				UserGusto gusto = gustos.get(i);
-				for (int j = 0; j < gustosCliente.size(); j++) {
-					UserGusto gustoCliente = gustosCliente.get(j);
-					if (gusto.getId() == gustoCliente.getId()) {
-						gusto.setGustado(true);
-						break;
-					}
-				}
-			}
-			mav.addObject("gustos", gustos);
+			//No se hace nada, los gustos ya se agregan en setHeaderx porque pueden aparecer en caulquier parte
 			break;
 		case 24: // information
 			System.out.println("Tipo 24"); // TIPO TRANSFERIR
@@ -837,13 +851,6 @@ public class Routes {
 			System.out.println("Seccion fuera de menu");
 			return new ModelAndView("redirect:/404");
 		}
-
-//		mav.addObject("menuurl", scmenuurl);
-//		mav.addObject("submenuurl", scmenuurlsub);
-//
-//		this.setHeaderx(mav,rq);
-//
-//		return mav;
 
 		mav.addObject("menuurl", scmenu);
 		mav.addObject("submenuurl", scmenuurlsub);

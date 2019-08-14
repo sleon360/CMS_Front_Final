@@ -29,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.appcms.entity.Banner;
 import com.appcms.entity.CredencialesEntity;
+import com.appcms.entity.CustomerInscripcion;
 import com.appcms.entity.CustomerReward;
 import com.appcms.entity.FormatoDetalle;
 import com.appcms.entity.Information;
@@ -555,6 +556,27 @@ public class DataServer {
 		return miCartola;
 	}
 
+	public List<CustomerInscripcion> loadUserInscripciones() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("Authorization", "Bearer " + credencialesEntity.getTOKENONE());
+		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
+		try {
+			ResponseEntity<List<CustomerInscripcion>> inscripcionesResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/" + credencialesEntity.getScotiauser().getId_cliente() + "/inscripciones",
+					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), 
+					new ParameterizedTypeReference<List<CustomerInscripcion>>() {
+					});
+			System.out.println(inscripcionesResponseEntity.getBody());
+			return inscripcionesResponseEntity.getBody();
+		} catch (Exception e) {
+			System.out.println("Error" + e.getMessage());
+			//Acá se debería loguear el error
+			return new ArrayList<>();
+		}
+	}
+	
 	public Points loadUserPoints() {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -579,7 +601,7 @@ public class DataServer {
 		}
 	}
 
-	public List<UserCupon> loadCupones(int idUser, HttpServletRequest rq) {
+	public List<UserCupon> loadCupones() {
 
 		HttpHeaders headers = new HttpHeaders();
 
@@ -590,15 +612,16 @@ public class DataServer {
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = apiUrl + "/v1/customer/" + idUser + "/cupones" ;
+		String url = apiUrl + "/v1/customer/" + credencialesEntity.getScotiauser().getId_cliente() + "/cupones" ;
 
-		System.out.println("Consultando a la rest");
 		try {
 			ResponseEntity<List<UserCupon>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 					new ParameterizedTypeReference<List<UserCupon>>() {
 					});
+			System.out.println(xresponse.getBody());
 			return xresponse.getBody();
 		} catch (Exception e) {
+			System.out.println("Error");
 			return new ArrayList<>();
 		}
 	}
