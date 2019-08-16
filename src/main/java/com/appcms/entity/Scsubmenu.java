@@ -14,7 +14,6 @@ public class Scsubmenu {
 	String color;
 	String color_hover;
 	String color_borde;
-	@JsonProperty("id_tipo_submenu")
 	int tipo;
 	String icono;
 	String imagen;
@@ -30,8 +29,7 @@ public class Scsubmenu {
 	public Information informationHtml = null;
 	boolean visibleTop = true;
 	boolean visibleOnlyLogin = false;
-	public List<TagProducto> tagsProductos = new ArrayList<>();
-	
+
 	public Scsubmenu() {
 		super();
 	}
@@ -57,8 +55,11 @@ public class Scsubmenu {
 		this.fecha_modificacion = fecha_modificacion;
 		this.estado = estado;
 	}
+	
+	
+	
 
-
+	
 	public String getStrIndex() {
 		return strIndex;
 	}
@@ -116,7 +117,7 @@ public class Scsubmenu {
 	}
 
 	public int getTipo() {
-		return tipo;
+		return this.tipo;
 	}
 
 	public void setTipo(int tipo) {

@@ -13,30 +13,9 @@ public class UserCupon {
 		super();
 	}
 
-	public UserCupon(int id_cupon, String nombre, String valor, String imagen, String fecha_emitido,
-			String fecha_vencimiento) {
-		super();
-		this.id_cupon = id_cupon;
-		this.nombre = nombre;
-		this.valor = valor;
-		this.imagen = imagen;
-		this.fecha_emitido = fecha_emitido;
-		this.fecha_vencimiento = fecha_vencimiento;
-	}
 
 	
-	
-	public UserCupon(int id_cupon, String nombre, String valor, String imagen, String fecha_emitido,
-			String fecha_vencimiento, String codigo) {
-		super();
-		this.id_cupon = id_cupon;
-		this.nombre = nombre;
-		this.valor = valor;
-		this.imagen = imagen;
-		this.fecha_emitido = fecha_emitido;
-		this.fecha_vencimiento = fecha_vencimiento;
-		this.codigo = codigo;
-	}
+
 
 	public int getId_cupon() {
 		return id_cupon;

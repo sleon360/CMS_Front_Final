@@ -4,9 +4,9 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -31,6 +31,7 @@ import com.appcms.entity.ProductoTipoLike;
 import com.appcms.entity.Scinformacionsubmenu;
 import com.appcms.entity.Scmenu;
 import com.appcms.entity.Scotiauser;
+import com.appcms.entity.Scsubmenu;
 import com.appcms.entity.StockTicket;
 import com.appcms.entity.TagProducto;
 import com.appcms.entity.Tarjetas;
@@ -40,6 +41,7 @@ import com.appcms.entity.UserCupon;
 import com.appcms.entity.UserGusto;
 import com.appcms.entity.points.ExpiringPoints;
 import com.appcms.entity.points.Points;
+import com.cms.views.ViewApp;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
@@ -48,22 +50,36 @@ public class DataServer {
 
 	private String apiUrl;
 	private String TOKENONE;
-
+	private ViewApp vi;
+	
 	StringBuilder sb = new StringBuilder("");
 
 	public DataServer(@Qualifier("apiUrl") String xapiUrl,@Qualifier("TOKENONE") String xTOKENONE) {
 		this.apiUrl = xapiUrl;
 		this.TOKENONE = xTOKENONE;
-		
+		vi=new ViewApp(this.getApiUrl(),this.getToken());
 		System.out.println("AAAAAAAASSSSSSSSSSSSDDDDDDDDDDDFFFFFFFF:"+xTOKENONE);
 	}
+	
 	
 	
 	public String getApiUrl()
 	{
 		return this.apiUrl;
 	}
-	public Scmenu loadScmenuByName(HttpServletRequest rq, String scmenuName) {
+	
+	public String getToken()
+	{
+		return this.TOKENONE;
+	}
+	
+	
+	public ViewApp ViewApp()
+	{
+		return this.vi;
+	}
+	
+	public Scmenu loadScmenuByName( String scmenuName) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
@@ -71,10 +87,16 @@ public class DataServer {
 
 		String url = apiUrl + "/get/scmenuByName/" + scmenuName;
 
+		//ResponseEntity<Scmenu> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+				//		new ParameterizedTypeReference<Scmenu>() {
+				//		});
+		
+		
 		ResponseEntity<Scmenu> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
-				new ParameterizedTypeReference<Scmenu>() {
-				});
+						new ParameterizedTypeReference<Scmenu>() {
+						});
 		if (xresponse.getStatusCodeValue() == 200) {
+	        
 			return xresponse.getBody();
 		} else {
 			return null;
@@ -282,7 +304,7 @@ public class DataServer {
 
 	}
 
-	public List<Banner> loadBannerAll(int responsive, HttpServletRequest rq) {
+	public List<Banner> loadBannerAll(int responsive) {
 		System.out.println(this.apiUrl);
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", TOKENONE);

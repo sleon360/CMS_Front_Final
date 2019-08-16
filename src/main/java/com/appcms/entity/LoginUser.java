@@ -9,12 +9,6 @@ public class LoginUser {
 	public LoginUser() {
 		super();
 	}
-	public LoginUser(String rut, String pass, String token) {
-		super();
-		this.rut = rut;
-		this.pass = pass;
-		this.token = token;
-	}
 	public String getRut() {
 		return rut;
 	}
@@ -33,11 +27,6 @@ public class LoginUser {
 	public void setToken(String token) {
 		this.token = token;
 	}
-	@Override
-	public String toString() {
-		return "LoginUser [rut=" + rut + ", pass=" + pass + ", token=" + token + "]";
-	}
-	
 	
 
 }

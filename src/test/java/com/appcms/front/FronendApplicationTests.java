@@ -193,9 +193,12 @@ public class FronendApplicationTests {
 	@Test
 	public void categoria() throws Exception
 	{
-		mvc.perform( MockMvcRequestBuilders.get("/categoria/{menu}/{submenu}","platosycomida","rutapub") )
+		mvc.perform( MockMvcRequestBuilders.get("/categoria/{menu}/{submenu}","miscanjes","gfretail") )
 		.andExpect(status().isOk());
 		
+		mvc.perform( MockMvcRequestBuilders.get("/categoria/{menu}/{submenu}","mundos","descuentos") )
+		.andExpect(status().isOk());
+
 		mvc.perform( MockMvcRequestBuilders.get("/categoria/{menu}/{submenu}","00000000","00000000000") )
 		.andExpect(status().is(302));
 		

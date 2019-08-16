@@ -1,6 +1,5 @@
 package com.cms.views;
 
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
@@ -8,36 +7,30 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
 import com.appcms.entity.ViewEntity;
-import com.appcms.security.CustomerAuthentication;
-import com.appcms.security.RestAuthentication;
 
+@Component
 public class ViewApp {
 
 	StringBuilder sb = new StringBuilder("");
-	private HttpServletRequest rqx;
-	private static String apiUrl;
+	private String TOKENONE;
+	private String apiUrl;
 
-	public ViewApp(@Qualifier("apiUrl") String apiUrl) {
-		ViewApp.apiUrl = apiUrl;
+	public ViewApp(String xapiUrl,String xTOKENONE) {
+		this.apiUrl = xapiUrl;
+		this.TOKENONE=xTOKENONE;
 	}
 
-	public ViewApp(HttpServletRequest rq, @Qualifier("apiUrl") String apiUrl) {
-		this.rqx = rq;
-		ViewApp.apiUrl = apiUrl;
-	}
-
-	private String loadView(String view) {
+	public String loadView(String view) {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-		RestAuthentication xrestAuthentication = new RestAuthentication();
 //        System.out.println(xrestAuthentication.getTOKENONE()+" 666666666666666666666666666666666666666");
-		headers.set("Authorization", rqx.getSession().getAttribute("TOKENONE").toString());
-
+		headers.set("Authorization", TOKENONE);
+		System.out.println(TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity<ViewEntity> response = restTemplate.exchange(apiUrl + "/view/getByName/" + view, HttpMethod.GET,
@@ -57,7 +50,9 @@ public class ViewApp {
 	}
 
 	public String render() {
-		return sb.toString();
+		String datos=sb.toString();
+		sb= new StringBuilder("");
+		return datos;
 	}
 
 }

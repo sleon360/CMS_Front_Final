@@ -60,10 +60,11 @@ public class Routes {
 	public final String csrf_token = "afxn123xnx360";
 
 	private final DataServer dtserver;
+
 	
 	@Autowired
-    public Routes(DataServer dtserver) {
-        this.dtserver = dtserver;
+    public Routes(DataServer xdtserver) {
+		this.dtserver = xdtserver;
     }
 	
 	
@@ -92,12 +93,10 @@ public class Routes {
 
 	@RequestMapping(value = "/404", method = RequestMethod.GET)
 	public ModelAndView notfound(HttpServletRequest rq) {
-
-		ViewApp vi = new ViewApp(rq, dtserver.getApiUrl());
-		vi.addView("head");
-		vi.addView("404");
-		vi.addView("footer");
-		ModelAndView mav = new ModelAndView(vi.render());
+		dtserver.ViewApp().addView("head");
+		dtserver.ViewApp().addView("404");
+		dtserver.ViewApp().addView("footer");
+		ModelAndView mav = new ModelAndView(dtserver.ViewApp().render());
 		this.setHeaderx(mav);
 		return mav;
 	}
@@ -156,11 +155,10 @@ public class Routes {
 
 		}
 
-		ViewApp vi = new ViewApp(rq, dtserver.getApiUrl());
-		vi.addView("head");
-		vi.addView("error");
-		vi.addView("footer");
-		ModelAndView mav = new ModelAndView(vi.render());
+		dtserver.ViewApp().addView("head");
+		dtserver.ViewApp().addView("error");
+		dtserver.ViewApp().addView("footer");
+		ModelAndView mav = new ModelAndView(dtserver.ViewApp().render());
 
 		mav.addObject("titulo_error", httpErrorCode);
 		mav.addObject("descripcion_error", errorMsg);
@@ -188,23 +186,22 @@ public class Routes {
 
 	@RequestMapping(value = "/admin", method = RequestMethod.GET)
 	public ModelAndView admin(HttpServletRequest rq) {
-		ViewApp vi = new ViewApp(rq, dtserver.getApiUrl());
-		vi.addView("header");
-		vi.addView("admin");
-		ModelAndView mav = new ModelAndView(vi.render());
+		
+		dtserver.ViewApp().addView("header");
+		dtserver.ViewApp().addView("admin");
+		ModelAndView mav = new ModelAndView(dtserver.ViewApp().render());
 		return mav;
 	}
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public ModelAndView home(HttpServletRequest rq) {
 		// return new ModelAndView("redirect:/home");	
-		ViewApp vi = new ViewApp(rq, dtserver.getApiUrl());
-		vi.addView("head");
-		vi.addView("index");
-		vi.addView("footer");
-		ModelAndView mav = new ModelAndView(vi.render());
-		mav.addObject("banners", dtserver.loadBannerAll(0, rq)); // Emudata.getBanners()
-		mav.addObject("banners_resp", dtserver.loadBannerAll(1, rq));
+		dtserver.ViewApp().addView("head");
+		dtserver.ViewApp().addView("index");
+		dtserver.ViewApp().addView("footer");
+		ModelAndView mav = new ModelAndView(dtserver.ViewApp().render());
+		mav.addObject("banners", dtserver.loadBannerAll(0)); // Emudata.getBanners()
+		mav.addObject("banners_resp", dtserver.loadBannerAll(1));
 
 		mav.addObject("descuentos_destacados", dtserver.loadscmenuinformationFomScmenu(10));
 
@@ -214,12 +211,9 @@ public class Routes {
 	}
 
 	@GetMapping("/categoria/{menu}/{submenu}")
-	public ModelAndView menuSubmenu(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu,
-			HttpServletRequest rq) throws UnsupportedEncodingException {
+	public ModelAndView menuSubmenu(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu) throws UnsupportedEncodingException {
 		// ModelAndView mav = new ModelAndView("categorias");
-		ViewApp vi = new ViewApp(rq, dtserver.getApiUrl());
-		
-		Scmenu scmenu = dtserver.loadScmenuByName(rq, menu);
+		Scmenu scmenu = dtserver.loadScmenuByName( menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 
 		try {
@@ -285,12 +279,12 @@ public class Routes {
 			break;
 		}
 
-		vi.addView("head");
-		vi.addView("HEADER_CATEGORIAS");
-		vi.addView("CATEGORIAS");
-		vi.addView("footer");
+		dtserver.ViewApp().addView("head");
+		dtserver.ViewApp().addView("HEADER_CATEGORIAS");
+		dtserver.ViewApp().addView("CATEGORIAS");
+		dtserver.ViewApp().addView("footer");
 
-		ModelAndView mav = new ModelAndView(vi.render());
+		ModelAndView mav = new ModelAndView(dtserver.ViewApp().render());
 		mav.addObject("menuurl", scmenu);
 		mav.addObject("submenuurl", scmenuurlsub);
 
@@ -304,16 +298,15 @@ public class Routes {
 			@PathVariable("submenu") String submenu, @PathVariable("categoria") String categoria, HttpServletRequest rq)
 			throws UnsupportedEncodingException {
 //		ModelAndView mav = new ModelAndView("categorias");
-		ViewApp vi = new ViewApp(rq, dtserver.getApiUrl());
-
-		vi.addView("head");
-		vi.addView("HEADER_CATEGORIAS");
-		vi.addView("CATEGORIAS");
-		vi.addView("footer");
-		ModelAndView mav = new ModelAndView(vi.render());
+		
+		dtserver.ViewApp().addView("head");
+		dtserver.ViewApp().addView("HEADER_CATEGORIAS");
+		dtserver.ViewApp().addView("CATEGORIAS");
+		dtserver.ViewApp().addView("footer");
+		ModelAndView mav = new ModelAndView(dtserver.ViewApp().render());
 
 		
-		Scmenu scmenu = dtserver.loadScmenuByName(rq, menu);
+		Scmenu scmenu = dtserver.loadScmenuByName(menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 
 		try {
@@ -389,15 +382,13 @@ public class Routes {
 	public ModelAndView menuDetalleProducto(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu,
 			@PathVariable("producto") int producto, HttpServletRequest rq) throws UnsupportedEncodingException {
 //		ModelAndView mav = new ModelAndView("canjes");
-		ViewApp vi = new ViewApp(rq, dtserver.getApiUrl());
+		dtserver.ViewApp().addView("HEAD");
+		dtserver.ViewApp().addView("HEADER_CATEGORIAS");
+		dtserver.ViewApp().addView("CANJES");
+		dtserver.ViewApp().addView("FOOTER");
+		ModelAndView mav = new ModelAndView(dtserver.ViewApp().render());
 
-		vi.addView("HEAD");
-		vi.addView("HEADER_CATEGORIAS");
-		vi.addView("CANJES");
-		vi.addView("FOOTER");
-		ModelAndView mav = new ModelAndView(vi.render());
-
-		Scmenu scmenu = dtserver.loadScmenuByName(rq, menu);
+		Scmenu scmenu = dtserver.loadScmenuByName(menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 		
 		try {
@@ -451,16 +442,16 @@ public class Routes {
 			return new ModelAndView("redirect:" + referer + "?login");
 		}
 
-		ViewApp vi = new ViewApp(rq, dtserver.getApiUrl());
+		dtserver.ViewApp().addView("HEAD");
+		dtserver.ViewApp().addView("HEADER_CATEGORIAS");
+		dtserver.ViewApp().addView("CANJES");
+		dtserver.ViewApp().addView("FOOTER");
+		ModelAndView mav = new ModelAndView(dtserver.ViewApp().render());
 
-		vi.addView("HEAD");
-		vi.addView("HEADER_CATEGORIAS");
-		vi.addView("CANJES");
-		vi.addView("FOOTER");
-		ModelAndView mav = new ModelAndView(vi.render());
-
-		Scmenu scmenu = dtserver.loadScmenuByName(rq, menu);
+		Scmenu scmenu = dtserver.loadScmenuByName(menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
+		
+		
 		
 		try {
 			if (scmenu != null) {
@@ -701,14 +692,12 @@ public class Routes {
 			return new ModelAndView("redirect:" + referer + "?login");
 		}
 
-		ViewApp vi = new ViewApp(rq, dtserver.getApiUrl());
-
-		vi.addView("HEAD");
-		vi.addView("HEADER_CATEGORIAS");
+		dtserver.ViewApp().addView("HEAD");
+		dtserver.ViewApp().addView("HEADER_CATEGORIAS");
 		
-		ModelAndView mav = new ModelAndView(vi.render());
+		ModelAndView mav = new ModelAndView(dtserver.ViewApp().render());
 
-		Scmenu scmenu = dtserver.loadScmenuByName(rq, menu);
+		Scmenu scmenu = dtserver.loadScmenuByName(menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 		
 		try {
@@ -735,23 +724,23 @@ public class Routes {
 		switch (scmenuurlsub.getTipo()) {
 		case 20: // information
 			System.out.println("Tipo 20"); // TIPO MI CARTOLA
-			vi.addView("MI-CARTOLA");
-			vi.addView("FOOTER");
-			mav = new ModelAndView(vi.render());
+			dtserver.ViewApp().addView("MI-CARTOLA");
+			dtserver.ViewApp().addView("FOOTER");
+			mav = new ModelAndView(dtserver.ViewApp().render());
 			mav.addObject("cartola", dtserver.loadUserCartola());
 			break;
 		case 21: // information
 			System.out.println("Tipo 21"); // TIPO INSCRIPCCION
-			vi.addView("mis-inscripciones");
-			vi.addView("FOOTER");
-			mav = new ModelAndView(vi.render());
+			dtserver.ViewApp().addView("mis-inscripciones");
+			dtserver.ViewApp().addView("FOOTER");
+			mav = new ModelAndView(dtserver.ViewApp().render());
 			mav.addObject("inscripciones", Emudata.getInscripciones());
 			break;
 		case 22: // information
 			System.out.println("Tipo 22"); // TIPO MIS CUPONES
-			vi.addView("mis-cupones");
-			vi.addView("FOOTER");
-			mav = new ModelAndView(vi.render());
+			dtserver.ViewApp().addView("mis-cupones");
+			dtserver.ViewApp().addView("FOOTER");
+			mav = new ModelAndView(dtserver.ViewApp().render());
 			System.out.println("Mis cupones: usr: " + credentialUser.getScotiauser().getId_cliente());
 			mav.addObject("usercupones", dtserver.loadCupones(credentialUser.getScotiauser().getId_cliente()));
 
@@ -759,9 +748,9 @@ public class Routes {
 			break;
 		case 23: // information
 			System.out.println("Tipo 23"); // TIPO MIS GUSTOS
-			vi.addView("mis-preferencias");
-			vi.addView("FOOTER");
-			mav = new ModelAndView(vi.render());
+			dtserver.ViewApp().addView("mis-preferencias");
+			dtserver.ViewApp().addView("FOOTER");
+			mav = new ModelAndView(dtserver.ViewApp().render());
 			List<UserGusto> gustos = dtserver.loadGustos();
 			List<UserGusto> gustosCliente = dtserver.loadCustomerGustos();
 			for (int i = 0; i < gustos.size(); i++) {
@@ -779,9 +768,9 @@ public class Routes {
 		case 24: // information
 			System.out.println("Tipo 24"); // TIPO TRANSFERIR
 			scmenuurlsub.informationsubmenu = Emudata.getInformatiotest();
-			vi.addView("transfiere-scotiapesos");
-			vi.addView("FOOTER");
-			mav = new ModelAndView(vi.render());
+			dtserver.ViewApp().addView("transfiere-scotiapesos");
+			dtserver.ViewApp().addView("FOOTER");
+			mav = new ModelAndView(dtserver.ViewApp().render());
 			break;
 		default:
 			System.out.println("Seccion fuera de menu");
@@ -808,13 +797,11 @@ public class Routes {
 	public ModelAndView getinformation(@PathVariable("nombreInformation") String nombreInformation,
 			HttpServletRequest rq) throws UnsupportedEncodingException {
 //		ModelAndView mav = new ModelAndView("user");
-		ViewApp vi = new ViewApp(rq, dtserver.getApiUrl());
+		dtserver.ViewApp().addView("HEAD");
+		dtserver.ViewApp().addView("INFORMATION");
+		dtserver.ViewApp().addView("FOOTER");
 
-		vi.addView("HEAD");
-		vi.addView("INFORMATION");
-		vi.addView("FOOTER");
-
-		ModelAndView mav = new ModelAndView(vi.render());
+		ModelAndView mav = new ModelAndView(dtserver.ViewApp().render());
 
 		Information informationhtml = new Information();
 
@@ -835,13 +822,11 @@ public class Routes {
 	@PostMapping("/user/login")
 	public ModelAndView loginuser(@ModelAttribute("loginForm") LoginUser loginForm, HttpServletRequest rq) {
 //		ModelAndView mav = new ModelAndView("user");
-		ViewApp vi = new ViewApp(rq, dtserver.getApiUrl());
-
-		vi.addView("HEAD");
+		dtserver.ViewApp().addView("HEAD");
 //		vi.addView("INFORMATION");
-		vi.addView("FOOTER");
+		dtserver.ViewApp().addView("FOOTER");
 
-		ModelAndView mav = new ModelAndView(vi.render());
+		ModelAndView mav = new ModelAndView(dtserver.ViewApp().render());
 
 		System.out.println("infologin: " + loginForm);
 
@@ -876,13 +861,11 @@ public class Routes {
 			return new ModelAndView("redirect:" + referer + "?login");
 		}
 
-		ViewApp vi = new ViewApp(rq, dtserver.getApiUrl());
+		dtserver.ViewApp().addView("HEAD");
+		dtserver.ViewApp().addView("INFORMATION");
+		dtserver.ViewApp().addView("FOOTER");
 
-		vi.addView("HEAD");
-		vi.addView("INFORMATION");
-		vi.addView("FOOTER");
-
-		ModelAndView mav = new ModelAndView(vi.render());
+		ModelAndView mav = new ModelAndView(dtserver.ViewApp().render());
 
 		this.setHeaderx(mav);
 
