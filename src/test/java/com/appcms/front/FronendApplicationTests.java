@@ -128,6 +128,8 @@ public class FronendApplicationTests {
 	  }
 	  
 	
+	  
+	  /*
 	@Test
 	public void logout() throws Exception
 	{
@@ -178,7 +180,7 @@ public class FronendApplicationTests {
 	}
 	
 
-	/*@Test
+	@Test
 	public void getcupon() throws Exception
 	{
 		mvc.perform( MockMvcRequestBuilders.get("/getcupon/{id_rew}",345234523))
@@ -186,7 +188,7 @@ public class FronendApplicationTests {
 		
 		mvc.perform( MockMvcRequestBuilders.get("/getcupon/{id_rew}","55555"))
 		.andExpect(status().is(302));
-	}*/
+	}
 	
 	
 	
@@ -302,11 +304,13 @@ public class FronendApplicationTests {
 	             SecurityContext securityContext = (SecurityContext)   session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
 	             SecurityContextHolder.setContext(securityContext);
 	             Customer customer = CustomerAuthentication.CustomerAuth("19", "123", session.getValue("TOKENONE").toString());
-	             System.out.println("FFFFFFFFFFFFFFFFFFFFFFFFFFFF::::"+customer.getJwt());
-	             Authentication auth = securityContext.getAuthentication();
 	             
-	             assertThat(customer.getJwt()).isNotNull();
-	             assertThat(customer.getScotiauser()).isNotNull();
+	             */
+	           //  System.out.println("FFFFFFFFFFFFFFFFFFFFFFFFFFFF::::"+customer.getJwt());
+	            // Authentication auth = securityContext.getAuthentication();
+	             
+	            // assertThat(customer.getJwt()).isNotNull();
+	           //  assertThat(customer.getScotiauser()).isNotNull();
 	             
 	            // CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getCredentials();
 	            // System.out.println("XXXXXXXXXXXX:"+credencialesEntity.getUserName());
@@ -345,7 +349,7 @@ public class FronendApplicationTests {
 	   // System.out.println("AAAAAAABBBBB:"+session.getAttribute("TOKENONE"));
 	    //mvc.perform(formLogin().user("19").password("123")).andExpect(authenticated());
 	    
-	}
+	//}
 	
 	
 	

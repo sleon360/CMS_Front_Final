@@ -50,19 +50,21 @@ public class DataServer {
 
 	private String apiUrl;
 	private String TOKENONE;
-	private ViewApp vi;
+	private RestTemplate restTemplate = new RestTemplate();
 	
 	StringBuilder sb = new StringBuilder("");
 
 	public DataServer(@Qualifier("apiUrl") String xapiUrl,@Qualifier("TOKENONE") String xTOKENONE) {
 		this.apiUrl = xapiUrl;
 		this.TOKENONE = xTOKENONE;
-		vi=new ViewApp(this.getApiUrl(),this.getToken());
 		System.out.println("AAAAAAAASSSSSSSSSSSSDDDDDDDDDDDFFFFFFFF:"+xTOKENONE);
 	}
 	
-	
-	
+	public void setRestemplate(RestTemplate xrestTemplate)
+	{
+		this.restTemplate=xrestTemplate;
+	}
+
 	public String getApiUrl()
 	{
 		return this.apiUrl;
@@ -72,25 +74,19 @@ public class DataServer {
 	{
 		return this.TOKENONE;
 	}
-	
-	
-	public ViewApp ViewApp()
-	{
-		return this.vi;
-	}
+
 	
 	public Scmenu loadScmenuByName( String scmenuName) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
-		RestTemplate restTemplate = new RestTemplate();
+		
 
 		String url = apiUrl + "/get/scmenuByName/" + scmenuName;
 
 		//ResponseEntity<Scmenu> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 				//		new ParameterizedTypeReference<Scmenu>() {
 				//		});
-		
 		
 		ResponseEntity<Scmenu> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 						new ParameterizedTypeReference<Scmenu>() {
@@ -108,8 +104,7 @@ public class DataServer {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
-		RestTemplate restTemplate = new RestTemplate();
-
+		
 		String url = apiUrl + "/get/scmenu";
 
 		ResponseEntity<List<Scmenu>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
@@ -128,7 +123,6 @@ public class DataServer {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
-		RestTemplate restTemplate = new RestTemplate();
 		String url = apiUrl + "/get/informationsubmenu/" + idsubmenu;
 		ResponseEntity<Scinformacionsubmenu> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,Scinformacionsubmenu.class);
 		if (xresponse.getStatusCodeValue() == 200) {
@@ -152,7 +146,6 @@ public class DataServer {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
-		RestTemplate restTemplate = new RestTemplate();
 
 		String url = apiUrl + "/get/productosSubmenu/" + idsubmenu;
 
@@ -175,7 +168,6 @@ public class DataServer {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
-		RestTemplate restTemplate = new RestTemplate();
 
 		String url = apiUrl + "/get/productosSubmenuCategoria/" + categoria + "/" + idsubmenu;
 		System.out.println("strreq: " + apiUrl + "/get/productosSubmenuCategoria/" + categoria + "/" + idsubmenu);
@@ -198,7 +190,6 @@ public class DataServer {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
-		RestTemplate restTemplate = new RestTemplate();
 
 		String url = apiUrl + "/get/informationsubmenuList/" + idscbmenu;
 
@@ -221,7 +212,6 @@ public class DataServer {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
-		RestTemplate restTemplate = new RestTemplate();
 
 		String url = apiUrl + "/get/detalleProducto/" + idproducto;
 
@@ -263,7 +253,6 @@ public class DataServer {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
-		RestTemplate restTemplate = new RestTemplate();
 
 		String url = apiUrl + "/get/productoCategoria/" + idsubmenu;
 
@@ -286,7 +275,6 @@ public class DataServer {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
-		RestTemplate restTemplate = new RestTemplate();
 
 		String url = apiUrl + "/get/productoCategoriaConProductos/" + categoria + "/" + idsubmenu;
 		System.out.println("URL para obtener categorias con productos: " + url);
@@ -309,7 +297,6 @@ public class DataServer {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
-		RestTemplate restTemplate = new RestTemplate();
 
 		String url = apiUrl + "/get/bannerAll/" + responsive;
 		System.out.println("Banners: " + url);
@@ -337,8 +324,7 @@ public class DataServer {
 
 		String url = apiUrl + "/get/informationScsubmenu/" + idsubmenu;
 
-		ResponseEntity<Information> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
-				Information.class);
+		ResponseEntity<Information> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,Information.class);
 
 		System.out.println("requestxn: " + xresponse.getBody());
 
