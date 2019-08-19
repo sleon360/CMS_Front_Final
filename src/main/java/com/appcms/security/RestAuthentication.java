@@ -11,8 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.NestedServletException;
 
-//@Component
-//@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class RestAuthentication {
 
 	private static String TOKENONE;
@@ -40,7 +38,6 @@ public class RestAuthentication {
 
 	static boolean RestAutenticationLayerOne(HttpServletRequest rq, HttpServletResponse response, String apiUrl)
 			throws NestedServletException, IOException {
-		// RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 		try {
 			if (rq.getSession().getAttribute("TOKENONE") == null) {
 				HttpHeaders headers = new HttpHeaders();
@@ -53,30 +50,15 @@ public class RestAuthentication {
 				System.out.println(xresponse.getHeaders());
 				String result = xresponse.getBody();
 				System.out.println(" XXXXXBBBBB " + xresponse.getHeaders().getFirst("Authorization") + " - " + result);
-				if (xresponse.getStatusCodeValue() == 200) {
-					setTOKENONE(xresponse.getHeaders().getFirst("Authorization").replace("Bearer ", ""));
-					rq.getSession().setAttribute("TOKENONE",
-							xresponse.getHeaders().getFirst("Authorization").replace("Bearer ", ""));
-					// System.out.println(xresponse.getHeaders().getFirst("Authorization")+" -
-					// TOKEEEENNNOK!!!");
 
-					return true;
-				} else {
-
-					// redirectStrategy.sendRedirect(rq, response, "/errores");
-					// return false;
-					return true;
-				}
+				setTOKENONE(xresponse.getHeaders().getFirst("Authorization").replace("Bearer ", ""));
+				rq.getSession().setAttribute("TOKENONE",
+						xresponse.getHeaders().getFirst("Authorization").replace("Bearer ", ""));
 			}
-		} catch (Exception ex) {
-			System.out.println("Excepción: " + ex.getMessage());
-			// redirectStrategy.sendRedirect(rq, response, "/errores");
-			// return false;
-			return true;
-		}
 
-		// redirectStrategy.sendRedirect(rq, response, "/errores");
-		// return true;
+		} catch (Exception ex) {
+			System.out.println("Excepción obteniendo token 1: " + ex.getMessage());
+		}
 		return true;
 
 	}

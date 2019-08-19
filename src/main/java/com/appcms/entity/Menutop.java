@@ -4,10 +4,10 @@ import java.util.List;
 
 public class Menutop {
 
-	public String nombre;
-	public String link;
-	public int tipo;
-	public List<Menutop> submenutop;	
+	String nombre;
+	String link;
+	int tipo;
+	List<Menutop> submenutop;	
 	
 	public Menutop() {
 	}

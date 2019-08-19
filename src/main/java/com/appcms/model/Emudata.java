@@ -26,7 +26,6 @@ import com.appcms.entity.Scinformacionsubmenu;
 import com.appcms.entity.Scmenu;
 import com.appcms.entity.Scotiauser;
 import com.appcms.entity.Scsubmenu;
-import com.appcms.entity.TarjetaCliente;
 import com.appcms.entity.UserCartola;
 import com.appcms.entity.UserCartolaMovimiento;
 import com.appcms.entity.UserGusto;
@@ -204,22 +203,6 @@ public class Emudata {
 		return 10000;
 	}
 	
-	public static Scinformacionsubmenu getInformatiotest() {
-		Scinformacionsubmenu information = new Scinformacionsubmenu(1,1,"Restorado8",1,"/resource/images/woman-computer.jpg","Obtén desde un","15% dcto. en restaurantes","Reserva ahora y obtén desde un 15% de dcto. en el total de tu cuenta","#","Reserva acá","[\"Restorando les ofrece a miles de comensales la posibilidad de descubrir miles de lugares para salir a comer, acceder a ofertas y beneficios en tiempo real y asegurar su mesa sin tener que esperar para sentarse.\",\"Restorando trabaja junto con los restaurantes para mejorar las experiencias gastron\\u00f3micas de los comensales en latinoam\\u00e9rica.\",\"XXC\",\"t2\"]","2018-12-11 18:15:04","2019-02-13 18:03:57",1);
-		
-		String json = information.getJson_condiciones();
-		JsonArray jsonObject = new JsonParser().parse(json).getAsJsonArray();
-
-	        JsonArray arr = jsonObject.getAsJsonArray();
-	        for (int i = 0; i < arr.size(); i++) {
-	            String post_id = arr.get(i).getAsString();
-	            information.condicioneslista.add(post_id);
-	            //System.out.println(post_id);
-	        }
-		
-		return information;
-	}
-	
 	public static List<ProductoTipoLike> getProductosLikeTest() {
 		 List<ProductoTipoLike> prodlist =  new ArrayList<>();
 		 prodlist.add( new ProductoTipoLike(1, "Danieli v1", "Danieli", "Coffee Bar", "/resource/images/ver_img.png", "40%", "Av. 4 Esquinas 1540, Local 1, Strip Center el Milagro, IV Región", "", "", 3) );
@@ -299,27 +282,6 @@ public class Emudata {
 		 catelist.add( new ProductoCategoria(3,"emporiolarosa","Giftcard emporio la rosa",descripTest,"/resource/images/emporiolarosa.png",1,"soy-green") );
 
 		 return catelist;
-	}
-	
-	public static List<ProductoCategoria> getCateProductosFromCategoria(String strIndexCategoria) {
-		 List<ProductoCategoria> catelist =  new ArrayList<>();
-		 catelist = Emudata.getCategoriasProductosTest();
-		 
-		 List<ProductoCategoria> catelistResult =  new ArrayList<>();
-		 
-		 for (ProductoCategoria catesel : catelist) //buscamos el menu que seleccionó
-			{ 
-				if(catesel.getStrIndex().equalsIgnoreCase(strIndexCategoria) ) {			
-					
-					catesel.productos = Emudata.getProductoseEcomerceTest();
-					
-					catelistResult.add(catesel); // se encuentra la categoria y se inserta					
-					
-					break;
-				}
-			}
-		 
-		 return catelistResult;
 	}
 	
 	public static Information getInformationHtml() {

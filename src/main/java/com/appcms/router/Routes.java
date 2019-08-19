@@ -2,14 +2,12 @@ package com.appcms.router;
 
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -54,7 +52,6 @@ import com.appcms.entity.UserCupon;
 import com.appcms.entity.UserGusto;
 import com.appcms.model.DataServer;
 import com.appcms.model.Emudata;
-import com.appcms.security.ErrorControllerExection;
 import com.cms.views.ViewApp;
 
 @Controller
@@ -192,6 +189,7 @@ public class Routes {
 
 		Cookie cookie = new Cookie("welcomex", null); // cookie que muestra detalle al inciar
 		cookie.setMaxAge(0);
+		cookie.setHttpOnly(true); // Compliant
 		response.addCookie(cookie);
 
 		return "redirect:/";
@@ -257,42 +255,41 @@ public class Routes {
 		switch (scmenuurlsub.getTipo()) {
 		case 1: // information
 			System.out.println("Tipo 1:" + scmenuurlsub.getId()); // TIPO INFORMACION
-			scmenuurlsub.informationsubmenu = dtserver.loadInformatioSub(scmenuurlsub.getId(), rq);// Emudata.getInformatiotest();
+			//scmenuurlsub.informationsubmenu = dtserver.loadInformatioSub(scmenuurlsub.getId(), rq);// Emudata.getInformatiotest();
+			scmenuurlsub.setInformationsubmenu(dtserver.loadInformatioSub(scmenuurlsub.getId(), rq));// Emudata.getInformatiotest();
 			break;
 		case 2:
 			System.out.println("Tipo 2:" + scmenuurlsub.getId()); // TIPO PRODUCTO CON LIKE
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId(), rq);// Emudata.getProductosLikeTest();
+			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosLike(scmenuurlsub.getId(), rq));// Emudata.getProductosLikeTest();
 			break;
 		case 3:
 			System.out.println("Tipo 3"); // TIPO CON CUPON
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId(), rq);// Emudata.getProductosiNFOTest();
+			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosLike(scmenuurlsub.getId(), rq));// Emudata.getProductosLikeTest();
 			break;
 		case 4:
 			System.out.println("Tipo 4"); // TIPO PRODUCTO E-COMERCE
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId(), rq);// Emudata.getProductoseEcomerceTest();
-			System.out.println("prodconstock:" + scmenuurlsub.productosLikeLista.toString());
+			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosLike(scmenuurlsub.getId(), rq));// Emudata.getProductosLikeTest();
 			break;
 		case 5:
 			System.out.println("Tipo 5"); // TIPO CANJE CON CATEGORIAS
-			scmenuurlsub.categoriaProductoLista = dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId(), rq);// Emudata.getCategoriasProductosTest();//
+			scmenuurlsub.setCategoriaProductoLista(dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId(), rq));// Emudata.getCategoriasProductosTest();//
 			break;
 		case 6:
 			System.out.println("Tipo 6"); // TIPO CANJE CON CATEGORIAS PARA FORMULARIO (TIPO INSCRIPCION)
-			scmenuurlsub.categoriaProductoLista = dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId(), rq);// Emudata.getCategoriasProductosTestTipo6();
+			scmenuurlsub.setCategoriaProductoLista(dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId(), rq));// Emudata.getCategoriasProductosTestTipo6();
 			break;
 		case 7:
 			System.out.println("Tipo 7"); // TIPO CANJE CASHBACK
-			scmenuurlsub.tarjetasCliente = dtserver.loadUserTarjetas().getTarjetasCliente();
+			scmenuurlsub.setTarjetasCliente(dtserver.loadUserTarjetas().getTarjetasCliente());
 			break;
 		case 8:
 			System.out.println("Tipo 8"); // TIPO CANJE DESCUENTOS
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId(), rq);// Emudata.getProductosLikeTest();
-			System.out.println(scmenuurlsub.productosLikeLista);
-			scmenuurlsub.tagsProductos = dtserver.loadTagsProductos(rq);// Emudata.getProductosLikeTest();
+			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosLike(scmenuurlsub.getId(), rq));// Emudata.getProductosLikeTest();
+			scmenuurlsub.setTagsProductos(dtserver.loadTagsProductos(rq));// Emudata.getProductosLikeTest();
 			break;
 		case 9:
 			System.out.println("Tipo 9"); // TIPO VISTA INFORMATION
-			scmenuurlsub.informationHtml = dtserver.loadInformationScsubmenu(scmenuurlsub.getId(), rq);// Emudata.getInformationHtml();loadInformationScsubmenu
+			scmenuurlsub.setInformationHtml(dtserver.loadInformationScsubmenu(scmenuurlsub.getId(), rq));// Emudata.getInformationHtml();loadInformationScsubmenu
 			break;
 		}
 
@@ -355,9 +352,8 @@ public class Routes {
 		case 5:
 			System.out.println("Tipo 5"); // TIPO CANJE CON CATEGORIAS
 
-			scmenuurlsub.categoriaProductoLista = dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(),
-					categoria, rq);// Emudata.getCateProductosFromCategoria(categoria);
-			System.out.println("Lista de productos de categoria: " + scmenuurlsub.categoriaProductoLista.toString());
+			scmenuurlsub.setCategoriaProductoLista(dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(),
+					categoria, rq));// Emudata.getCateProductosFromCategoria(categoria);
 
 			mav.addObject("verProductosCategoria", true);
 			break;
@@ -375,8 +371,8 @@ public class Routes {
 				return new ModelAndView("redirect:" + referer.replace("?login", "") + "?login");
 			}
 			
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosLikeSubmenuCategoria(scmenuurlsub.getId(),
-					categoria, rq);// Emudata.getProductosLikeTest();
+			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosLikeSubmenuCategoria(scmenuurlsub.getId(),
+					categoria, rq));// Emudata.getProductosLikeTest();
 			mav.addObject("producto", new CanjeProducto());
 			mav.addObject("verProductosCategoria", true);
 
@@ -384,12 +380,12 @@ public class Routes {
 			// Se agregan los puntos de cliente
 			mav.addObject("puntosDisponibles", dtserver.loadUserPoints().getAvailablePoints());
 			// Se agregan las tarjetas del cliente
-			scmenuurlsub.tarjetasCliente = dtserver.loadUserTarjetas().getTarjetasCliente();
+			scmenuurlsub.setTarjetasCliente(dtserver.loadUserTarjetas().getTarjetasCliente());
 			break;
 		case 8:
 			System.out.println("Tipo 8"); // TIPO CANJE CON CATEGORIAS
-			scmenuurlsub.categoriaProductoLista = dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(),
-					categoria, rq);// Emudata.getCateProductosFromCategoria(categoria);
+			scmenuurlsub.setCategoriaProductoLista(dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(),
+					categoria, rq));
 			mav.addObject("verProductosCategoria", true);
 			break;
 		default:
@@ -448,7 +444,7 @@ public class Routes {
 
 		}
 
-		scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto, rq); // Emudata.getProductoSearch(producto);
+		scmenuurlsub.setProductosLikeLista(dtserver.loadProductosDetalle(producto, rq));
 
 		mav.addObject("menuurl", scmenu);
 		mav.addObject("submenuurl", scmenuurlsub);
@@ -462,8 +458,7 @@ public class Routes {
 	@PostMapping("/categoria/{menu}/{submenu}/canje")
 	public ModelAndView menuCanje(@ModelAttribute("producto") CanjeProducto producto, @PathVariable("menu") String menu,
 			@PathVariable("submenu") String submenu, HttpServletRequest rq,
-			@RequestHeader(value = "referer", required = false) final String referer)
-			throws NamingException, ErrorControllerExection {
+			@RequestHeader(value = "referer", required = false) final String referer) {
 		// ModelAndView mav = new ModelAndView("canjes");
 
 		producto.setCantidad(1);
@@ -612,12 +607,8 @@ public class Routes {
 			} else {
 				producto.setActionx("finish");
 			} // dtserver.loadProductosDetalle(scmenuurlsub.getId());//
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto(), rq);// Emudata.getProductoSearchById(producto.getIdProducto());//dtserver.loadProductosDetalle(scmenuurlsub.getId());//Emudata.getProductoSearchById(producto.getIdProducto());//
+			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosDetalle(producto.getIdProducto(), rq));
 			mav.addObject("producto", producto);
-
-			System.out.println(scmenuurlsub.productosLikeLista.get(0).getEquipesos());
-			System.out.println(scmenuurlsub.productosLikeLista.get(0).getPrecio());
-
 			break;
 		case 6: // TIPO CANJE CON CATEGORIAS PARA FORMULARIO
 			System.out.println("canje T6");
@@ -632,18 +623,18 @@ public class Routes {
 				producto.setActionx("finish");
 			}
 
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto(), rq);// Emudata.getProductoSearchById(producto.getIdProducto());
+			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosDetalle(producto.getIdProducto(), rq));
 			ProductoCategoria categoriaProducto = dtserver.loadProductoCategoria(producto.getIdProducto(), rq);// Emudata.getProductoSearchById(producto.getIdProducto());
 			if (categoriaProducto != null) {
-				scmenuurlsub.productosLikeLista.get(0).setImagen(categoriaProducto.getImagen());
-				scmenuurlsub.productosLikeLista.get(0).setNombre(categoriaProducto.getNombre());
+				scmenuurlsub.getProductosLikeLista().get(0).setImagen(categoriaProducto.getImagen());
+				scmenuurlsub.getProductosLikeLista().get(0).setNombre(categoriaProducto.getNombre());
 			}
 			mav.addObject("producto", producto);
 			break;
 		case 7: // TIPO CANJE CASHBACK
 			break;
 		case 8: // TIPO CANJE DESCUENTOS
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto(), rq);// Emudata.getProductoSearchById(producto.getIdProducto());//dtserver.loadProductosDetalle(scmenuurlsub.getId());//Emudata.getProductoSearchById(producto.getIdProducto());
+			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosDetalle(producto.getIdProducto(), rq));
 			mav.addObject("producto", producto);
 			mav.addObject("canjeExito", true);
 			break;
@@ -842,7 +833,7 @@ public class Routes {
 			break;
 		case 24: // information
 			System.out.println("Tipo 24"); // TIPO TRANSFERIR
-			scmenuurlsub.informationsubmenu = Emudata.getInformatiotest();
+			//scmenuurlsub.informationsubmenu = Emudata.getInformatiotest();
 			vi.addView("transfiere-scotiapesos");
 			vi.addView("FOOTER");
 			mav = new ModelAndView(vi.render());
@@ -905,12 +896,6 @@ public class Routes {
 		String resultlogin = dtserver.testLogin(loginForm.getRut(), loginForm.getPass(), rq);
 		System.out.println("result_login:" + resultlogin);
 
-		if (resultlogin != null) { // token de sesion devuelto
-
-		} else {
-
-		}
-
 		this.setHeaderx(mav, rq);
 
 		return mav;
@@ -918,7 +903,7 @@ public class Routes {
 	}
 
 	@GetMapping("/getcupon/{id_rew}")
-	public Object getFile(@PathVariable("id_rew") int id_rew, HttpServletRequest rq,
+	public Object getFile(@PathVariable("id_rew") int idReward, HttpServletRequest rq,
 			@RequestHeader(value = "referer", required = false) final String referer) {
 		CredencialesEntity credentialUser = new CredencialesEntity();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -929,7 +914,7 @@ public class Routes {
 			//Para evitar que una página quede como ?login?login se hace el replace
 			return new ModelAndView("redirect:" + referer.replace("?login", "") + "?login");
 		}
-		byte[] response = dtserver.loadCuponAsPdf(credentialUser.getScotiauser().getId_cliente(), id_rew, rq);
+		byte[] response = dtserver.loadCuponAsPdf(credentialUser.getScotiauser().getId_cliente(), idReward, rq);
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).body(new ByteArrayResource(response));
 	}
 

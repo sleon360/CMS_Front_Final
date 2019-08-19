@@ -2,22 +2,13 @@ package com.appcms.security;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.appcms.entity.CredencialesEntity;
 import com.appcms.entity.customer.Customer;
@@ -52,7 +43,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 			Customer customer = CustomerAuthentication
 					.CustomerAuth(credenciales.getUserName(), credenciales.getPassword(), credenciales.getTOKENONE());
 			
-			System.out.println("TokenTwo: " + customer.getJwt().replace("Bearer ", ""));
 			if (customer != null) {
 				System.out.println("PASOLOGIN");
 				List<SimpleGrantedAuthority> grantedAuths = new ArrayList<>();

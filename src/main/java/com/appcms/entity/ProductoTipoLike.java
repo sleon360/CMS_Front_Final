@@ -27,9 +27,9 @@ public class ProductoTipoLike {
 	@JsonProperty("titulo_tipo2")
 	String tutulo_direcciones;
 	@JsonProperty("formatos_detalles")
-	public List<FormatoDetalle> formatosDetalles;
-	public List<FormatoDetalle> detalles = null;
-	public List<FormatoDetalle> direcciones = null;
+	List<FormatoDetalle> formatosDetalles;
+	List<FormatoDetalle> detalles = null;
+	List<FormatoDetalle> direcciones = null;
 	String codigo;
 
 	int stock;

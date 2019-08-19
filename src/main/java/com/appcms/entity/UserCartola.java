@@ -11,7 +11,7 @@ public class UserCartola {
 	int puntosPorVencer;
 	String fechaVencimiento;
 	int puntosInscritos;
-	public List<UserCartolaMovimiento> movimientos = new ArrayList<>();
+	List<UserCartolaMovimiento> movimientos = new ArrayList<>();
 	
 	public UserCartola() {
 		super();

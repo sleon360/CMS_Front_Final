@@ -9,7 +9,7 @@ public class Scsubmenu {
 
 	int id;
 	String nombre;
-	public String strIndex = null;
+	String strIndex = null;
 	String link;
 	String color;
 	String color_hover;
@@ -23,14 +23,14 @@ public class Scsubmenu {
 	String fecha_creacion;
 	String fecha_modificacion;
 	int estado;
-	public Scinformacionsubmenu informationsubmenu = null;
-	public List<ProductoTipoLike> productosLikeLista = new ArrayList<>();
-	public List<ProductoCategoria> categoriaProductoLista = new ArrayList<>();
-	public List<TarjetaCliente> tarjetasCliente = new ArrayList<>();
-	public Information informationHtml = null;
+	Scinformacionsubmenu informationsubmenu = null;
+	List<ProductoTipoLike> productosLikeLista = new ArrayList<>();
+	List<ProductoCategoria> categoriaProductoLista = new ArrayList<>();
+	List<TarjetaCliente> tarjetasCliente = new ArrayList<>();
+	Information informationHtml = null;
 	boolean visibleTop = true;
 	boolean visibleOnlyLogin = false;
-	public List<TagProducto> tagsProductos = new ArrayList<>();
+	List<TagProducto> tagsProductos = new ArrayList<>();
 	
 	public Scsubmenu() {
 		super();
@@ -232,6 +232,54 @@ public class Scsubmenu {
 				+ ", productosLikeLista=" + productosLikeLista + ", categoriaProductoLista=" + categoriaProductoLista
 				+ ", TarjetaClienteLista=" + tarjetasCliente + ", informationHtml=" + informationHtml
 				+ ", visibleTop=" + visibleTop + ", visibleOnlyLogin=" + visibleOnlyLogin + "]";
+	}
+
+	public Scinformacionsubmenu getInformationsubmenu() {
+		return informationsubmenu;
+	}
+
+	public void setInformationsubmenu(Scinformacionsubmenu informationsubmenu) {
+		this.informationsubmenu = informationsubmenu;
+	}
+
+	public List<ProductoTipoLike> getProductosLikeLista() {
+		return productosLikeLista;
+	}
+
+	public void setProductosLikeLista(List<ProductoTipoLike> productosLikeLista) {
+		this.productosLikeLista = productosLikeLista;
+	}
+
+	public List<ProductoCategoria> getCategoriaProductoLista() {
+		return categoriaProductoLista;
+	}
+
+	public void setCategoriaProductoLista(List<ProductoCategoria> categoriaProductoLista) {
+		this.categoriaProductoLista = categoriaProductoLista;
+	}
+
+	public List<TarjetaCliente> getTarjetasCliente() {
+		return tarjetasCliente;
+	}
+
+	public void setTarjetasCliente(List<TarjetaCliente> tarjetasCliente) {
+		this.tarjetasCliente = tarjetasCliente;
+	}
+
+	public Information getInformationHtml() {
+		return informationHtml;
+	}
+
+	public void setInformationHtml(Information informationHtml) {
+		this.informationHtml = informationHtml;
+	}
+
+	public List<TagProducto> getTagsProductos() {
+		return tagsProductos;
+	}
+
+	public void setTagsProductos(List<TagProducto> tagsProductos) {
+		this.tagsProductos = tagsProductos;
 	}
 
 }

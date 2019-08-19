@@ -18,12 +18,7 @@ public class FronendApplicationTests {
 	private MockMvc mvc;
 	
 	@Test
-	public void contextLoads() {
-	}
-	
-	@Test
-	public void deleteEmployeeAPI() throws Exception
-	{
+	public void deleteEmployeeAPI() throws Exception {
 	  mvc.perform( MockMvcRequestBuilders.delete("/employees/{id}", 1) )
 	        .andExpect(status().isAccepted());
 	}

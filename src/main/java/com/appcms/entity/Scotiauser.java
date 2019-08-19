@@ -1,45 +1,27 @@
-
 package com.appcms.entity;
 
-import com.appcms.entity.points.Points;
-
-//import com.scotiajava.backendscotia.controller.Emudata;
-
-/**
- * Scotiauser main
- */
 public class Scotiauser {
 
-	/** Property id_cliente */
 	int id_cliente;
-	/** Property firstname */
+
 	String firstname;
 
-	/** Property lastname */
 	String lastname;
 
-	/** Property id_grupo */
 	String id_grupo;
 
-	/** Property email */
 	String email;
 
-	/** Property rut */
 	String rut;
 
-	/** Property telephone */
 	String telephone;
 
-	/** Property address_id */
 	String address_id;
 
 	String tokenScotia;
 
 	int points;
-	
-	/**
-	 * Constructor
-	 */
+
 	public Scotiauser() {
 		this.id_cliente = 0;
 	}
@@ -54,121 +36,28 @@ public class Scotiauser {
 		this.id_grupo = id_grupo;
 	}
 
-	public int getPints() {
-		// return Emudata.getPoints();
-		return 10;
-	}
-
-	/**
-	 * Gets the id_cliente
-	 */
 	public int getId_cliente() {
-		return this.id_cliente;
+		return id_cliente;
 	}
 
-	/**
-	 * Sets the id_cliente
-	 */
-	public void setId_cliente(int value) {
-		this.id_cliente = value;
+	public void setId_cliente(int id_cliente) {
+		this.id_cliente = id_cliente;
 	}
 
-	/**
-	 * Gets the firstname
-	 */
 	public String getFirstname() {
-		return this.firstname;
+		return firstname;
 	}
 
-	/**
-	 * Sets the firstname
-	 */
-	public void setFirstname(String value) {
-		this.firstname = value;
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
 	}
 
-	/**
-	 * Gets the lastname
-	 */
 	public String getLastname() {
-		return this.lastname;
+		return lastname;
 	}
 
-	/**
-	 * Sets the lastname
-	 */
-	public void setLastname(String value) {
-		this.lastname = value;
-	}
-
-	/**
-	 * Gets the id_grupo
-	 */
-	public String getid_grupo() {
-		return this.id_grupo;
-	}
-
-	/**
-	 * Sets the id_grupo
-	 */
-	public void setid_grupo(String value) {
-		this.id_grupo = value;
-	}
-
-	/**
-	 * Gets the email
-	 */
-	public String getEmail() {
-		return this.email;
-	}
-
-	/**
-	 * Sets the email
-	 */
-	public void setEmail(String value) {
-		this.email = value;
-	}
-
-	/**
-	 * Gets the rut
-	 */
-	public String getRut() {
-		return this.rut;
-	}
-
-	/**
-	 * Sets the rut
-	 */
-	public void setRut(String value) {
-		this.rut = value;
-	}
-
-	/**
-	 * Gets the telephone
-	 */
-	public String getTelephone() {
-		return this.telephone;
-	}
-
-	/**
-	 * Sets the telephone
-	 */
-	public void setTelephone(String value) {
-		this.telephone = value;
-	}
-
-	/**
-	 * Gets the address_id
-	 */
-	public String getAddress_id() {
-		return this.address_id;
-	}
-
-	/**
-	 * Sets the address_id
-	 */
-	public void setAddress_id(String value) {
-		this.address_id = value;
+	public void setLastname(String lastname) {
+		this.lastname = lastname;
 	}
 
 	public String getId_grupo() {
@@ -177,6 +66,38 @@ public class Scotiauser {
 
 	public void setId_grupo(String id_grupo) {
 		this.id_grupo = id_grupo;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getRut() {
+		return rut;
+	}
+
+	public void setRut(String rut) {
+		this.rut = rut;
+	}
+
+	public String getTelephone() {
+		return telephone;
+	}
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+
+	public String getAddress_id() {
+		return address_id;
+	}
+
+	public void setAddress_id(String address_id) {
+		this.address_id = address_id;
 	}
 
 	public String getTokenScotia() {
@@ -193,6 +114,6 @@ public class Scotiauser {
 
 	public void setPoints(int points) {
 		this.points = points;
-	}
+	}	
 
 }

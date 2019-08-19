@@ -15,7 +15,7 @@ public class ProductoCategoria {
 	String imagen;
 	String colorHover;
 	int tipo; // 1:Productos  2:formulario
-	public List<ProductoTipoLike> productos = new ArrayList<>();
+	List<ProductoTipoLike> productos = new ArrayList<>();
 
 	public ProductoCategoria() {
 		super();

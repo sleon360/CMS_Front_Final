@@ -24,7 +24,7 @@ public class Scinformacionsubmenu {
 	String fecha_creacion;
 	String fecha_modificacion;
 	String imagen_logo;
-	public List<String> condicioneslista = new ArrayList<>();
+	List<String> condicioneslista = new ArrayList<>();
 	int estado;			
 	
 	public Scinformacionsubmenu() {
