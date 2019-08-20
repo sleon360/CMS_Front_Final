@@ -17,11 +17,19 @@ public class ViewApp {
 	StringBuilder sb = new StringBuilder("");
 	private String TOKENONE;
 	private String apiUrl;
+	private RestTemplate restTemplate = new RestTemplate();
 
+	
 	public ViewApp(String xapiUrl,String xTOKENONE) {
 		this.apiUrl = xapiUrl;
 		this.TOKENONE=xTOKENONE;
 	}
+	
+	public void setrestTemplate(RestTemplate xrestTemplate) {
+		this.restTemplate = xrestTemplate;
+
+	}
+	
 
 	public String loadView(String view) {
 
@@ -32,7 +40,7 @@ public class ViewApp {
 		headers.set("Authorization", TOKENONE);
 		System.out.println(TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
-		RestTemplate restTemplate = new RestTemplate();
+		
 		ResponseEntity<ViewEntity> response = restTemplate.exchange(apiUrl + "/view/getByName/" + view, HttpMethod.GET,
 				httpEntity, ViewEntity.class);
 		if (response.getStatusCodeValue() == 200) {

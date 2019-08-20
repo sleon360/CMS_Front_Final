@@ -301,7 +301,7 @@ public class Routes {
 
 	@RequestMapping(value = "/categoria/{menu}/{submenu}/productos/{categoria}", method = RequestMethod.GET)
 	public ModelAndView menuProductoCategoria(@PathVariable("menu") String menu,
-			@PathVariable("submenu") String submenu, @PathVariable("categoria") String categoria, HttpServletRequest rq)
+			@PathVariable("submenu") String submenu, @PathVariable("categoria") String categoria)
 			throws UnsupportedEncodingException {
 //		ModelAndView mav = new ModelAndView("categorias");
 		
@@ -336,6 +336,9 @@ public class Routes {
 
 		}
 
+		
+		
+		System.out.println("VVVVVVVVVVVVV:"+scmenuurlsub.getTipo());
 		switch (scmenuurlsub.getTipo()) { // SI O SI TIENE QUE SER SUB CATEGORIA TIPO 5 o 6 PARA TENER PRODUCTOS A LA
 											// CATEGORIAPRODUCTOS ASOCIADA
 		case 5:
@@ -386,7 +389,7 @@ public class Routes {
 
 	@GetMapping("/categoria/{menu}/{submenu}/detalle/{producto}")
 	public ModelAndView menuDetalleProducto(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu,
-			@PathVariable("producto") int producto, HttpServletRequest rq) throws UnsupportedEncodingException {
+			@PathVariable("producto") int producto) throws UnsupportedEncodingException {
 //		ModelAndView mav = new ModelAndView("canjes");
 		this.vi.addView("HEAD");
 		this.vi.addView("HEADER_CATEGORIAS");
@@ -431,8 +434,7 @@ public class Routes {
 
 	@PostMapping("/categoria/{menu}/{submenu}/canje")
 	public ModelAndView menuCanje(@ModelAttribute("producto") CanjeProducto producto, @PathVariable("menu") String menu,
-			@PathVariable("submenu") String submenu, HttpServletRequest rq,
-			@RequestHeader(value = "referer", required = false) final String referer)
+			@PathVariable("submenu") String submenu,@RequestHeader(value = "referer", required = false) final String referer)
 			throws NamingException, ErrorControllerExection {
 		// ModelAndView mav = new ModelAndView("canjes");
 
@@ -506,7 +508,6 @@ public class Routes {
 				if (idPruductoCanje == 0 || producto.getCantidad() < 1) {
 					System.out.println("no producto");
 					return new ModelAndView("redirect:/404");
-//					return new ModelAndView("redirect:/");
 				} else {
 
 					//DESCRIPCION DEL CANJE
@@ -552,33 +553,18 @@ public class Routes {
 							mav.addObject("canjeExito", true);
 
 							JsonArray jsonObjectAgregado = new JsonParser().parse(agregado).getAsJsonArray();
-//							mav.addObject("idrewards", jsonObjectAgregado.get);
-							// agregado: RETORNA STATUS DEL CANJE ("customer_reward_id")
-							// SI
-							// CONSULTA VOUCHER TICKETERA
-							// MUESTRA RESULTADO CANJE
-							// NO
-							// VALIDA ERROR (SESSION FINALIZADA, PUNTOS INSUFICIENTES, TOKEN INVALIDO, ETC)
-							// MUESTRA MENSAJE A CLIENTE
-						} else { // PROPBLEMA AL CONSULTAR
+
+						} else {
 							System.out.println("Movimiento no agregado");
 							mav.addObject("canjeExito", false);
 						}
 
 					}
-
-//					JSONObject myjson = new JSONObject(the_json);
-//					JSONArray the_json_array = myjson.getJSONArray("profiles");
-
 				}
 
 			} catch (Exception ex) {
 				System.out.println("canjeex: " + ex.getMessage());
 			}
-
-//			System.out.println("canje: "+producto.getIdProducto());
-
-//			mav.addObject("canjeExito", true);
 
 			break;
 		case 5: // TIPO CANJE CON CATEGORIAS
@@ -750,8 +736,7 @@ public class Routes {
 	}
 
 	@GetMapping("/information/{nombreInformation}")
-	public ModelAndView getinformation(@PathVariable("nombreInformation") String nombreInformation,
-			HttpServletRequest rq) throws UnsupportedEncodingException {
+	public ModelAndView getinformation(@PathVariable("nombreInformation") String nombreInformation) throws UnsupportedEncodingException {
 //		ModelAndView mav = new ModelAndView("user");
 		this.vi.addView("HEAD");
 		this.vi.addView("INFORMATION");

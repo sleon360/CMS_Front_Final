@@ -81,41 +81,16 @@ public class DataServer {
 		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		
-
 		String url = apiUrl + "/get/scmenuByName/" + scmenuName;
-
-		//ResponseEntity<Scmenu> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
-				//		new ParameterizedTypeReference<Scmenu>() {
-				//		});
-		
-		ResponseEntity<Scmenu> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
-						new ParameterizedTypeReference<Scmenu>() {
-						});
-		if (xresponse.getStatusCodeValue() == 200) {
-	        
-			return xresponse.getBody();
-		} else {
-			return null;
-		}
-
+		return restTemplate.exchange(url, HttpMethod.GET, httpEntity,Scmenu.class).getBody();
 	}
 
 	public List<Scmenu> loadAllScmenu() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
-		
-		String url = apiUrl + "/get/scmenu";
-
-		ResponseEntity<List<Scmenu>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
-				new ParameterizedTypeReference<List<Scmenu>>() {
-				});
-		if (xresponse.getStatusCodeValue() == 200) {
-			return xresponse.getBody();
-		} else {
-			return null;
-		}
-
+		String url = apiUrl + "/get/scmenu";	
+		return restTemplate.exchange(url, HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Scmenu>>() {}).getBody();
 	}
 
 	public Scinformacionsubmenu loadInformatioSub(int idsubmenu) {
@@ -146,20 +121,9 @@ public class DataServer {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
-
 		String url = apiUrl + "/get/productosSubmenu/" + idsubmenu;
+		return restTemplate.exchange(url, HttpMethod.GET, httpEntity,new ParameterizedTypeReference<List<ProductoTipoLike>>(){}).getBody();
 
-		ResponseEntity<List<ProductoTipoLike>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
-				new ParameterizedTypeReference<List<ProductoTipoLike>>() {
-				});
-
-		System.out.println("requestxn: " + xresponse.getBody());
-
-		if (xresponse.getStatusCodeValue() == 200) {
-			return xresponse.getBody();
-		} else {
-			return null;
-		}
 
 	}
 
@@ -170,19 +134,7 @@ public class DataServer {
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 
 		String url = apiUrl + "/get/productosSubmenuCategoria/" + categoria + "/" + idsubmenu;
-		System.out.println("strreq: " + apiUrl + "/get/productosSubmenuCategoria/" + categoria + "/" + idsubmenu);
-		ResponseEntity<List<ProductoTipoLike>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
-				new ParameterizedTypeReference<List<ProductoTipoLike>>() {
-				});
-
-		System.out.println("requestxn: " + xresponse.getBody().toString());
-
-		if (xresponse.getStatusCodeValue() == 200) {
-			return xresponse.getBody();
-		} else {
-			return null;
-		}
-
+		return restTemplate.exchange(url, HttpMethod.GET, httpEntity,new ParameterizedTypeReference<List<ProductoTipoLike>>() {}).getBody();
 	}
 
 	public List<Scinformacionsubmenu> loadscmenuinformationFomScmenu(int idscbmenu) {
@@ -190,21 +142,8 @@ public class DataServer {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
-
 		String url = apiUrl + "/get/informationsubmenuList/" + idscbmenu;
-
-		ResponseEntity<List<Scinformacionsubmenu>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
-				new ParameterizedTypeReference<List<Scinformacionsubmenu>>() {
-				});
-
-		System.out.println("requestxn: " + xresponse.getBody());
-
-		if (xresponse.getStatusCodeValue() == 200) {
-			return xresponse.getBody();
-		} else {
-			return null;
-		}
-
+		return restTemplate.exchange(url, HttpMethod.GET, httpEntity,new ParameterizedTypeReference<List<Scinformacionsubmenu>>() {}).getBody();
 	}
 
 	public List<ProductoTipoLike> loadProductosDetalle(int idproducto) {
@@ -253,21 +192,8 @@ public class DataServer {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
-
 		String url = apiUrl + "/get/productoCategoria/" + idsubmenu;
-
-		ResponseEntity<List<ProductoCategoria>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
-				new ParameterizedTypeReference<List<ProductoCategoria>>() {
-				});
-
-		System.out.println("requestxn: " + xresponse.getBody());
-
-		if (xresponse.getStatusCodeValue() == 200) {
-			return xresponse.getBody();
-		} else {
-			return null;
-		}
-
+		return restTemplate.exchange(url, HttpMethod.GET, httpEntity,new ParameterizedTypeReference<List<ProductoCategoria>>() {}).getBody();
 	}
 
 	public List<ProductoCategoria> loadproductoCategoriaConProductos(int idsubmenu, String categoria) {
@@ -412,9 +338,6 @@ public class DataServer {
 
 		String url = apiUrl + "/get/detalleProducto/" + idProd;
 
-//			ResponseEntity<List<ProductoTipoLike>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
-//					new ParameterizedTypeReference<List<ProductoTipoLike>>() {
-//					});
 		ResponseEntity<ProductoTipoLike> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 				ProductoTipoLike.class);
 		System.out.println("requestxn: " + xresponse.getBody());
