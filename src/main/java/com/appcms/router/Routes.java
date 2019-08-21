@@ -397,6 +397,7 @@ public class Routes {
 		this.vi.addView("FOOTER");
 		ModelAndView mav = new ModelAndView(this.vi.render());
 
+		
 		Scmenu scmenu = dtserver.loadScmenuByName(menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 		
