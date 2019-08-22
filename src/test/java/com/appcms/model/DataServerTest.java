@@ -49,6 +49,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -56,6 +58,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.HtmlUtils;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
@@ -66,6 +69,7 @@ import com.appcms.entity.Categoria;
 import com.appcms.entity.CredencialesEntity;
 import com.appcms.entity.Information;
 import com.appcms.entity.LoginUser;
+import com.appcms.entity.ProductoCategoria;
 import com.appcms.entity.ProductoTipoLike;
 import com.appcms.entity.ResourceEntity;
 import com.appcms.entity.Scinformacionsubmenu;
@@ -188,6 +192,60 @@ public class DataServerTest {
 
 	@Test
 	public final void testLoadScmenuByName() throws Exception {
+		
+		
+		Information information = new Information(1, 1, "Ayuda", 1, "&lt;div class=&quot;container pt-5 pb-5&quot;&gt;\r\n" + 
+				"			&lt;div class=&quot;row&quot;&gt;\r\n" + 
+				"        &lt;div class=&quot;col-12 mb-4&quot;&gt;\r\n" + 
+				"          &lt;h5 class=&quot;font-weight-bold mb-1&quot;&gt;Bienvenido a ScotiaClub&lt;/h5&gt;\r\n" + 
+				"          &lt;p&gt;Si eres parte de Scotiabank, &iexcl;ya eres parte de Scotiaclub!&lt;/p&gt;\r\n" + 
+				"        &lt;/div&gt;\r\n" + 
+				"      &lt;/div&gt;\r\n" + 
+				"      &lt;div class=&quot;row&quot;&gt;\r\n" + 
+				"        &lt;div class=&quot;col-2 col-md-5&quot;&gt;&lt;/div&gt;\r\n" + 
+				"        &lt;div class=&quot;col-8 col-md-3 mb-4&quot;&gt;&lt;img class=&quot;fit-img&quot; src=&quot;/resource/images/scotiaclub-logo.png&quot;&gt;&lt;/div&gt;\r\n" + 
+				"        &lt;div class=&quot;col-2 col-md-5&quot;&gt;&lt;/div&gt;\r\n" + 
+				"      &lt;/div&gt;\r\n" + 
+				"      &lt;div class=&quot;row&quot;&gt;\r\n" + 
+				"        &lt;div class=&quot;col-md-2&quot;&gt;&lt;/div&gt;\r\n" + 
+				"        &lt;div class=&quot;col-12 col-md-8&quot;&gt;\r\n" + 
+				"          &lt;h6 class=&quot;font-weight-bold&quot;&gt;Ya puedes acceder a un mundo de descuentos y productos exclusivos para ti.&lt;/h6&gt; \r\n" + 
+				"          &lt;h6&gt;Acumula ScotiaPesos y canjealos por lo que m&aacute;s te guste, s&iacute; &iexcl;t&uacute; eres qui&eacute;n decide en que gastar&aacute;s tus ScotiaPesos!. S&oacute;lo debes utilizar tus Tarjetas de Cr&eacute;dito y D&eacute;bito y ya estar&aacute;s acumulando.&lt;/h6&gt;\r\n" + 
+				"        &lt;/div&gt;\r\n" + 
+				"        &lt;div class=&quot;col-md-2&quot;&gt;&lt;/div&gt;\r\n" + 
+				"      &lt;/div&gt;\r\n" + 
+				"      &lt;div class=&quot;row&quot;&gt;\r\n" + 
+				"        &lt;div class=&quot;col-md-2&quot;&gt;&lt;/div&gt;\r\n" + 
+				"        &lt;div class=&quot;col-12 col-md-8 cr-grey-bg border rounded p-5 mt-4&quot;&gt;\r\n" + 
+				"          &lt;div class=&quot;row&quot;&gt;\r\n" + 
+				"            &lt;div class=&quot;col-md-2&quot;&gt;&lt;/div&gt;\r\n" + 
+				"            &lt;div class=&quot;col-md-2 text-center&quot;&gt;&lt;img src=&quot;/resource/images/money.png&quot;&gt;&lt;/div&gt;\r\n" + 
+				"            &lt;div class=&quot;col-md-6&quot;&gt;\r\n" + 
+				"              &lt;h4 class=&quot;font-weight-bold&quot;&gt;1 Scotiapeso = 1 peso&lt;/h4&gt;\r\n" + 
+				"            &lt;/div&gt;\r\n" + 
+				"            &lt;div class=&quot;col-md-2&quot;&gt;&lt;/div&gt;\r\n" + 
+				"          &lt;/div&gt;\r\n" + 
+				"          &lt;div class=&quot;row mt-3&quot;&gt;\r\n" + 
+				"            &lt;div class=&quot;col-md-2&quot;&gt;&lt;/div&gt;\r\n" + 
+				"            &lt;div class=&quot;col-md-8 text-center&quot;&gt;\r\n" + 
+				"              &lt;h6&gt;Acumula &lt;span class=&quot;font-weight-bold&quot;&gt;1 ScotiaPeso&lt;/span&gt; por cada &lt;span class=&quot;font-weight-bold&quot;&gt;$100 en compras&lt;/span&gt; con tu Tarjeta de Cr&eacute;dito&lt;/h6&gt;\r\n" + 
+				"            &lt;/div&gt;\r\n" + 
+				"            &lt;div class=&quot;col-md-2&quot;&gt;&lt;/div&gt;\r\n" + 
+				"          &lt;/div&gt;\r\n" + 
+				"          &lt;div class=&quot;row mt-4&quot;&gt;\r\n" + 
+				"            &lt;div class=&quot;col-12 col-md-6&quot;&gt;\r\n" + 
+				"              &lt;p&gt;Acumula 1 ScotiaPeso por cada $500 en compras con tu Tarjeta de D&eacute;bito&lt;/p&gt;\r\n" + 
+				"            &lt;/div&gt;\r\n" + 
+				"            &lt;div class=&quot;col-12 col-md-6&quot;&gt;\r\n" + 
+				"              &lt;p&gt;Acumula 5 ScotiaPeso por cada USD1 en compras con tu Tarjeta de Cr&eacute;dito&lt;/p&gt;\r\n" + 
+				"            &lt;/div&gt;\r\n" + 
+				"          &lt;/div&gt;\r\n" + 
+				"        &lt;/div&gt;\r\n" + 
+				"        &lt;div class=&quot;col-md-2&quot;&gt;&lt;/div&gt;\r\n" + 
+				"      &lt;/div&gt;\r\n" + 
+				"		&lt;/div&gt;");
+		information.setHtml(HtmlUtils.htmlUnescape(information.getHtml()));
+		
 		Scmenu scmenu=new Scmenu();
 		scmenu.setColor("#ffffff");
 		scmenu.setEstado(1);
@@ -263,7 +321,7 @@ public class DataServerTest {
         
         
         Mockito.when(dataServer.loadScmenuByName("mundos")).thenReturn(new ResponseEntity<Scmenu>(scmenu,HttpStatus.OK));
-        Mockito.when(dataServer.loadProductoById(1)).thenReturn(productos);
+        Mockito.when(dataServer.loadProductoById(1)).thenReturn(new ResponseEntity<ProductoTipoLike>(productos,HttpStatus.OK));
         
         Points points = new Points();
 		points.setAvailablePoints(10000000);
@@ -313,9 +371,18 @@ public class DataServerTest {
     	httpResponsefalse = routes.menuSubmenu("mundos", "productos");
     	Assert.assertNotNull(httpResponsefalse);
     	
+    	
+    	Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/get/productoCategoria/100", HttpMethod.GET, httpEntity,Scmenu.class)).thenReturn(new ResponseEntity<Scmenu>(scmenu, HttpStatus.OK));
+		Mockito.when(dataServer.loadCateProductosFromCategoria(5)).thenReturn(new ResponseEntity<List<ProductoCategoria>>(HttpStatus.OK));
+		
     	httpResponsefalse = routes.menuSubmenu("mundos", "platos");
     	Assert.assertNotNull(httpResponsefalse);
-    	
+
+
+    	Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/get/productoCategoria/100", HttpMethod.GET, httpEntity,Scmenu.class)).thenReturn(new ResponseEntity<Scmenu>(scmenu, HttpStatus.OK));
+		Mockito.when(dataServer.loadCateProductosFromCategoria(6)).thenReturn(new ResponseEntity<List<ProductoCategoria>>(HttpStatus.OK));
+		
+		
     	httpResponsefalse = routes.menuSubmenu("mundos", "test6");
     	Assert.assertNotNull(httpResponsefalse);
     	
@@ -326,16 +393,21 @@ public class DataServerTest {
     	Assert.assertNotNull(httpResponsefalse);
     	
     	
+    	
+    	
+    	Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/get/informationScsubmenu/9", HttpMethod.GET, httpEntity,Information.class)).thenReturn(new ResponseEntity<Information>(information, HttpStatus.OK));
+		Mockito.when(dataServer.loadInformationScsubmenu(9)).thenReturn(new ResponseEntity<Information>(information,HttpStatus.OK));
     	httpResponsefalse = routes.menuSubmenu("mundos", "test9");
     	Assert.assertNotNull(httpResponsefalse);
+    	
+     	Mockito.when(dataServer.loadInformationByName("mundos")).thenReturn(new ResponseEntity<Information>(information,HttpStatus.OK));
+    	httpResponsefalse = routes.getinformation("mundos");
     	
     	httpResponsefalse = routes.getinformation("mundos");
     	Assert.assertNotNull(httpResponsefalse);
     	
-    	Information inf=new Information();
-    	inf.setNombre("TEST");
-    	Mockito.when(dataServer.loadInformationByName("TEST")).thenReturn(inf);
-    	httpResponsefalse = routes.getinformation("TEST");
+    
+   
     	Assert.assertNotNull(httpResponsefalse);
     	
     	//loadScmenuByName
@@ -380,8 +452,8 @@ public class DataServerTest {
 		banners.add(new Banner(1, "/resource/home-slider/comida2.jpg", "#", false));
 		banners.add(new Banner(2, "/resource/home-slider/nino.jpg", "#", false));
 		banners.add(new Banner(3, "/resource/home-slider/landscape.jpg", "#", false));
-		Mockito.when(dataServer.loadBannerAll(0)).thenReturn(banners);
-		Mockito.when(dataServer.loadBannerAll(1)).thenReturn(banners);
+		Mockito.when(dataServer.loadBannerAll(0)).thenReturn(new ResponseEntity<List<Banner>>(banners,HttpStatus.OK));
+		Mockito.when(dataServer.loadBannerAll(1)).thenReturn(new ResponseEntity<List<Banner>>(banners,HttpStatus.OK));
     	httpResponsefalse = routes.home();
     	Assert.assertNotNull(httpResponsefalse);
     	
@@ -430,13 +502,23 @@ public class DataServerTest {
     	
     	LoginUser loginForm=new LoginUser();
     	loginForm.setPass("123");
-    	loginForm.setRut("1-9");
-    	loginForm.setToken("TOKEN");
+    	loginForm.setRut("19");
+    	loginForm.setToken("Bearer TOKENOK");
+    	
+    	
+    	MultiValueMap<String, String> xparam = new LinkedMultiValueMap<String, String>();
+		xparam.add("userCostumer", loginForm.getRut());
+		xparam.add("userPassword", loginForm.getPass());
+
+    	ResponseEntity<String> responseLogin= new ResponseEntity<String>("TOKENOK", HttpStatus.OK);
+    	responseLogin.ok().header("Authorization", "Bearer TOKENOK");
+    	Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/v1/login_customer", HttpMethod.GET, httpEntity,String.class)).thenReturn(responseLogin);
+     	Mockito.when(dataServer.testLogin("19","123")).thenReturn(responseLogin);
     	httpResponsefalse = routes.loginuser(loginForm);
     	Assert.assertNotNull(httpResponsefalse);
     	
     	
-    	Mockito.when(dataServer.testLogin(loginForm.getRut(), loginForm.getPass())).thenReturn("TOKEN");
+    	Mockito.when(dataServer.testLogin(loginForm.getRut(), loginForm.getPass())).thenReturn(new ResponseEntity<String>("Bearer TOKENOK",HttpStatus.OK));
     	httpResponsefalse = routes.loginuser(loginForm);
     	Assert.assertNotNull(httpResponsefalse);
     	
@@ -507,18 +589,44 @@ public class DataServerTest {
 		Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/cmsrest/get/scmenuByName/mundos", HttpMethod.GET, 
 				null, new ParameterizedTypeReference<Scmenu>() {})).thenReturn(xrespo);
 		
+		
+		
+		
+		
+		
+		Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/get/productosSubmenuCategoria/mundos/1", HttpMethod.GET, null, Scmenu.class)).thenReturn(xrespo);
+		when(dataServer.loadProductosLikeSubmenuCategoria(100,"mundos")).thenReturn(new ResponseEntity<List<ProductoTipoLike>>(HttpStatus.OK));
+		
+		
 		when(dataServer.loadScmenuByName("mundos")).thenReturn(new ResponseEntity<Scmenu>(scmenu,HttpStatus.OK));
 		assertEquals(new ResponseEntity<Scmenu>(scmenu,HttpStatus.OK), dataServer.loadScmenuByName("mundos"));
         
+		
+		
+		
+		Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/get/productoCategoriaConProductos/categoria/5", HttpMethod.GET, null,Scmenu.class)).thenReturn(new ResponseEntity<Scmenu>(scmenu, HttpStatus.OK));
+		Mockito.when(dataServer.loadproductoCategoriaConProductos(5, "mundos")).thenReturn(new ResponseEntity<List<ProductoCategoria>>(HttpStatus.OK));
+
         Mockito.when(dataServer.loadScmenuByName("mundos")).thenReturn(new ResponseEntity<Scmenu>(scmenu,HttpStatus.OK));
 		ModelAndView httpResponsefalse = routes.menuProductoCategoria("mundos", "mundos","mundos");
 		Assert.assertNotNull(httpResponsefalse);
-		Mockito.when(dataServer.loadScmenuByName("mundos6")).thenReturn(new ResponseEntity<Scmenu>(scmenu,HttpStatus.OK));
+		
+		
+		Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/get/productosSubmenuCategoria/mundos6/6", HttpMethod.GET, null, Scmenu.class)).thenReturn(xrespo);
+		when(dataServer.loadProductosLikeSubmenuCategoria(6,"mundos6")).thenReturn(new ResponseEntity<List<ProductoTipoLike>>(HttpStatus.OK));
+		Mockito.when(dataServer.loadScmenuByName("mundos")).thenReturn(new ResponseEntity<Scmenu>(scmenu,HttpStatus.OK));
 		httpResponsefalse = routes.menuProductoCategoria("mundos", "mundos6","mundos6");
 		Assert.assertNotNull(httpResponsefalse);
+		
+		
+		
 		Mockito.when(dataServer.loadScmenuByName("mundos7")).thenReturn(new ResponseEntity<Scmenu>(scmenu,HttpStatus.OK));
 		httpResponsefalse = routes.menuProductoCategoria("mundos", "mundos7","mundos7");
 		Assert.assertNotNull(httpResponsefalse);
+		
+		
+		Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/get/productoCategoriaConProductos/categoria/8", HttpMethod.GET, null,Scmenu.class)).thenReturn(new ResponseEntity<Scmenu>(scmenu, HttpStatus.OK));
+		Mockito.when(dataServer.loadproductoCategoriaConProductos(8, "mundos8")).thenReturn(new ResponseEntity<List<ProductoCategoria>>(HttpStatus.OK));
 		Mockito.when(dataServer.loadScmenuByName("mundos8")).thenReturn(new ResponseEntity<Scmenu>(scmenu,HttpStatus.OK));
 		httpResponsefalse = routes.menuProductoCategoria("mundos", "mundos8","mundos8");
 		Assert.assertNotNull(httpResponsefalse);

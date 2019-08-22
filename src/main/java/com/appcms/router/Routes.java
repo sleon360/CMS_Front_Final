@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
@@ -259,11 +260,11 @@ public class Routes {
 			break;
 		case 5:
 			System.out.println("Tipo 5"); // TIPO CANJE CON CATEGORIAS
-			scmenuurlsub.categoriaProductoLista = dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId());// Emudata.getCategoriasProductosTest();//
+			scmenuurlsub.categoriaProductoLista = dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId()).getBody();// Emudata.getCategoriasProductosTest();//
 			break;
 		case 6:
 			System.out.println("Tipo 6"); // TIPO CANJE CON CATEGORIAS PARA FORMULARIO
-			scmenuurlsub.categoriaProductoLista = dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId());// Emudata.getCategoriasProductosTestTipo6();
+			scmenuurlsub.categoriaProductoLista = dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId()).getBody();// Emudata.getCategoriasProductosTestTipo6();
 			break;
 		case 7:
 			System.out.println("Tipo 7"); // TIPO CANJE CASHBACK
@@ -277,7 +278,7 @@ public class Routes {
 			break;
 		case 9:
 			System.out.println("Tipo 9"); // TIPO VISTA INFORMATION
-			scmenuurlsub.informationHtml = dtserver.loadInformationScsubmenu(scmenuurlsub.getId());// Emudata.getInformationHtml();loadInformationScsubmenu
+			scmenuurlsub.informationHtml = dtserver.loadInformationScsubmenu(scmenuurlsub.getId()).getBody();// Emudata.getInformationHtml();loadInformationScsubmenu
 			break;
 		}
 
@@ -340,9 +341,7 @@ public class Routes {
 		case 5:
 			System.out.println("Tipo 5"); // TIPO CANJE CON CATEGORIAS
 
-			scmenuurlsub.categoriaProductoLista = dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(),categoria);// Emudata.getCateProductosFromCategoria(categoria);
-			System.out.println("Lista de productos de categoria: " + scmenuurlsub.categoriaProductoLista.toString());
-
+			scmenuurlsub.categoriaProductoLista = dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(),categoria).getBody();// Emudata.getCateProductosFromCategoria(categoria);
 			mav.addObject("verProductosCategoria", true);
 			break;
 
@@ -351,7 +350,7 @@ public class Routes {
 			// se pasa la categoria para seleccionar el primer producto de ella, deberia
 			// siempre tener 1 producto MAXIMO por categoria tipo formulario
 
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosLikeSubmenuCategoria(scmenuurlsub.getId(),categoria);// Emudata.getProductosLikeTest();
+			scmenuurlsub.productosLikeLista = dtserver.loadProductosLikeSubmenuCategoria(scmenuurlsub.getId(),categoria).getBody();// Emudata.getProductosLikeTest();
 			mav.addObject("producto", new CanjeProducto());
 			mav.addObject("verProductosCategoria", true);
 			
@@ -360,7 +359,7 @@ public class Routes {
 			break;
 		case 8:
 			System.out.println("Tipo 8"); // TIPO CANJE CON CATEGORIAS
-			scmenuurlsub.categoriaProductoLista = dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(),categoria);// Emudata.getCateProductosFromCategoria(categoria);
+			scmenuurlsub.categoriaProductoLista = dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(),categoria).getBody();// Emudata.getCateProductosFromCategoria(categoria);
 			mav.addObject("verProductosCategoria", true);
 			break;
 		default:
@@ -498,7 +497,7 @@ public class Routes {
 
 			try {
 				// OBTENEMOS EL PRODUCTO
-				ProductoTipoLike detalleProducto = dtserver.loadProductoById(producto.getIdProducto());
+				ProductoTipoLike detalleProducto = dtserver.loadProductoById(producto.getIdProducto()).getBody();
 				int idPruductoCanje = detalleProducto.getId();
 
 				// PRODUCTO DISPONIBLE (NO FUNCIONA)
@@ -544,7 +543,7 @@ public class Routes {
 						movimientoActual.setId_trx(0);			
 						movimientoActual.setTipo_reward(1);
 						
-						String agregado = dtserver.setReward(movimientoActual, detalleProducto.getNombre(),usuario.getRut());
+						String agregado = dtserver.setReward(movimientoActual, detalleProducto.getNombre(),usuario.getRut()).getBody();
 						System.out.println("RESULTSETREWARDS: " + agregado);
 						if (agregado != null) {
 							System.out.println("Movimiento agregado");
@@ -733,7 +732,7 @@ public class Routes {
 		ModelAndView mav = new ModelAndView(this.vi.render());
 
 		Information informationhtml = new Information();
-		informationhtml = dtserver.loadInformationByName(nombreInformation);
+		informationhtml = dtserver.loadInformationByName(nombreInformation).getBody();
 		if (informationhtml == null) {
 			return new ModelAndView("redirect:/404");
 		}
@@ -748,24 +747,16 @@ public class Routes {
 
 	@PostMapping("/user/login")
 	public ModelAndView loginuser(@ModelAttribute("loginForm") LoginUser loginForm) {
-//		ModelAndView mav = new ModelAndView("user");
 		this.vi.addView("HEAD");
-//		vi.addView("INFORMATION");
 		this.vi.addView("FOOTER");
-
 		ModelAndView mav = new ModelAndView(this.vi.render());
+		ResponseEntity<String> resultlogin = dtserver.testLogin(loginForm.getRut(), loginForm.getPass());
 
-		System.out.println("infologin: " + loginForm);
-
-		String resultlogin = dtserver.testLogin(loginForm.getRut(), loginForm.getPass());
-		System.out.println("result_login:" + resultlogin);
-
-		if (resultlogin != null) { // token de sesion devuelto
+		if (resultlogin.getStatusCode().OK==HttpStatus.OK) { // token de sesion devuelto
 
 		} else {
 
 		}
-
 		this.setHeaderx(mav);
 
 		return mav;
@@ -775,8 +766,6 @@ public class Routes {
 	@GetMapping("/cupon/get/{id_reward}")
 	public ModelAndView getCuponByRew(@PathVariable("id_reward") int id_reward,@RequestHeader(value = "referer", required = false) final String referer)
 			throws UnsupportedEncodingException {
-//		ModelAndView mav = new ModelAndView("user");
-
 		CredencialesEntity credentialUser = new CredencialesEntity();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
