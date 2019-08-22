@@ -3,10 +3,13 @@ package com.appcms.model;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+
+import org.codehaus.groovy.runtime.ArrayUtil;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -42,6 +45,7 @@ import com.appcms.entity.UserGusto;
 import com.appcms.entity.points.ExpiringPoints;
 import com.appcms.entity.points.Points;
 import com.cms.views.ViewApp;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
@@ -50,6 +54,8 @@ public class DataServer {
 
 	private String apiUrl;
 	private String TOKENONE;
+	
+	
 	private RestTemplate restTemplate = new RestTemplate();
 	
 	StringBuilder sb = new StringBuilder("");
@@ -76,54 +82,55 @@ public class DataServer {
 	}
 
 	
-	public Scmenu loadScmenuByName( String scmenuName) {
+	public ResponseEntity<Scmenu> loadScmenuByName( String scmenuName) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		
 		String url = apiUrl + "/get/scmenuByName/" + scmenuName;
-		return restTemplate.exchange(url, HttpMethod.GET, httpEntity,Scmenu.class).getBody();
+		 ResponseEntity<Scmenu> retorno=restTemplate.exchange(url, HttpMethod.GET, httpEntity,Scmenu.class);
+		return retorno;
 	}
 
-	public List<Scmenu> loadAllScmenu() {
+	public ResponseEntity<List<Scmenu>> loadAllScmenu() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		String url = apiUrl + "/get/scmenu";	
-		return restTemplate.exchange(url, HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Scmenu>>() {}).getBody();
+		ResponseEntity<List<Scmenu>> retorno=restTemplate.exchange(url, HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Scmenu>>() {});
+		return retorno;
 	}
 
-	public Scinformacionsubmenu loadInformatioSub(int idsubmenu) {
+	public ResponseEntity<Scinformacionsubmenu> loadInformatioSub(int idsubmenu) {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		String url = apiUrl + "/get/informationsubmenu/" + idsubmenu;
-		ResponseEntity<Scinformacionsubmenu> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,Scinformacionsubmenu.class);
-		if (xresponse.getStatusCodeValue() == 200) {
-			Scinformacionsubmenu information = xresponse.getBody(); 
-			String json = information.getJson_condiciones();
+			ResponseEntity<Scinformacionsubmenu> information = restTemplate.exchange(url, HttpMethod.GET, httpEntity,Scinformacionsubmenu.class); 
+			String json = information.getBody().getJson_condiciones();
 			JsonArray jsonObject = new JsonParser().parse(json).getAsJsonArray();
-
+			ObjectMapper mapper = new ObjectMapper(); 
 			JsonArray arr = jsonObject.getAsJsonArray();
-			for (int i = 0; i < arr.size(); i++) {
-				String post_id = arr.get(i).getAsString();
-				information.addCondicioneslista(post_id);
-			}
+			
+			
+
+			
+			List<>list Arrays.asList(mapper.readValue(json, String[].class));
+
+			information.getBody().addCondicioneslista(list);
 			return information;
-		} else {
-			return null;
-		}
+
 	}
 
-	public List<ProductoTipoLike> loadProductosLike(int idsubmenu) {
+	public ResponseEntity<List<ProductoTipoLike>> loadProductosLike(int idsubmenu) {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		String url = apiUrl + "/get/productosSubmenu/" + idsubmenu;
-		return restTemplate.exchange(url, HttpMethod.GET, httpEntity,new ParameterizedTypeReference<List<ProductoTipoLike>>(){}).getBody();
-
+		ResponseEntity<List<ProductoTipoLike>> retorno=restTemplate.exchange(url, HttpMethod.GET, httpEntity,new ParameterizedTypeReference<List<ProductoTipoLike>>(){});
+		return retorno;
 
 	}
 

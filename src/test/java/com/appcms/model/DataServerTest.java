@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,23 +52,31 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
 
+import com.appcms.entity.Banner;
 import com.appcms.entity.CanjeProducto;
 import com.appcms.entity.Categoria;
 import com.appcms.entity.CredencialesEntity;
+import com.appcms.entity.Information;
+import com.appcms.entity.LoginUser;
 import com.appcms.entity.ProductoTipoLike;
 import com.appcms.entity.ResourceEntity;
 import com.appcms.entity.Scinformacionsubmenu;
 import com.appcms.entity.Scmenu;
 import com.appcms.entity.Scotiauser;
 import com.appcms.entity.Scsubmenu;
+import com.appcms.entity.StockTicket;
 import com.appcms.entity.TarjetaCliente;
 import com.appcms.entity.Tarjetas;
+import com.appcms.entity.UserGusto;
+import com.appcms.entity.points.Points;
 import com.appcms.front.FronendApplication;
 import com.appcms.router.ResourceRoutes;
 import com.appcms.router.Routes;
@@ -81,8 +91,9 @@ public class DataServerTest {
 
 	
 	private MockMvc mvc;
-	
+	@Autowired
 	private DataServer dataServer;
+	@MockBean
 	private RestTemplate restTemplate;
 	private Routes routes;
 	private ViewApp vi;
@@ -188,6 +199,27 @@ public class DataServerTest {
 		scmenu.setStrIndex("mundos");
 
 		
+		 Scinformacionsubmenu scinformacionsubmenu=new Scinformacionsubmenu();
+			scinformacionsubmenu.setImagen_logo("/img/imagen.jpg");
+			scinformacionsubmenu.setId(1);
+			scinformacionsubmenu.setId_submenu(500);
+			scinformacionsubmenu.setSubmenuStrindex("restorando");
+			scinformacionsubmenu.setNombre("restorando");
+			scinformacionsubmenu.setTipo(20);
+			scinformacionsubmenu.setImagen("/img/imagen2.jpg");
+			scinformacionsubmenu.setTitulo("TITULO");
+			scinformacionsubmenu.setSubtitulo("SUBTITULO");
+			scinformacionsubmenu.setDescripcion("DESCRIPCION");
+			scinformacionsubmenu.setLink("http://google.cl");
+			scinformacionsubmenu.setTexto_link("TEXTO_LINK");;
+			scinformacionsubmenu.setJson_condiciones("[\"Paga todos los jueves con tus Tarjetas de Débito y Crédito Scotiabank en cualquiera de los restaurantes de la Ruta Gourmet Scotiabank\",\"Descuento aplica al momento de pagar la cuenta\r\n" + 
+					"No es necesario reservar para hacer efectivo el descuento\"]");
+			scinformacionsubmenu.setFecha_creacion("01-01-2019");
+			scinformacionsubmenu.setFecha_modificacion("01-02-2019");
+			scinformacionsubmenu.setEstado(1);
+	        
+			
+		
 		List<Scsubmenu> msubmenu1 = new ArrayList<>();
 		msubmenu1.add(new Scsubmenu("restorando",1,"Restorando","/restorando","#008080","hover-green-bg","#008080",1,"/resource/images/dish.png","/resource/sections/gourmet.jpg","","Reserva ahora y obtén desde un 15% de dcto. en el total de tu cuenta","2018-12-11 18:15:04","2019-02-13 20:39:54",1));
 		msubmenu1.add(new Scsubmenu("rutapub",2,"Ruta Gourmet","/rutapub","#d33195","hover-pink-bg","#d33195",2,"/resource/images/chef.png","/resource/sections/gourmet.jpg","","Reserva ahora y obtén desde un 15% de dcto. en el total de tu cuenta","2018-12-11 18:15:04","2019-02-13 20:39:54",1));
@@ -222,12 +254,56 @@ public class DataServerTest {
 				new ParameterizedTypeReference<Scmenu>() {
 				})).thenReturn(new ResponseEntity<Scmenu>(scmenu, HttpStatus.OK));
 
-
-        Mockito.when(dataServer.loadScmenuByName("mundos")).thenReturn(scmenu);
+        
+        ProductoTipoLike productos = new ProductoTipoLike(1, "Danieli v1", "Danieli", "Coffee Bar", "/resource/images/ver_img.png", "40%", "Av. 4 Esquinas 1540, Local 1, Strip Center el Milagro, IV Región", "", "", 3);
 		
+		
+       // ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/points",
+		//		HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
+        
+        
+        Mockito.when(dataServer.loadScmenuByName("mundos")).thenReturn(new ResponseEntity<Scmenu>(scmenu,HttpStatus.OK));
+        Mockito.when(dataServer.loadProductoById(1)).thenReturn(productos);
+        
+        Points points = new Points();
+		points.setAvailablePoints(10000000);
+
+		
+        Mockito.when(dataServer.loadUserPoints()).thenReturn(points);
+
+        
+        StockTicket stockticket =new StockTicket();
+        stockticket.setActivo(1);
+        stockticket.setEmpresa("giftcard");
+        
+        Mockito.when(dataServer.loadStockTicket("Danieli v1")).thenReturn(stockticket);
+        
+        
+        List<ProductoTipoLike> productosList =  new ArrayList<>();
+        productosList.add( new ProductoTipoLike(1, "Danieli v1", "Danieli", "Coffee Bar", "/resource/images/ver_img.png", "40%", "Av. 4 Esquinas 1540, Local 1, Strip Center el Milagro, IV Región", "", "", 3) );
+        Mockito.when(dataServer.loadProductosDetalle(1)).thenReturn(productosList);
+        
+        Mockito.when(dataServer.loadInformatioSub(1)).thenReturn(new ResponseEntity<Scinformacionsubmenu>(scinformacionsubmenu,HttpStatus.OK));
+        Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/cmsrest//get/productosSubmenu/1", HttpMethod.GET, httpEntity,new ParameterizedTypeReference<List<ProductoTipoLike>>(){})).thenReturn(new ResponseEntity<List<ProductoTipoLike>>(productosList, HttpStatus.OK));
+        Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/cmsrest/get/informationsubmenu/1", HttpMethod.GET, httpEntity,Scinformacionsubmenu.class)).thenReturn(new ResponseEntity<Scinformacionsubmenu>(scinformacionsubmenu, HttpStatus.OK));
+        
+        Mockito.when(dataServer.loadProductosLike(1)).thenReturn(new ResponseEntity<List<ProductoTipoLike>>(productosList,HttpStatus.OK));
+        Mockito.when(dataServer.loadProductosLike(2)).thenReturn(new ResponseEntity<List<ProductoTipoLike>>(productosList,HttpStatus.OK));
+        Mockito.when(dataServer.loadProductosLike(3)).thenReturn(new ResponseEntity<List<ProductoTipoLike>>(productosList,HttpStatus.OK));
+        Mockito.when(dataServer.loadProductosLike(4)).thenReturn(new ResponseEntity<List<ProductoTipoLike>>(productosList,HttpStatus.OK));
+        Mockito.when(dataServer.loadProductosLike(5)).thenReturn(new ResponseEntity<List<ProductoTipoLike>>(productosList,HttpStatus.OK));
+        Mockito.when(dataServer.loadProductosLike(6)).thenReturn(new ResponseEntity<List<ProductoTipoLike>>(productosList,HttpStatus.OK));
+        Mockito.when(dataServer.loadProductosLike(7)).thenReturn(new ResponseEntity<List<ProductoTipoLike>>(productosList,HttpStatus.OK));
+        Mockito.when(dataServer.loadProductosLike(8)).thenReturn(new ResponseEntity<List<ProductoTipoLike>>(productosList,HttpStatus.OK));
+        Mockito.when(dataServer.loadProductosLike(9)).thenReturn(new ResponseEntity<List<ProductoTipoLike>>(productosList,HttpStatus.OK));
+        
+
+       // dtserver.loadScmenuByName( menu).getBody();
 		ModelAndView httpResponsefalse = routes.menuSubmenu("mundos", "restorando");
     	Assert.assertNotNull(httpResponsefalse);
     	
+        
+        
     	httpResponsefalse = routes.menuSubmenu("mundos", "rutapub");
     	Assert.assertNotNull(httpResponsefalse);
     	
@@ -256,15 +332,135 @@ public class DataServerTest {
     	httpResponsefalse = routes.getinformation("mundos");
     	Assert.assertNotNull(httpResponsefalse);
     	
+    	Information inf=new Information();
+    	inf.setNombre("TEST");
+    	Mockito.when(dataServer.loadInformationByName("TEST")).thenReturn(inf);
+    	httpResponsefalse = routes.getinformation("TEST");
+    	Assert.assertNotNull(httpResponsefalse);
+    	
+    	//loadScmenuByName
+    	
     	
     	CanjeProducto cp=new CanjeProducto(1, "TEST", "19", 1);
-    	httpResponsefalse = routes.menuCanje(cp, "mundo","mundo", null);
+    	cp.setActionx("finish");
+    	httpResponsefalse = routes.menuCanje(cp, "mundos","mundos", null);
+    	Assert.assertNotNull(httpResponsefalse);
+    	
+    	httpResponsefalse = routes.menuCanje(cp, "mundos","restorando", null);
+    	Assert.assertNotNull(httpResponsefalse);
+    	
+    	httpResponsefalse = routes.menuCanje(cp, "mundos","ecomerce", null);
+    	Assert.assertNotNull(httpResponsefalse);
+    	
+    	httpResponsefalse = routes.menuCanje(cp, "mundos","productos", null);
+    	Assert.assertNotNull(httpResponsefalse);
+    	
+    	httpResponsefalse = routes.menuCanje(cp, "mundos","rutapub", null);
     	Assert.assertNotNull(httpResponsefalse);
     	
     	
+    	httpResponsefalse = routes.menuCanje(cp, "mundos","platos", null);
+    	Assert.assertNotNull(httpResponsefalse);
     	
-
-
+    	cp.setActionx("finishx");
+    	httpResponsefalse = routes.menuCanje(cp, "mundos","test6", null);
+    	Assert.assertNotNull(httpResponsefalse);
+    	cp.setActionx("finish");
+    	httpResponsefalse = routes.menuCanje(cp, "mundos","test7", null);
+    	Assert.assertNotNull(httpResponsefalse);
+    	
+    	httpResponsefalse = routes.menuCanje(cp, "mundos","test8", null);
+    	Assert.assertNotNull(httpResponsefalse);
+    	
+    	httpResponsefalse = routes.menuCanje(cp, "mundos","test9", null);
+    	Assert.assertNotNull(httpResponsefalse);
+    	
+    	
+    	List<Banner> banners = new ArrayList<>();
+		banners.add(new Banner(1, "/resource/home-slider/comida2.jpg", "#", false));
+		banners.add(new Banner(2, "/resource/home-slider/nino.jpg", "#", false));
+		banners.add(new Banner(3, "/resource/home-slider/landscape.jpg", "#", false));
+		Mockito.when(dataServer.loadBannerAll(0)).thenReturn(banners);
+		Mockito.when(dataServer.loadBannerAll(1)).thenReturn(banners);
+    	httpResponsefalse = routes.home();
+    	Assert.assertNotNull(httpResponsefalse);
+    	
+    	
+    	httpResponsefalse = routes.menuDetalleProducto("mundos","restorando",1);
+    	Assert.assertNotNull(httpResponsefalse);
+    	
+    	
+    	msubmenu1 = new ArrayList<>();
+		msubmenu1.add(new Scsubmenu("rutapub",20,"Ruta Gourmet","/rutapub","#d33195","hover-pink-bg","#d33195",20,"/resource/images/chef.png","/resource/sections/gourmet.jpg","","Reserva ahora y obtén desde un 15% de dcto. en el total de tu cuenta","2018-12-11 18:15:04","2019-02-13 20:39:54",1));
+		msubmenu1.add(new Scsubmenu("ecomerce",21,"Ruta Pub","/ecomerce","#039fd3","hover-blue-bg","#039fd3",21,"/resource/images/beer.png","/resource/sections/pub.jpg","","Reserva ahora y obtén desde un 15% de dcto. en el total de tu cuenta","2018-12-11 18:15:04","2019-02-13 20:39:54",1));
+		msubmenu1.add(new Scsubmenu("productos",22,"E-commerce Gastronomía","/productos","#533dc1","hover-purple-bg","#533dc1",22,"/resource/images/shopping-bag.png","/resource/sections/coffee.jpg","","Reserva ahora y obtén desde un 15% de dcto. en el total de tu cuenta","2018-12-11 18:15:04","2019-02-13 20:39:54",1));
+		msubmenu1.add(new Scsubmenu("platos",23,"Productos","/platos","#ec121f","hover-red-bg","#ec121f",23,"/resource/images/market-place.png","/resource/sections/cheese.jpg","","Reserva ahora y obtén desde un 15% de dcto. en el total de tu cuenta","2018-12-11 18:15:04","2019-02-13 20:39:54",1));
+		msubmenu1.add(new Scsubmenu("test6",24,"Productos","/platos","#ec121f","hover-red-bg","#ec121f",24,"/resource/images/market-place.png","/resource/sections/cheese.jpg","","Reserva ahora y obtén desde un 15% de dcto. en el total de tu cuenta","2018-12-11 18:15:04","2019-02-13 20:39:54",1));
+		msubmenu1.add(new Scsubmenu("test100",100,"Productos","/platos","#ec121f","hover-red-bg","#ec121f",100,"/resource/images/market-place.png","/resource/sections/cheese.jpg","","Reserva ahora y obtén desde un 15% de dcto. en el total de tu cuenta","2018-12-11 18:15:04","2019-02-13 20:39:54",1));
+		scmenu.setSubmenues(msubmenu1);
+		Mockito.when(dataServer.loadScmenuByName("mundos")).thenReturn(new ResponseEntity<Scmenu>(scmenu,HttpStatus.OK));
+		
+		List<UserGusto> catelist =  new ArrayList<>();
+		 catelist.add(new UserGusto(1,"Viajes","/resource/images/honeymoon.png") );
+		 catelist.add(new UserGusto(2,"Fútbol","/resource/images/football2.png") );
+		 catelist.add(new UserGusto(3,"Entretención","/resource/images/concert.png") );
+		 catelist.add(new UserGusto(4,"Comida","/resource/images/dish2.png") );
+		 catelist.add(new UserGusto(5,"Concursos","/resource/images/reward.png") );
+		 
+			Mockito.when(dataServer.loadGustos()).thenReturn(catelist);
+			Mockito.when(dataServer.loadCustomerGustos()).thenReturn(catelist);
+			
+		httpResponsefalse = routes.menuUser("mundos", "rutapub",null);
+    	Assert.assertNotNull(httpResponsefalse);
+    	
+    	httpResponsefalse = routes.menuUser("mundos", "ecomerce",null);
+    	Assert.assertNotNull(httpResponsefalse);
+    	
+    	httpResponsefalse = routes.menuUser("mundos", "productos",null);
+    	Assert.assertNotNull(httpResponsefalse);
+    	
+    	httpResponsefalse = routes.menuUser("mundos", "platos",null);
+    	Assert.assertNotNull(httpResponsefalse);
+    	
+    	httpResponsefalse = routes.menuUser("mundos", "test6",null);
+    	Assert.assertNotNull(httpResponsefalse);
+    	
+    	httpResponsefalse = routes.menuUser("mundos", "test100",null);
+    	Assert.assertNotNull(httpResponsefalse);
+    	
+    	LoginUser loginForm=new LoginUser();
+    	loginForm.setPass("123");
+    	loginForm.setRut("1-9");
+    	loginForm.setToken("TOKEN");
+    	httpResponsefalse = routes.loginuser(loginForm);
+    	Assert.assertNotNull(httpResponsefalse);
+    	
+    	
+    	Mockito.when(dataServer.testLogin(loginForm.getRut(), loginForm.getPass())).thenReturn("TOKEN");
+    	httpResponsefalse = routes.loginuser(loginForm);
+    	Assert.assertNotNull(httpResponsefalse);
+    	
+    	
+    	byte[] pdffile= { (byte)0xe0, 0x4f, (byte)0xd0,0x20, (byte)0xea, 0x3a, 0x69, 0x10, (byte)0xa2, (byte)0xd8, 0x08, 0x00, 0x2b,0x30, 0x30, (byte)0x9d };;
+    	Mockito.when(dataServer.loadCuponAsPdf(2, 1)).thenReturn(pdffile);
+    	Object httpResponsefalseObj = routes.getFile(1, "string");
+    	Assert.assertNotNull(httpResponsefalseObj);
+    	
+    	//Mockito.when(dataServer).thenReturn("TOKEN");
+    	httpResponsefalse = routes.getCuponByRew(1,null);
+    	Assert.assertNotNull(httpResponsefalse);
+    	
+    	
+    	String[] gustos = new String[20];
+    	gustos[0] = "Cheese";
+    	gustos[1] = "Pepperoni";
+    	gustos[2] = "Black Olives";
+    	boolean httpResponsetrue = routes.actualizarGustos( gustos);
+    	Assert.assertTrue(httpResponsetrue);
+    	
+    	request.setAttribute("javax.servlet.error.status_code", 500);
+    	String retorno = routes.error(request);
+    	Assert.assertNotNull(retorno);
 	}
 
 	
@@ -311,19 +507,19 @@ public class DataServerTest {
 		Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/cmsrest/get/scmenuByName/mundos", HttpMethod.GET, 
 				null, new ParameterizedTypeReference<Scmenu>() {})).thenReturn(xrespo);
 		
-		when(dataServer.loadScmenuByName("mundos")).thenReturn(scmenu);
-		assertEquals(scmenu, dataServer.loadScmenuByName("mundos"));
+		when(dataServer.loadScmenuByName("mundos")).thenReturn(new ResponseEntity<Scmenu>(scmenu,HttpStatus.OK));
+		assertEquals(new ResponseEntity<Scmenu>(scmenu,HttpStatus.OK), dataServer.loadScmenuByName("mundos"));
         
-        Mockito.when(dataServer.loadScmenuByName("mundos")).thenReturn(scmenu);
+        Mockito.when(dataServer.loadScmenuByName("mundos")).thenReturn(new ResponseEntity<Scmenu>(scmenu,HttpStatus.OK));
 		ModelAndView httpResponsefalse = routes.menuProductoCategoria("mundos", "mundos","mundos");
 		Assert.assertNotNull(httpResponsefalse);
-		Mockito.when(dataServer.loadScmenuByName("mundos6")).thenReturn(scmenu);
+		Mockito.when(dataServer.loadScmenuByName("mundos6")).thenReturn(new ResponseEntity<Scmenu>(scmenu,HttpStatus.OK));
 		httpResponsefalse = routes.menuProductoCategoria("mundos", "mundos6","mundos6");
 		Assert.assertNotNull(httpResponsefalse);
-		Mockito.when(dataServer.loadScmenuByName("mundos7")).thenReturn(scmenu);
+		Mockito.when(dataServer.loadScmenuByName("mundos7")).thenReturn(new ResponseEntity<Scmenu>(scmenu,HttpStatus.OK));
 		httpResponsefalse = routes.menuProductoCategoria("mundos", "mundos7","mundos7");
 		Assert.assertNotNull(httpResponsefalse);
-		Mockito.when(dataServer.loadScmenuByName("mundos8")).thenReturn(scmenu);
+		Mockito.when(dataServer.loadScmenuByName("mundos8")).thenReturn(new ResponseEntity<Scmenu>(scmenu,HttpStatus.OK));
 		httpResponsefalse = routes.menuProductoCategoria("mundos", "mundos8","mundos8");
 		Assert.assertNotNull(httpResponsefalse);
 		
@@ -350,10 +546,12 @@ public class DataServerTest {
 		scmenu.setStrIndex("1111");
 		List<Scmenu> scmenulist= new ArrayList<>();
 		scmenulist.add(scmenu);
-	
-		Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/cmsrest/get/scmenu", HttpMethod.GET, null, new ParameterizedTypeReference<List<Scmenu>>() {})).thenReturn(new ResponseEntity<List<Scmenu>>(scmenulist,HttpStatus.OK));
-		when(dataServer.loadAllScmenu()).thenReturn(scmenulist);
-		assertEquals(scmenulist, dataServer.loadAllScmenu());
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Authorization", dataServer.getToken());
+		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
+		Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/cmsrest/get/scmenu", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Scmenu>>() {})).thenReturn(new ResponseEntity<List<Scmenu>>(scmenulist,HttpStatus.OK));
+		when(dataServer.loadAllScmenu()).thenReturn(new ResponseEntity<List<Scmenu>>(scmenulist,HttpStatus.OK));
+		assertEquals(new ResponseEntity<List<Scmenu>>(scmenulist,HttpStatus.OK), dataServer.loadAllScmenu());
 	}
 
 	@Test
@@ -396,8 +594,8 @@ public class DataServerTest {
 		msubmenu1.add(new Scsubmenu("platos",5,"Productos","/platos","#ec121f","hover-red-bg","#ec121f",4,"/resource/images/market-place.png","/resource/sections/cheese.jpg","","Reserva ahora y obtén desde un 15% de dcto. en el total de tu cuenta","2018-12-11 18:15:04","2019-02-13 20:39:54",1));
 		scmenu.setSubmenues(msubmenu1);
 		
-		Mockito.when(dataServer.loadScmenuByName("restorando")).thenReturn(scmenu);
-		Mockito.when(dataServer.loadInformatioSub(1)).thenReturn(scinformacionsubmenu);
+		Mockito.when(dataServer.loadScmenuByName("restorando")).thenReturn(new ResponseEntity<Scmenu>(scmenu,HttpStatus.OK));
+		Mockito.when(dataServer.loadInformatioSub(1)).thenReturn(new ResponseEntity<Scinformacionsubmenu>(scinformacionsubmenu,HttpStatus.OK));
 		ModelAndView httpResponsefalse = routes.menuSubmenu("restorando", "restorando");
     	Assert.assertNotNull(httpResponsefalse);
     	
@@ -413,8 +611,8 @@ public class DataServerTest {
 		productos.add( new ProductoTipoLike(3, "Danieli v1", "Test 3", "Coffee Bar", "/resource/images/ver_img.png", "35%", "Av. 4 Esquinas 1540, Local 1, Strip Center el Milagro, IV Región", "", "", 30) );
 		productos.add( new ProductoTipoLike(4, "Danieli v1", "Prod xn", "Coffee Bar", "/resource/images/ver_img.png", "35%", "Av. 4 Esquinas 1540, Local 1, Strip Center el Milagro, IV Región", "", "", 100) );
 		
-		Mockito.when(dataServer.loadProductosLike(11)).thenReturn(productos);
-		assertEquals(productos, dataServer.loadProductosLike(11));
+		Mockito.when(dataServer.loadProductosLike(11)).thenReturn(new ResponseEntity<List<ProductoTipoLike>>(productos,HttpStatus.OK));
+		assertEquals(new ResponseEntity<List<ProductoTipoLike>>(productos,HttpStatus.OK), dataServer.loadProductosLike(11));
 	}
 
 	@Test
@@ -424,8 +622,8 @@ public class DataServerTest {
 		productos.add( new ProductoTipoLike(2, "Danieli v1", "Danieli 2", "Coffee Bar", "/resource/images/ver_img.png", "25%", "Av. 4 Esquinas 1540, Local 1, Strip Center el Milagro, IV Región", "", "", 10) );
 		productos.add( new ProductoTipoLike(3, "Danieli v1", "Test 3", "Coffee Bar", "/resource/images/ver_img.png", "35%", "Av. 4 Esquinas 1540, Local 1, Strip Center el Milagro, IV Región", "", "", 30) );
 		productos.add( new ProductoTipoLike(4, "Danieli v1", "Prod xn", "Coffee Bar", "/resource/images/ver_img.png", "35%", "Av. 4 Esquinas 1540, Local 1, Strip Center el Milagro, IV Región", "", "", 100) );
-		Mockito.when(dataServer.loadProductosLikeSubmenuCategoria(11,"test")).thenReturn(productos);
-		assertEquals(productos, dataServer.loadProductosLikeSubmenuCategoria(11,"test"));
+		///Mockito.when(dataServer.loadProductosLikeSubmenuCategoria(11,"test")).thenReturn(new ResponseEntity<List<ProductoTipoLike>>(productos,HttpStatus.OK));
+		///assertEquals(new ResponseEntity<List<ProductoTipoLike>>(productos,HttpStatus.OK), dataServer.loadProductosLikeSubmenuCategoria(11,"test"));
 	}
 
 
@@ -440,14 +638,24 @@ public class DataServerTest {
 		Mockito.when(dataServer.loadProductosDetalle(11)).thenReturn(productos);
 		assertEquals(productos, dataServer.loadProductosDetalle(11));
 	}
-	/*
+	
 	@Test
 	public final void testLoadscmenuinformationFomScmenu() throws Exception {
-		// TODO
-		throw new RuntimeException("not yet implemented");
+		List<ProductoTipoLike> productos =  new ArrayList<>();
+		productos.add( new ProductoTipoLike(1, "Danieli v1", "Danieli", "Coffee Bar", "/resource/images/ver_img.png", "40%", "Av. 4 Esquinas 1540, Local 1, Strip Center el Milagro, IV Región", "", "", 3) );
+		productos.add( new ProductoTipoLike(2, "Danieli v1", "Danieli 2", "Coffee Bar", "/resource/images/ver_img.png", "25%", "Av. 4 Esquinas 1540, Local 1, Strip Center el Milagro, IV Región", "", "", 10) );
+		productos.add( new ProductoTipoLike(3, "Danieli v1", "Test 3", "Coffee Bar", "/resource/images/ver_img.png", "35%", "Av. 4 Esquinas 1540, Local 1, Strip Center el Milagro, IV Región", "", "", 30) );
+		productos.add( new ProductoTipoLike(4, "Danieli v1", "Prod xn", "Coffee Bar", "/resource/images/ver_img.png", "35%", "Av. 4 Esquinas 1540, Local 1, Strip Center el Milagro, IV Región", "", "", 100) );
+		Mockito.when(dataServer.loadProductosDetalle(11)).thenReturn(productos);
+		dataServer.loadProductosDetalle(11);
+		Mockito.verify(dataServer).loadProductosDetalle(11);
+		
+		assertEquals(productos, dataServer.loadProductosDetalle(11));
+		
+		
 	}
 
-	
+	/*
 
 	@Test
 	public final void testLoadCateProductosFromCategoria() throws Exception {

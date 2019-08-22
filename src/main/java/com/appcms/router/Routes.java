@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
@@ -42,11 +44,13 @@ import com.appcms.entity.CustomerReward;
 import com.appcms.entity.Information;
 import com.appcms.entity.LoginUser;
 import com.appcms.entity.ProductoTipoLike;
+import com.appcms.entity.Scinformacionsubmenu;
 import com.appcms.entity.Scmenu;
 import com.appcms.entity.Scotiauser;
 import com.appcms.entity.Scsubmenu;
 import com.appcms.entity.StockTicket;
 import com.appcms.entity.UserGusto;
+import com.appcms.entity.points.Points;
 import com.appcms.model.DataServer;
 import com.appcms.model.Emudata;
 import com.appcms.security.ErrorControllerExection;
@@ -172,8 +176,6 @@ public class Routes {
 
 		this.setHeaderx(mav);
 		return mav;
-
-//		return "error";
 	}
 
 	@GetMapping("/logout")
@@ -190,17 +192,9 @@ public class Routes {
 		return "redirect:/";
 	}
 
-	@RequestMapping(value = "/admin", method = RequestMethod.GET)
-	public ModelAndView admin(HttpServletRequest rq) {
-		
-		this.vi.addView("header");
-		this.vi.addView("admin");
-		ModelAndView mav = new ModelAndView(this.vi.render());
-		return mav;
-	}
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public ModelAndView home(HttpServletRequest rq) {
+	public ModelAndView home() {
 		// return new ModelAndView("redirect:/home");	
 		this.vi.addView("head");
 		this.vi.addView("index");
@@ -219,7 +213,7 @@ public class Routes {
 	@GetMapping("/categoria/{menu}/{submenu}")
 	public ModelAndView menuSubmenu(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu) throws UnsupportedEncodingException {
 		// ModelAndView mav = new ModelAndView("categorias");
-		Scmenu scmenu = dtserver.loadScmenuByName( menu);
+		Scmenu scmenu = dtserver.loadScmenuByName( menu).getBody();
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 
 		try {
@@ -246,19 +240,21 @@ public class Routes {
 		switch (scmenuurlsub.getTipo()) {
 		case 1: // information
 			System.out.println("Tipo 1:" + scmenuurlsub.getId()); // TIPO INFORMACION
-			scmenuurlsub.informationsubmenu = dtserver.loadInformatioSub(scmenuurlsub.getId());// Emudata.getInformatiotest();
+			scmenuurlsub.informationsubmenu = dtserver.loadInformatioSub(scmenuurlsub.getId()).getBody();// Emudata.getInformatiotest();
 			break;
 		case 2:
 			System.out.println("Tipo 2:" + scmenuurlsub.getId()); // TIPO PRODUCTO CON LIKE
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId());// Emudata.getProductosLikeTest();
+			
+			ResponseEntity<List<ProductoTipoLike>> retorno=dtserver.loadProductosLike(scmenuurlsub.getId());
+			scmenuurlsub.productosLikeLista = retorno.getBody();// Emudata.getProductosLikeTest();
 			break;
 		case 3:
 			System.out.println("Tipo 3"); // TIPO CON CUPON
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId());// Emudata.getProductosiNFOTest();
+			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId()).getBody();// Emudata.getProductosiNFOTest();
 			break;
 		case 4:
 			System.out.println("Tipo 4"); // TIPO PRODUCTO E-COMERCE
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId());// Emudata.getProductoseEcomerceTest();
+			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId()).getBody();// Emudata.getProductoseEcomerceTest();
 			System.out.println("prodconstock:" + scmenuurlsub.productosLikeLista.toString());
 			break;
 		case 5:
@@ -275,7 +271,7 @@ public class Routes {
 			break;
 		case 8:
 			System.out.println("Tipo 8"); // TIPO CANJE DESCUENTOS
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId());// Emudata.getProductosLikeTest();
+			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId()).getBody();// Emudata.getProductosLikeTest();
 			//scmenuurlsub.tagsProductos = dtserver.loadTagsProductos(rq);// Emudata.getProductosLikeTest();
 			//System.out.println("<<<<< " + scmenuurlsub.tagsProductos + " >>>>>");
 			break;
@@ -312,7 +308,7 @@ public class Routes {
 		ModelAndView mav = new ModelAndView(this.vi.render());
 
 		
-		Scmenu scmenu = dtserver.loadScmenuByName(menu);
+		Scmenu scmenu = dtserver.loadScmenuByName(menu).getBody();
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 
 		try {
@@ -398,7 +394,7 @@ public class Routes {
 		ModelAndView mav = new ModelAndView(this.vi.render());
 
 		
-		Scmenu scmenu = dtserver.loadScmenuByName(menu);
+		Scmenu scmenu = dtserver.loadScmenuByName(menu).getBody();
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 		
 		try {
@@ -457,7 +453,7 @@ public class Routes {
 		this.vi.addView("FOOTER");
 		ModelAndView mav = new ModelAndView(this.vi.render());
 
-		Scmenu scmenu = dtserver.loadScmenuByName(menu);
+		Scmenu scmenu = dtserver.loadScmenuByName(menu).getBody();
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 		
 		
@@ -518,13 +514,14 @@ public class Routes {
 					//SETEO DE PUNTOS
 					int totalPuntos = detalleProducto.getPrecio() * producto.getCantidad();
 					Scotiauser usuario = credentialUser.getScotiauser();
-
-					usuario.setPoints(dtserver.loadUserPoints().getAvailablePoints());
+					
+					Points puntos=dtserver.loadUserPoints();
+					usuario.setPoints(puntos.getAvailablePoints());
 
 
 					StockTicket stockticket = dtserver.loadStockTicket(detalleProducto.getNombre());
-					System.out.println("activosticket: " + stockticket.toString());
-					System.out.println("puntos canje: " + totalPuntos + "puntos disponibles: " + usuario.getPoints());
+					System.out.println("activosticket: " + detalleProducto.getNombre());
+					//System.out.println("puntos canje: " + totalPuntos + "puntos disponibles: " + usuario.getPoints());
 
 					int stockProducto = stockticket.getActivo();
 
@@ -577,13 +574,8 @@ public class Routes {
 			} // dtserver.loadProductosDetalle(scmenuurlsub.getId());//
 			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto());// Emudata.getProductoSearchById(producto.getIdProducto());//dtserver.loadProductosDetalle(scmenuurlsub.getId());//Emudata.getProductoSearchById(producto.getIdProducto());//
 			mav.addObject("producto", producto);
-
-			System.out.println(scmenuurlsub.productosLikeLista.get(0).getEquipesos());
-			System.out.println(scmenuurlsub.productosLikeLista.get(0).getPrecio());
-			
 			break;
 		case 6: // TIPO CANJE CON CATEGORIAS PARA FORMULARIO
-			System.out.println("canje T6");
 			if (producto.getActionx().equalsIgnoreCase("finish")) {
 				return new ModelAndView("redirect:/404");
 //				mav.addObject("canjeExito", true);
@@ -591,10 +583,10 @@ public class Routes {
 //				return new ModelAndView("redirect:/404");
 				producto.setActionx("finish");
 			}
+			
+			System.out.println("CCCCCCCCCCCCC:"+producto.getIdProducto());
 
 			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto());// Emudata.getProductoSearchById(producto.getIdProducto());
-			System.out.println(scmenuurlsub.productosLikeLista.get(0).getEquipesos());
-			System.out.println(scmenuurlsub.productosLikeLista.get(0).getPrecio());
 			mav.addObject("producto", producto);
 			break;
 		case 7: // TIPO CANJE CASHBACK
@@ -621,8 +613,7 @@ public class Routes {
 
 	
 	@GetMapping("/user/{menu}/{submenu}")
-	public ModelAndView menuUser(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu,
-			HttpServletRequest rq, @RequestHeader(value = "referer", required = false) final String referer)
+	public ModelAndView menuUser(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu, @RequestHeader(value = "referer", required = false) final String referer)
 			throws UnsupportedEncodingException {
 		
 		CredencialesEntity credentialUser = new CredencialesEntity();
@@ -640,7 +631,7 @@ public class Routes {
 		
 		ModelAndView mav = new ModelAndView(this.vi.render());
 
-		Scmenu scmenu = dtserver.loadScmenuByName(menu);
+		Scmenu scmenu = dtserver.loadScmenuByName(menu).getBody();
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 		
 		try {
@@ -710,7 +701,11 @@ public class Routes {
 			break;
 		case 24: // information
 			System.out.println("Tipo 24"); // TIPO TRANSFERIR
-			scmenuurlsub.informationsubmenu = Emudata.getInformatiotest();
+			
+			Scinformacionsubmenu information = new Scinformacionsubmenu(1,1,"Restorado8",1,"/resource/images/woman-computer.jpg","Obtén desde un","15% dcto. en restaurantes","Reserva ahora y obtén desde un 15% de dcto. en el total de tu cuenta","#","Reserva acá","[\"Restorando les ofrece a miles de comensales la posibilidad de descubrir miles de lugares para salir a comer, acceder a ofertas y beneficios en tiempo real y asegurar su mesa sin tener que esperar para sentarse.\",\"Restorando trabaja junto con los restaurantes para mejorar las experiencias gastron\\u00f3micas de los comensales en latinoam\\u00e9rica.\",\"XXC\",\"t2\"]","2018-12-11 18:15:04","2019-02-13 18:03:57",1);
+			scmenuurlsub.informationsubmenu =information;
+			
+			//scmenuurlsub.informationsubmenu = Emudata.getInformatiotest();
 			this.vi.addView("transfiere-scotiapesos");
 			this.vi.addView("FOOTER");
 			mav = new ModelAndView(this.vi.render());
@@ -719,14 +714,6 @@ public class Routes {
 			System.out.println("Seccion fuera de menu");
 			return new ModelAndView("redirect:/404");
 		}
-
-//		mav.addObject("menuurl", scmenuurl);
-//		mav.addObject("submenuurl", scmenuurlsub);
-//
-//		this.setHeaderx(mav,rq);
-//
-//		return mav;
-
 		mav.addObject("menuurl", scmenu);
 		mav.addObject("submenuurl", scmenuurlsub);
 
@@ -746,9 +733,7 @@ public class Routes {
 		ModelAndView mav = new ModelAndView(this.vi.render());
 
 		Information informationhtml = new Information();
-
 		informationhtml = dtserver.loadInformationByName(nombreInformation);
-		System.out.println("inforxn" + informationhtml);
 		if (informationhtml == null) {
 			return new ModelAndView("redirect:/404");
 		}
@@ -762,7 +747,7 @@ public class Routes {
 	}
 
 	@PostMapping("/user/login")
-	public ModelAndView loginuser(@ModelAttribute("loginForm") LoginUser loginForm, HttpServletRequest rq) {
+	public ModelAndView loginuser(@ModelAttribute("loginForm") LoginUser loginForm) {
 //		ModelAndView mav = new ModelAndView("user");
 		this.vi.addView("HEAD");
 //		vi.addView("INFORMATION");
@@ -788,8 +773,7 @@ public class Routes {
 	}
 
 	@GetMapping("/cupon/get/{id_reward}")
-	public ModelAndView getCuponByRew(@PathVariable("id_reward") int id_reward, HttpServletRequest rq,
-			@RequestHeader(value = "referer", required = false) final String referer)
+	public ModelAndView getCuponByRew(@PathVariable("id_reward") int id_reward,@RequestHeader(value = "referer", required = false) final String referer)
 			throws UnsupportedEncodingException {
 //		ModelAndView mav = new ModelAndView("user");
 
@@ -816,8 +800,7 @@ public class Routes {
 	}
 
 	@GetMapping("/getcupon/{id_rew}")
-	public Object getFile(@PathVariable("id_rew") int id_rew, HttpServletRequest rq,
-			@RequestHeader(value = "referer", required = false) final String referer) {
+	public Object getFile(@PathVariable("id_rew") int id_rew,@RequestHeader(value = "referer", required = false) final String referer) {
 		CredencialesEntity credentialUser = new CredencialesEntity();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
@@ -826,19 +809,21 @@ public class Routes {
 		} else {
 			return new ModelAndView("redirect: /?login");
 		}
+		
+		System.out.println("DDDDDDDDDDDDDDDDD"+credentialUser.getScotiauser().getId_cliente());
 		byte[] response = dtserver.loadCuponAsPdf(credentialUser.getScotiauser().getId_cliente(), id_rew);
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).body(new ByteArrayResource(response));
 	}
 	
 	@PostMapping("/gustos/actualizar")
-	public ModelAndView actualizarGustos(@RequestParam(value = "gusto", required = false) String[] gustos) {
+	public boolean actualizarGustos(@RequestParam(value = "gusto", required = false) String[] gustos) {
 		System.out.println("Se llega al front");
 		if (gustos == null) {
 			gustos = new String[0];
 		}
 		System.out.println("consultando al dtserver");
 		String success = dtserver.saveCustomerGustos(gustos);
-		return null;
+		return true;
 	}
 
 }
