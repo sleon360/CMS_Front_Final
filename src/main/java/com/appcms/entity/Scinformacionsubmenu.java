@@ -165,9 +165,6 @@ public class Scinformacionsubmenu {
 		this.condicioneslista.add(condiciones);
 	}
 	
-	public void addCondicioneslista( List<String> xcondiciones) {
-		this.condicioneslista=xcondiciones;
-	}
 	
 	
 	

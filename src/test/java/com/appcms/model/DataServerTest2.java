@@ -169,7 +169,7 @@ public class DataServerTest2 {
         
         
         
-        Scinformacionsubmenu scinformacionsubmenu=new Scinformacionsubmenu();
+        Scinformacionsubmenu scinformacionsubmenu=mock(Scinformacionsubmenu.class);
 		scinformacionsubmenu.setImagen_logo("/img/imagen.jpg");
 		scinformacionsubmenu.setId(1);
 		scinformacionsubmenu.setId_submenu(500);
@@ -187,13 +187,24 @@ public class DataServerTest2 {
 		scinformacionsubmenu.setFecha_modificacion("01-02-2019");
 		scinformacionsubmenu.setEstado(1);
         
+		//scinformacionsubmenu.get
 		
-		
-		Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/cmsrest/get/informationsubmenu/1", HttpMethod.GET, httpEntity,Scinformacionsubmenu.class)).thenReturn(new ResponseEntity<Scinformacionsubmenu>(scinformacionsubmenu, HttpStatus.OK));
+		//Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/cmsrest/get/informationsubmenu/1", HttpMethod.GET, httpEntity,Scinformacionsubmenu.class)).thenReturn(new ResponseEntity<Scinformacionsubmenu>(scinformacionsubmenu, HttpStatus.OK));
 		//Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/cmsrest/get/informationsubmenu/2", HttpMethod.GET, httpEntity,Scinformacionsubmenu.class)).thenReturn(new ResponseEntity<Scinformacionsubmenu>(scinformacionsubmenu, HttpStatus.OK));
-    	Mockito.when(dataServer.loadInformatioSub(1)).thenReturn(new ResponseEntity<Scinformacionsubmenu>(scinformacionsubmenu,HttpStatus.OK));
-    	Mockito.when(dataServer.loadAllScmenu()).thenReturn(new ResponseEntity<List<Scmenu>>(scmenulist,HttpStatus.OK));
-        Assert.assertNotNull(dataServer.loadInformatioSub(1).getBody());
+    	//Mockito.when(dataServer.loadInformatioSub(1)).thenReturn(new ResponseEntity<Scinformacionsubmenu>(scinformacionsubmenu,HttpStatus.OK));
+    	//Mockito.when(dataServer.loadAllScmenu()).thenReturn(new ResponseEntity<List<Scmenu>>(scmenulist,HttpStatus.OK));
+        //Assert.assertNotNull(dataServer.loadInformatioSub(1).getBody());
+		
+		
+		List<ProductoTipoLike> productosLike =  new ArrayList<>();
+		productosLike.add( new ProductoTipoLike(1, "Danieli v1", "Danieli", "Coffee Bar", "/resource/images/ver_img.png", "40%", "Av. 4 Esquinas 1540, Local 1, Strip Center el Milagro, IV Región", "", "", 3) );
+		productosLike.add( new ProductoTipoLike(2, "Danieli v1", "Danieli 2", "Coffee Bar", "/resource/images/ver_img.png", "25%", "Av. 4 Esquinas 1540, Local 1, Strip Center el Milagro, IV Región", "", "", 10) );
+		productosLike.add( new ProductoTipoLike(3, "Danieli v1", "Test 3", "Coffee Bar", "/resource/images/ver_img.png", "35%", "Av. 4 Esquinas 1540, Local 1, Strip Center el Milagro, IV Región", "", "", 30) );
+		productosLike.add( new ProductoTipoLike(4, "Danieli v1", "Prod xn", "Coffee Bar", "/resource/images/ver_img.png", "35%", "Av. 4 Esquinas 1540, Local 1, Strip Center el Milagro, IV Región", "", "", 100) );
+		Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/cmsrest/get/productosSubmenu/1", HttpMethod.GET, httpEntity,Scmenu.class)).thenReturn(new ResponseEntity<Scmenu>(scmenu, HttpStatus.OK));
+		Mockito.when(dataServer.loadProductosLike(1)).thenReturn(new ResponseEntity<List<ProductoTipoLike>>(productosLike,HttpStatus.OK));
+		
+		
       
 	}
 

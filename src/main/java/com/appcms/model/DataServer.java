@@ -3,13 +3,10 @@ package com.appcms.model;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-
-import org.codehaus.groovy.runtime.ArrayUtil;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -45,7 +42,6 @@ import com.appcms.entity.UserGusto;
 import com.appcms.entity.points.ExpiringPoints;
 import com.appcms.entity.points.Points;
 import com.cms.views.ViewApp;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
@@ -110,15 +106,12 @@ public class DataServer {
 			ResponseEntity<Scinformacionsubmenu> information = restTemplate.exchange(url, HttpMethod.GET, httpEntity,Scinformacionsubmenu.class); 
 			String json = information.getBody().getJson_condiciones();
 			JsonArray jsonObject = new JsonParser().parse(json).getAsJsonArray();
-			ObjectMapper mapper = new ObjectMapper(); 
+
 			JsonArray arr = jsonObject.getAsJsonArray();
-			
-			
-
-			
-			List<>list Arrays.asList(mapper.readValue(json, String[].class));
-
-			information.getBody().addCondicioneslista(list);
+			for (int i = 0; i < arr.size(); i++) {
+				String post_id = arr.get(i).getAsString();
+				information.getBody().addCondicioneslista(post_id);
+			}
 			return information;
 
 	}
