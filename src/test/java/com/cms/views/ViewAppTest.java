@@ -26,6 +26,8 @@ import com.appcms.front.FronendApplication;
 
 
 @RunWith(SpringRunner.class)
+@AutoConfigureMockMvc
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = FronendApplication.class)
 public class ViewAppTest {
 
 	private ViewApp vi;

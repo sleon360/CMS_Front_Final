@@ -1,32 +1,18 @@
 package com.appcms.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.eq;
+
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Matchers;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -36,66 +22,42 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.mock.web.MockHttpSession;
-import org.springframework.security.authentication.AuthenticationTrustResolver;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.HtmlUtils;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
-
 import com.appcms.entity.Banner;
-import com.appcms.entity.CanjeProducto;
-import com.appcms.entity.Categoria;
 import com.appcms.entity.CredencialesEntity;
 import com.appcms.entity.CustomerReward;
 import com.appcms.entity.Information;
-import com.appcms.entity.LoginUser;
 import com.appcms.entity.ProductoCategoria;
 import com.appcms.entity.ProductoTipoLike;
-import com.appcms.entity.ResourceEntity;
 import com.appcms.entity.Scinformacionsubmenu;
 import com.appcms.entity.Scmenu;
 import com.appcms.entity.Scotiauser;
 import com.appcms.entity.Scsubmenu;
 import com.appcms.entity.StockTicket;
-import com.appcms.entity.TarjetaCliente;
-import com.appcms.entity.Tarjetas;
 import com.appcms.entity.UserCartola;
 import com.appcms.entity.UserCartolaMovimiento;
 import com.appcms.entity.UserCupon;
 import com.appcms.entity.UserGusto;
 import com.appcms.entity.points.Points;
 import com.appcms.front.FronendApplication;
-import com.appcms.router.ResourceRoutes;
 import com.appcms.router.Routes;
-import com.appcms.services.GetRestService;
-import com.cms.views.ViewApp;
 
 
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = FronendApplication.class)
-public class DataServerTest2 {
+public class ServiceServerTest {
 	
 	@Autowired
 	private DataServer dataServer;
@@ -365,12 +327,12 @@ public class DataServerTest2 {
      	Mockito.when(dataServer.loadUserPoints()).thenReturn(new ResponseEntity<Points>(points,HttpStatus.OK));
      	Assert.assertNotNull(dataServer.testLogin("19","123"));
      	
-     	Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/v1/customer/points", HttpMethod.POST, httpEntityLogin,Points.class)).thenReturn(new ResponseEntity<Points>(points,HttpStatus.OK));
+     	Mockito.when(restTemplate.exchange("http://142.93.62.102:9080v1/customer/1/cupones", HttpMethod.POST, httpEntityLogin,new ParameterizedTypeReference<List<UserCupon>>() {})).thenReturn(new ResponseEntity<List<UserCupon>>(HttpStatus.OK));
      	Mockito.when(dataServer.loadCupones(1)).thenReturn(new ResponseEntity<List<UserCupon>>(HttpStatus.OK));
      	Assert.assertNotNull(dataServer.loadCupones(1));
      	
-     	
-     	Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/v1/customer/points", HttpMethod.POST, httpEntityLogin,Points.class)).thenReturn(new ResponseEntity<Points>(points,HttpStatus.OK));
+     	byte[] pdffile= { (byte)0xe0, 0x4f, (byte)0xd0,0x20, (byte)0xea, 0x3a, 0x69, 0x10, (byte)0xa2, (byte)0xd8, 0x08, 0x00, 0x2b,0x30, 0x30, (byte)0x9d };;
+     	Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/v1/customer/1/cupones/1/getAsPdf", HttpMethod.POST, httpEntityLogin,byte[].class)).thenReturn(new ResponseEntity<byte[]>(pdffile,HttpStatus.OK));
      	Mockito.when(dataServer.loadCuponAsPdf(1, 1)).thenReturn(new ResponseEntity<byte[]>(HttpStatus.OK));
      	Assert.assertNotNull(dataServer.loadCupones(1));
      	
