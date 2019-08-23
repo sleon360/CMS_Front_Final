@@ -99,6 +99,7 @@ public class Routes {
 		} else {
 			mav.addObject("usuario", Emudata.getUsusarioOff());
 		}
+		
 		// mav.addObject("usuario",Emudata.getUsusarioOff());
 	}
 

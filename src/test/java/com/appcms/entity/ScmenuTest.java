@@ -26,7 +26,17 @@ public class ScmenuTest {
 
 	@Before
 	public void setUp() throws Exception {
+		
+		List<Scsubmenu> submenues= new ArrayList<Scsubmenu>();;
+		submenues.add(new Scsubmenu("restorando",1,"Restorando","/restorando","#008080","hover-green-bg","#008080",1,"/resource/images/dish.png","/resource/sections/gourmet.jpg","","Reserva ahora y obtén desde un 15% de dcto. en el total de tu cuenta","2018-12-11 18:15:04","2019-02-13 20:39:54",1));
+		submenues.add(new Scsubmenu("rutapub",2,"Ruta Gourmet","/rutapub","#d33195","hover-pink-bg","#d33195",2,"/resource/images/chef.png","/resource/sections/gourmet.jpg","","Reserva ahora y obtén desde un 15% de dcto. en el total de tu cuenta","2018-12-11 18:15:04","2019-02-13 20:39:54",1));
+		submenues.add(new Scsubmenu("ecomerce",3,"Ruta Pub","/ecomerce","#039fd3","hover-blue-bg","#039fd3",2,"/resource/images/beer.png","/resource/sections/pub.jpg","","Reserva ahora y obtén desde un 15% de dcto. en el total de tu cuenta","2018-12-11 18:15:04","2019-02-13 20:39:54",1));
+		
+		scmenu=new Scmenu("ayuda","Ayuda", "/categoria/ayuda", submenues,true);
+		scmenu=new Scmenu("home",1, "Home", "#fff", 1, "/index", "2019-01-01", "2019-01-01", 1,null);
+		
 		scmenu=new Scmenu();
+		
 		scmenu.setColor("#ffffff");
 		scmenu.setEstado(1);
 		scmenu.setFecha_creacion("01-01-2019");
@@ -35,10 +45,8 @@ public class ScmenuTest {
 		scmenu.setLink("http://google.cl");
 		scmenu.setNombre("NOMBRE");
 		scmenu.setStrIndex("1111");
-		List<Scsubmenu> submenues= new ArrayList<Scsubmenu>();;
-		submenues.add(new Scsubmenu("restorando",1,"Restorando","/restorando","#008080","hover-green-bg","#008080",1,"/resource/images/dish.png","/resource/sections/gourmet.jpg","","Reserva ahora y obtén desde un 15% de dcto. en el total de tu cuenta","2018-12-11 18:15:04","2019-02-13 20:39:54",1));
-		submenues.add(new Scsubmenu("rutapub",2,"Ruta Gourmet","/rutapub","#d33195","hover-pink-bg","#d33195",2,"/resource/images/chef.png","/resource/sections/gourmet.jpg","","Reserva ahora y obtén desde un 15% de dcto. en el total de tu cuenta","2018-12-11 18:15:04","2019-02-13 20:39:54",1));
-		submenues.add(new Scsubmenu("ecomerce",3,"Ruta Pub","/ecomerce","#039fd3","hover-blue-bg","#039fd3",2,"/resource/images/beer.png","/resource/sections/pub.jpg","","Reserva ahora y obtén desde un 15% de dcto. en el total de tu cuenta","2018-12-11 18:15:04","2019-02-13 20:39:54",1));
+		
+		
 		scmenu.setSubmenues(submenues);
 		scmenu.setTipo(1);
 		scmenu.setUserElement(true);

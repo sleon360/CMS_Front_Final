@@ -1,6 +1,7 @@
 package com.appcms.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -174,8 +175,8 @@ public class DataServerTest {
 	@Test
 	public final void testGetApiUrl() throws Exception {
 		String apiURL="http://testapi";
-		///Mockito.when(dataServer.getApiUrl()).thenReturn(apiURL);
-    	///assertNotNull(dataServer.getApiUrl());
+		Mockito.when(dataServer.getApiUrl()).thenReturn(apiURL);
+		Assert.assertNotNull(dataServer.getApiUrl());
     	
     	//ModelAndView httpResponsefalse = routes.home(request);;
     	//assertNotNull((ModelAndView) httpResponsefalse);
@@ -298,7 +299,7 @@ public class DataServerTest {
 		tarjetasCliente.add(tarjeta);
 		tj.setTarjetasCliente(tarjetasCliente);
 		Mockito.when(dataServer.loadUserTarjetas()).thenReturn(tj);
-		
+		Assert.assertNotNull(dataServer.loadUserTarjetas());
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", dataServer.getToken());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);

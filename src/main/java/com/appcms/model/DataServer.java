@@ -155,9 +155,7 @@ public class DataServer {
 
 		String url = apiUrl + "/get/detalleProducto/" + idproducto;
 
-		ResponseEntity<ProductoTipoLike> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
-				new ParameterizedTypeReference<ProductoTipoLike>() {
-				});
+		ResponseEntity<ProductoTipoLike> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,new ParameterizedTypeReference<ProductoTipoLike>() {});
 		ProductoTipoLike producto = xresponse.getBody();
 		List<FormatoDetalle> formatosDetalles = producto.getFormatosDetalles();
 
@@ -175,13 +173,9 @@ public class DataServer {
 		}
 		producto.setDetalles(detalles);
 		producto.setDirecciones(direcciones);
-		if (xresponse.getStatusCodeValue() == 200) {
-			ArrayList<ProductoTipoLike> productoList = new ArrayList<>();
-			productoList.add(producto);
-			return productoList;
-		} else {
-			return null;
-		}
+		ArrayList<ProductoTipoLike> productoList = new ArrayList<>();
+		productoList.add(producto);
+		return productoList;
 
 	}
 
@@ -293,13 +287,8 @@ public class DataServer {
 		xparam.add("userPassword", pass);
 
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(xparam, headers);
+		return restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
 
-		try {
-			return restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
-				//return xresponse.getHeaders().get("Authorization").toString().replace("Bearer ", "");
-		} catch (Exception ex) {
-			return null;
-		}
 	}
 
 	public ResponseEntity<UserCartola> loadUserCartola() {
@@ -420,8 +409,6 @@ public class DataServer {
 	}
 
 	public Tarjetas loadUserTarjetas() {
-		// Se coloca el try acá arriba porque en caso de un usuario no autenticado, no
-		// se deben mostrar tarjetas
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
@@ -429,8 +416,7 @@ public class DataServer {
 			HttpHeaders httpHeaders = new HttpHeaders();
 			httpHeaders.set("Authorization", TOKENONE);
 			httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
-			ResponseEntity<Tarjetas> tarjetasResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/cards",
-					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Tarjetas.class);
+			ResponseEntity<Tarjetas> tarjetasResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/cards",HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Tarjetas.class);
 			return tarjetasResponseEntity.getBody();
 		} catch (Exception e) {
 			Tarjetas tarjetas = new Tarjetas();
@@ -480,19 +466,12 @@ public class DataServer {
 		
 	}
 
-	public List<TagProducto> loadTagsProductos() {
+	public ResponseEntity<List<TagProducto>> loadTagsProductos() {
 		
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.set("Authorization", TOKENONE);
-		try {
-			ResponseEntity<List<TagProducto>> tagsProductosResponseEntity = restTemplate.exchange(
-					apiUrl + "/tags_productos/getTop10", HttpMethod.GET, new HttpEntity<Object>(httpHeaders),
-					new ParameterizedTypeReference<List<TagProducto>>() {
-					});
-			return tagsProductosResponseEntity.getBody();
-		} catch (Exception e) {
-			return new ArrayList<>();
-		}
+		return restTemplate.exchange(apiUrl + "/tags_productos/getTop10", HttpMethod.GET, new HttpEntity<Object>(httpHeaders),new ParameterizedTypeReference<List<TagProducto>>() {});
+
 	}
 
 }

@@ -22,7 +22,11 @@ public class RestTokenInterceptor extends HandlerInterceptorAdapter {
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object object) throws Exception {
-		return RestAuthentication.RestAutenticationLayerOne(request, response, apiUrl);
+		RestAuthentication resAuth=new RestAuthentication();
+		if(resAuth.RestAutenticationLayerOne(request, response, apiUrl).getBody()=="true")
+		return true;
+		else
+			return false;
 	}
 
 	@Override

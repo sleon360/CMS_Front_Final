@@ -1,23 +1,36 @@
 package com.appcms.security;
 
 import java.io.IOException;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.NestedServletException;
 
+import com.appcms.entity.Scmenu;
+
 @Component
 public class RestAuthentication {
 
 	private static String TOKENONE;
 	private static String TOKENTWO;
-
+	private RestTemplate restTemplate = new RestTemplate();
+	
+	
+	
+	
+	public void setrestTemplate(RestTemplate xrestTemplate) {
+		this.restTemplate=xrestTemplate;
+	}
+	
 	public RestAuthentication() {
 
 	}
@@ -38,7 +51,7 @@ public class RestAuthentication {
 		TOKENTWO = tOKENTWO;
 	}
 
-	static boolean RestAutenticationLayerOne(HttpServletRequest rq, HttpServletResponse response, String apiUrl)
+	public ResponseEntity<String> RestAutenticationLayerOne(HttpServletRequest rq, HttpServletResponse response, String apiUrl)
 			throws NestedServletException, IOException {
 		// RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 		try {
@@ -46,33 +59,21 @@ public class RestAuthentication {
 				HttpHeaders headers = new HttpHeaders();
 				headers.setContentType(MediaType.APPLICATION_JSON);
 				HttpEntity<String> entity = new HttpEntity<String>("{\"username\":\"spring\",\"password\":\"secret\"}",headers);
-				RestTemplate restTemplate = new RestTemplate();
-				ResponseEntity<String> xresponse = restTemplate.postForEntity(apiUrl + "/login", entity, String.class);
-
-				System.out.println(xresponse.getHeaders());
+				ResponseEntity<String> xresponse = this.restTemplate.postForEntity(apiUrl + "/login", entity, String.class);
 				String result = xresponse.getBody();
-				System.out.println(" XXXXXBBBBB " + xresponse.getHeaders().getFirst("Authorization") + " - " + result);
 				if (xresponse.getStatusCodeValue() == 200) {
 					setTOKENONE(xresponse.getHeaders().getFirst("Authorization").replace("Bearer ", ""));
 					rq.getSession().setAttribute("TOKENONE",xresponse.getHeaders().getFirst("Authorization").replace("Bearer ", ""));
-					return true;
+					return new ResponseEntity<String>("true",HttpStatus.OK);
 				} else {
-
-					// redirectStrategy.sendRedirect(rq, response, "/errores");
-					// return false;
-					return true;
+					return new ResponseEntity<String>("true",HttpStatus.OK);
 				}
 			}
 		} catch (Exception ex) {
-			System.out.println("Excepción: " + ex.getMessage());
-			// redirectStrategy.sendRedirect(rq, response, "/errores");
-			// return false;
-			return true;
+			return new ResponseEntity<String>("true",HttpStatus.OK);
 		}
 
-		// redirectStrategy.sendRedirect(rq, response, "/errores");
-		// return true;
-		return true;
+		return new ResponseEntity<String>("true",HttpStatus.OK);
 
 	}
 	

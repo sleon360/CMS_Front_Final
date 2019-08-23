@@ -45,6 +45,7 @@ import com.appcms.entity.Scmenu;
 import com.appcms.entity.Scotiauser;
 import com.appcms.entity.Scsubmenu;
 import com.appcms.entity.StockTicket;
+import com.appcms.entity.TagProducto;
 import com.appcms.entity.UserCartola;
 import com.appcms.entity.UserCartolaMovimiento;
 import com.appcms.entity.UserCupon;
@@ -372,7 +373,11 @@ public class ServiceServerTest {
      	Assert.assertNotNull(dataServer.saveCustomerGustos(gustos));
      	
      	
+     	Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/tags_productos/getTop10", HttpMethod.POST, httpEntityLogin, new ParameterizedTypeReference<List<UserGusto>>() {})).thenReturn(new ResponseEntity<List<UserGusto>>(catelist,HttpStatus.OK));
+     	Mockito.when(dataServer.loadTagsProductos()).thenReturn(new ResponseEntity<List<TagProducto>>(HttpStatus.OK));
+     	Assert.assertNotNull(dataServer.loadTagsProductos());
      	
+ 
 		//ResponseEntity<List<Scinformacionsubmenu>> loadscmenuinformationFomScmenu(int idscbmenu)
 		//String url = apiUrl + "/get/informationsubmenuList/" + idscbmenu;
 		
