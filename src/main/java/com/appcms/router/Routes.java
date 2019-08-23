@@ -81,7 +81,7 @@ public class Routes {
 	
 
 	public void setHeaderx(ModelAndView mav) {
-		mav.addObject("menuesHeader", dtserver.loadAllScmenu());
+		mav.addObject("menuesHeader", dtserver.loadAllScmenu().getBody());
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
 		System.out.println("esta login: " + resolver.isAnonymous(auth));
@@ -201,10 +201,10 @@ public class Routes {
 		this.vi.addView("index");
 		this.vi.addView("footer");
 		ModelAndView mav = new ModelAndView(this.vi.render());
-		mav.addObject("banners", dtserver.loadBannerAll(0)); // Emudata.getBanners()
-		mav.addObject("banners_resp", dtserver.loadBannerAll(1));
+		mav.addObject("banners", dtserver.loadBannerAll(0).getBody()); // Emudata.getBanners()
+		mav.addObject("banners_resp", dtserver.loadBannerAll(1).getBody());
 
-		mav.addObject("descuentos_destacados", dtserver.loadscmenuinformationFomScmenu(10));
+		mav.addObject("descuentos_destacados", dtserver.loadscmenuinformationFomScmenu(10).getBody());
 
 		this.setHeaderx(mav);
 
@@ -514,11 +514,11 @@ public class Routes {
 					int totalPuntos = detalleProducto.getPrecio() * producto.getCantidad();
 					Scotiauser usuario = credentialUser.getScotiauser();
 					
-					Points puntos=dtserver.loadUserPoints();
+					Points puntos=dtserver.loadUserPoints().getBody();
 					usuario.setPoints(puntos.getAvailablePoints());
 
 
-					StockTicket stockticket = dtserver.loadStockTicket(detalleProducto.getNombre());
+					StockTicket stockticket = dtserver.loadStockTicket(detalleProducto.getNombre()).getBody();
 					System.out.println("activosticket: " + detalleProducto.getNombre());
 					//System.out.println("puntos canje: " + totalPuntos + "puntos disponibles: " + usuario.getPoints());
 
@@ -660,7 +660,7 @@ public class Routes {
 			this.vi.addView("MI-CARTOLA");
 			this.vi.addView("FOOTER");
 			mav = new ModelAndView(this.vi.render());
-			mav.addObject("cartola", dtserver.loadUserCartola());
+			mav.addObject("cartola", dtserver.loadUserCartola().getBody());
 			break;
 		case 21: // information
 			System.out.println("Tipo 21"); // TIPO INSCRIPCCION
@@ -684,8 +684,8 @@ public class Routes {
 			this.vi.addView("mis-preferencias");
 			this.vi.addView("FOOTER");
 			mav = new ModelAndView(this.vi.render());
-			List<UserGusto> gustos = dtserver.loadGustos();
-			List<UserGusto> gustosCliente = dtserver.loadCustomerGustos();
+			List<UserGusto> gustos = dtserver.loadGustos().getBody();
+			List<UserGusto> gustosCliente = dtserver.loadCustomerGustos().getBody();
 			for (int i = 0; i < gustos.size(); i++) {
 				UserGusto gusto = gustos.get(i);
 				for (int j = 0; j < gustosCliente.size(); j++) {
@@ -752,11 +752,11 @@ public class Routes {
 		ModelAndView mav = new ModelAndView(this.vi.render());
 		ResponseEntity<String> resultlogin = dtserver.testLogin(loginForm.getRut(), loginForm.getPass());
 
-		if (resultlogin.getStatusCode().OK==HttpStatus.OK) { // token de sesion devuelto
+		//if (resultlogin.getStatusCode().OK==HttpStatus.OK) { // token de sesion devuelto
 
-		} else {
+		//} else {
 
-		}
+		//}
 		this.setHeaderx(mav);
 
 		return mav;
@@ -800,7 +800,7 @@ public class Routes {
 		}
 		
 		System.out.println("DDDDDDDDDDDDDDDDD"+credentialUser.getScotiauser().getId_cliente());
-		byte[] response = dtserver.loadCuponAsPdf(credentialUser.getScotiauser().getId_cliente(), id_rew);
+		byte[] response = dtserver.loadCuponAsPdf(credentialUser.getScotiauser().getId_cliente(), id_rew).getBody();
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).body(new ByteArrayResource(response));
 	}
 	
@@ -811,7 +811,7 @@ public class Routes {
 			gustos = new String[0];
 		}
 		System.out.println("consultando al dtserver");
-		String success = dtserver.saveCustomerGustos(gustos);
+		String success = dtserver.saveCustomerGustos(gustos).getBody();
 		return true;
 	}
 

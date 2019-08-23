@@ -80,6 +80,9 @@ import com.appcms.entity.Scsubmenu;
 import com.appcms.entity.StockTicket;
 import com.appcms.entity.TarjetaCliente;
 import com.appcms.entity.Tarjetas;
+import com.appcms.entity.UserCartola;
+import com.appcms.entity.UserCartolaMovimiento;
+import com.appcms.entity.UserCupon;
 import com.appcms.entity.UserGusto;
 import com.appcms.entity.points.Points;
 import com.appcms.front.FronendApplication;
@@ -122,7 +125,18 @@ public class DataServerTest2 {
 		 // routes.setViewApp(vi);
 		 // Mockito.when(vi.loadView("head")).thenReturn("TEST");
 
+		 SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+		  Authentication authentication = Mockito.mock(Authentication.class);
+		  SecurityContextHolder.setContext(securityContext);
+		  CredencialesEntity credenciales =new CredencialesEntity();
+			credenciales.setTOKENONE("AAAAAAAAAAAAAAAAAA");
+			credenciales.setUserName("19");
+			credenciales.setPassword("123");
+			credenciales.setScotiauser(new Scotiauser(2, "177824577", "Fabian", "Gaete","fgaete@afiniti.cl","1"));
 		
+			
+		  Mockito.when(authentication.getPrincipal()).thenReturn((CredencialesEntity)credenciales);
+		  Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
 		
 		
 		  
@@ -335,6 +349,65 @@ public class DataServerTest2 {
      	Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/v1/login_customer", HttpMethod.POST, httpEntityLogin,String.class)).thenReturn(responseLogin);
      	Mockito.when(dataServer.testLogin("19","123")).thenReturn(new ResponseEntity<String>("Bearer TOKENOK",HttpStatus.OK));
      	Assert.assertNotNull(dataServer.testLogin("19","123"));
+     	
+     	List<UserCartolaMovimiento> movimientos = new ArrayList<>();
+     	UserCartola miCartola = new UserCartola("Fabian", "Gaete", "al 20 de diciembre 2018", 100, 50, "01-01-2020", movimientos);
+     	Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/v1/customer/points", HttpMethod.GET, httpEntity,Information.class)).thenReturn(new ResponseEntity<Information>(information, HttpStatus.OK));
+     	Mockito.when(dataServer.loadUserCartola()).thenReturn(new ResponseEntity<UserCartola>(miCartola,HttpStatus.OK));
+     	Assert.assertNotNull(dataServer.loadUserCartola());
+     	
+     	
+     	
+     	Points points = new Points();
+		points.setAvailablePoints(-1);
+		
+     	Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/v1/customer/points", HttpMethod.POST, httpEntityLogin,Points.class)).thenReturn(new ResponseEntity<Points>(points,HttpStatus.OK));
+     	Mockito.when(dataServer.loadUserPoints()).thenReturn(new ResponseEntity<Points>(points,HttpStatus.OK));
+     	Assert.assertNotNull(dataServer.testLogin("19","123"));
+     	
+     	Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/v1/customer/points", HttpMethod.POST, httpEntityLogin,Points.class)).thenReturn(new ResponseEntity<Points>(points,HttpStatus.OK));
+     	Mockito.when(dataServer.loadCupones(1)).thenReturn(new ResponseEntity<List<UserCupon>>(HttpStatus.OK));
+     	Assert.assertNotNull(dataServer.loadCupones(1));
+     	
+     	
+     	Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/v1/customer/points", HttpMethod.POST, httpEntityLogin,Points.class)).thenReturn(new ResponseEntity<Points>(points,HttpStatus.OK));
+     	Mockito.when(dataServer.loadCuponAsPdf(1, 1)).thenReturn(new ResponseEntity<byte[]>(HttpStatus.OK));
+     	Assert.assertNotNull(dataServer.loadCupones(1));
+     	
+     	
+     	StockTicket stockticket =new StockTicket();
+        stockticket.setActivo(1);
+        stockticket.setEmpresa("CENCOSUD");
+        
+     	
+        Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/get/stockticket/CENCOSUD", HttpMethod.POST, httpEntityLogin,Points.class)).thenReturn(new ResponseEntity<Points>(points,HttpStatus.OK));
+     	Mockito.when(dataServer.loadStockTicket("CENCOSUD")).thenReturn(new ResponseEntity<StockTicket>(stockticket,HttpStatus.OK));
+     	Assert.assertNotNull(dataServer.loadStockTicket("CENCOSUD"));
+     	
+     	
+     	List<UserGusto> catelist =  new ArrayList<>();
+		 catelist.add(new UserGusto(1,"Viajes","/resource/images/honeymoon.png") );
+		 catelist.add(new UserGusto(2,"Fútbol","/resource/images/football2.png") );
+		 catelist.add(new UserGusto(3,"Entretención","/resource/images/concert.png") );
+     	
+     	Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/active_customer_gustos", HttpMethod.POST, httpEntityLogin,Points.class)).thenReturn(new ResponseEntity<Points>(points,HttpStatus.OK));
+     	Mockito.when(dataServer.loadGustos()).thenReturn(new ResponseEntity<List<UserGusto>>(catelist,HttpStatus.OK));
+     	Assert.assertNotNull(dataServer.loadStockTicket("CENCOSUD"));
+     	
+     	
+     	Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/v1/customer/1/customer_gustos", HttpMethod.POST, httpEntityLogin, new ParameterizedTypeReference<List<UserGusto>>() {})).thenReturn(new ResponseEntity<List<UserGusto>>(catelist,HttpStatus.OK));
+     	Mockito.when(dataServer.loadCustomerGustos()).thenReturn(new ResponseEntity<List<UserGusto>>(catelist,HttpStatus.OK));
+     	Assert.assertNotNull(dataServer.loadCustomerGustos());
+     	
+     	
+     	String[] gustos = new String[20];
+    	gustos[0] = "Cheese";
+    	gustos[1] = "Pepperoni";
+    	gustos[2] = "Black Olives";
+    	
+     	Mockito.when(restTemplate.exchange("http://142.93.62.102:9080/v1/customer/1/customer_gustos", HttpMethod.POST, httpEntityLogin, new ParameterizedTypeReference<List<UserGusto>>() {})).thenReturn(new ResponseEntity<List<UserGusto>>(catelist,HttpStatus.OK));
+     	Mockito.when(dataServer.saveCustomerGustos(gustos)).thenReturn(new ResponseEntity<String>(HttpStatus.OK));
+     	Assert.assertNotNull(dataServer.saveCustomerGustos(gustos));
      	
      	
      	

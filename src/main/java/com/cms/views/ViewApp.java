@@ -1,7 +1,5 @@
 package com.cms.views;
 
-
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -31,7 +29,7 @@ public class ViewApp {
 	}
 	
 
-	public String loadView(String view) {
+	public ResponseEntity<ViewEntity> loadView(String view) {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -41,20 +39,13 @@ public class ViewApp {
 		System.out.println(TOKENONE);
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		
-		ResponseEntity<ViewEntity> response = restTemplate.exchange(apiUrl + "/view/getByName/" + view, HttpMethod.GET,
-				httpEntity, ViewEntity.class);
-		if (response.getStatusCodeValue() == 200) {
-			ViewEntity vV = response.getBody();
-//        	System.out.println(vV.getContent()+"--------------------------------------------------");
-			return vV.getContent();
-		} else {
-			return "Not Load " + view;
-		}
+		return restTemplate.exchange(apiUrl + "/view/getByName/" + view, HttpMethod.GET,httpEntity, ViewEntity.class);
+	
 	}
 
 	public void addView(String viewName) {
-		String data = this.loadView(viewName);
-		sb.append(data);
+		ResponseEntity<ViewEntity> data = this.loadView(viewName);
+		sb.append(data.getBody());
 	}
 
 	public String render() {
