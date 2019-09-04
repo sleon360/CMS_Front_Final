@@ -7,6 +7,10 @@ public class Customer {
 	String jwt;
 	Scotiauser scotiauser;
 	
+	public Customer() {
+		super();
+	}
+
 	public Customer(String jwt, Scotiauser scotiauser) {
 		this.jwt = jwt;
 		this.scotiauser = scotiauser;

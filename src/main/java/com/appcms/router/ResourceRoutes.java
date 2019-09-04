@@ -1,13 +1,11 @@
 package com.appcms.router;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,15 +31,11 @@ public class ResourceRoutes {
 
 	@GetMapping("/resource/{folder}/{resourceid:.+}")
 	public Object resource(@PathVariable("resourceid") String resourceName, @PathVariable("folder") String folder,
-			HttpServletRequest request, HttpServletResponse response) {
+			HttpServletRequest request) {
 		try {
-			HttpHeaders headers = new HttpHeaders();
-			headers.set("Authorization", request.getSession().getAttribute("TOKENONE").toString());
-			
-			HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 			RestTemplate restTemplate = new RestTemplate();
 			ResponseEntity<ResourceEntity> xresponse = restTemplate
-					.exchange(apiUrl + "/resource/" + folder + "/get?name={name}", HttpMethod.GET, httpEntity, ResourceEntity.class, resourceName);
+					.exchange(apiUrl + "/get/resource/" + folder + "?name={name}", HttpMethod.GET, HttpEntity.EMPTY, ResourceEntity.class, resourceName);
 			if (xresponse.getStatusCode() == HttpStatus.OK) {
 				ResourceEntity rEntity = xresponse.getBody();
 				return ResponseEntity.ok().contentType(MediaType.parseMediaType(rEntity.getMime_resource()))

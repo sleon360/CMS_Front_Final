@@ -1,26 +1,33 @@
 package com.cms.errors;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 public class ApiError{
 
-	int code;
+	int status;
     String message;
-    String timestamp=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-
-    public ApiError(int code, String message) {
-        this.code = code;
-        this.message = message;
-    }
-
-    public int getStatus() {
-        return code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
+    String timestamp;
     
+	public int getStatus() {
+		return status;
+	}
+	
+	public void setStatus(int status) {
+		this.status = status;
+	}
+	
+	public String getMessage() {
+		return message;
+	}
+	
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	
+	public String getTimestamp() {
+		return timestamp;
+	}
+	
+	public void setTimestamp(String timestamp) {
+		this.timestamp = timestamp;
+	}
+
 }

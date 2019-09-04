@@ -27,7 +27,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.appcms.entity.Banner;
-import com.appcms.entity.CredencialesEntity;
 import com.appcms.entity.CustomerInscripcion;
 import com.appcms.entity.CustomerReward;
 import com.appcms.entity.FormatoDetalle;
@@ -44,9 +43,9 @@ import com.appcms.entity.UserCartola;
 import com.appcms.entity.UserCartolaMovimiento;
 import com.appcms.entity.UserCupon;
 import com.appcms.entity.UserGusto;
+import com.appcms.entity.customer.Customer;
 import com.appcms.entity.points.ExpiringPoints;
 import com.appcms.entity.points.Points;
-import com.appcms.security.RestAuthentication;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
@@ -64,7 +63,7 @@ public class DataServer {
 
 	public Scmenu loadScmenuByName(HttpServletRequest rq, String scmenuName) {
 		HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -83,19 +82,16 @@ public class DataServer {
 
 	@Cacheable(cacheNames = "menu")
 	public List<Scmenu> loadAllScmenu(HttpServletRequest rq) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
-		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
 		String url = apiUrl + "/get/scmenu";
 
-		ResponseEntity<List<Scmenu>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
-				new ParameterizedTypeReference<List<Scmenu>>() {
-				});
-		if (xresponse.getStatusCodeValue() == 200) {
-			return xresponse.getBody();
-		} else {
+		try {
+			ResponseEntity<List<Scmenu>> responseEntity = restTemplate.exchange(url, HttpMethod.GET, HttpEntity.EMPTY,
+					new ParameterizedTypeReference<List<Scmenu>>() {
+					});
+			return responseEntity.getBody();
+		} catch (Exception e) {
 			return null;
 		}
 
@@ -104,11 +100,7 @@ public class DataServer {
 	public Scinformacionsubmenu loadInformatioSub(int idsubmenu, HttpServletRequest rq) {
 
 		HttpHeaders headers = new HttpHeaders();
-//		headers.setContentType(MediaType.APPLICATION_JSON);
 
-		RestAuthentication xrestAuthentication = new RestAuthentication();
-		System.out.println(xrestAuthentication.getTOKENONE() + " loadInformatioSub");
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -120,14 +112,12 @@ public class DataServer {
 		if (xresponse.getStatusCodeValue() == 200) {
 
 			Scinformacionsubmenu information = xresponse.getBody();
-//			System.out.println("requestxn: "+information.getJson_condiciones());  
 			String json = information.getJson_condiciones();
 			JsonArray jsonObject = new JsonParser().parse(json).getAsJsonArray();
 
 			JsonArray arr = jsonObject.getAsJsonArray();
 			for (int i = 0; i < arr.size(); i++) {
 				String post_id = arr.get(i).getAsString();
-//				information.condicioneslista.add(post_id);
 				information.addCondicioneslista(post_id);
 			}
 			System.out.println("toString: " + information.toString());
@@ -140,20 +130,13 @@ public class DataServer {
 	}
 
 	public List<ProductoTipoLike> loadProductosLike(int idsubmenu, HttpServletRequest rq) {
-
-		HttpHeaders headers = new HttpHeaders();
-
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
-		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
 		String url = apiUrl + "/get/productosSubmenu/" + idsubmenu;
 
-		ResponseEntity<List<ProductoTipoLike>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+		ResponseEntity<List<ProductoTipoLike>> xresponse = restTemplate.exchange(url, HttpMethod.GET, HttpEntity.EMPTY,
 				new ParameterizedTypeReference<List<ProductoTipoLike>>() {
 				});
-
-		System.out.println("requestxn: " + xresponse.getBody());
 
 		if (xresponse.getStatusCodeValue() == 200) {
 			return xresponse.getBody();
@@ -168,7 +151,7 @@ public class DataServer {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -189,34 +172,25 @@ public class DataServer {
 	}
 
 	public List<Scinformacionsubmenu> loadscmenuinformationFomScmenu(int idscbmenu, HttpServletRequest rq) {
-
-		HttpHeaders headers = new HttpHeaders();
-
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
-		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
 		String url = apiUrl + "/get/informationsubmenuList/" + idscbmenu;
 
-		ResponseEntity<List<Scinformacionsubmenu>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
-				new ParameterizedTypeReference<List<Scinformacionsubmenu>>() {
-				});
-
-		System.out.println("requestxn: " + xresponse.getBody());
-
-		if (xresponse.getStatusCodeValue() == 200) {
-			return xresponse.getBody();
-		} else {
+		try {
+			ResponseEntity<List<Scinformacionsubmenu>> responseEntity = restTemplate.exchange(url, HttpMethod.GET, HttpEntity.EMPTY,
+					new ParameterizedTypeReference<List<Scinformacionsubmenu>>() {
+					});
+			return responseEntity.getBody();
+		} catch(Exception e) {
 			return null;
 		}
-
 	}
 
 	public List<ProductoTipoLike> loadProductosDetalle(int idproducto, HttpServletRequest rq) {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -259,7 +233,7 @@ public class DataServer {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -283,11 +257,11 @@ public class DataServer {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		String url = apiUrl + "/productos/" + idProducto + "/categoria";
+		String url = apiUrl + "/get/productos/" + idProducto + "/categoria";
 		try {
 			ResponseEntity<ProductoCategoria> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity, ProductoCategoria.class);
 			return xresponse.getBody();
@@ -301,7 +275,7 @@ public class DataServer {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -322,35 +296,23 @@ public class DataServer {
 	}
 
 	public List<Banner> loadBannerAll(int responsive, HttpServletRequest rq) {
-		System.out.println(this.apiUrl);
-		HttpHeaders headers = new HttpHeaders();
-
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
-		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
-
 		String url = apiUrl + "/get/bannerAll/" + responsive;
-		System.out.println("Banners: " + url);
-
-		ResponseEntity<List<Banner>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
-				new ParameterizedTypeReference<List<Banner>>() {
-				});
-
-		System.out.println("requestxn: " + xresponse.getBody());
-
-		if (xresponse.getStatusCodeValue() == 200) {
-			return xresponse.getBody();
-		} else {
+		try {
+			ResponseEntity<List<Banner>> responseEntity = restTemplate.exchange(url, HttpMethod.GET, HttpEntity.EMPTY,
+					new ParameterizedTypeReference<List<Banner>>() {
+					});
+			return responseEntity.getBody();
+		} catch(Exception e) {
 			return null;
 		}
-
 	}
 
 	public Information loadInformationScsubmenu(int idsubmenu, HttpServletRequest rq) {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -373,7 +335,7 @@ public class DataServer {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -396,7 +358,7 @@ public class DataServer {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		
 
 		String url = apiUrl + "/customerreward/set";
 		System.out.println("data param: " + reward.toString());
@@ -442,7 +404,7 @@ public class DataServer {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -465,52 +427,13 @@ public class DataServer {
 
 	}
 
-	public String testLogin(String rut, String pass, HttpServletRequest rq) {
-
-		HttpHeaders headers = new HttpHeaders();
-
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
-
-		String url = apiUrl + "/v1/login_customer";
-
-		MultiValueMap<String, String> xparam = new LinkedMultiValueMap<String, String>();
-		xparam.add("userCostumer", rut);
-		xparam.add("userPassword", pass);
-
-		HttpEntity<?> httpEntity = new HttpEntity<Object>(xparam, headers);
-		RestTemplate restTemplate = new RestTemplate();
-
-		try {
-			ResponseEntity<String> xresponse = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
-			System.out.println("requestxn: " + xresponse.getBody());
-
-			if (xresponse.getStatusCode() == HttpStatus.OK) {
-				System.out.println(xresponse.getHeaders());
-				return xresponse.getHeaders().get("Authorization").toString().replace("Bearer ", "");
-			} else {
-				return null;
-			}
-		} catch (Exception ex) {
-			System.out.println("error: " + ex.getMessage());
-			return null;
-		}
-
-//		if (xresponse.getStatusCodeValue() == 200) {
-//			return xresponse.getBody();
-//		} else {
-//			return null;
-//		}
-
-	}
-
 	public UserCartola loadUserCartola() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+		Customer credencialesEntity = (Customer) auth.getPrincipal();
 		Scotiauser scotiauser = credencialesEntity.getScotiauser();
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.set("Authorization", "Bearer " + credencialesEntity.getTOKENONE());
-		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
+		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
 
 		/* SE RECUPERAN LOS PUNTOS DE CLIENTE */
 		Points points = new Points();
@@ -557,11 +480,10 @@ public class DataServer {
 
 	public List<CustomerInscripcion> loadUserInscripciones() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+		Customer credencialesEntity = (Customer) auth.getPrincipal();
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.set("Authorization", "Bearer " + credencialesEntity.getTOKENONE());
-		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
+		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
 		try {
 			ResponseEntity<List<CustomerInscripcion>> inscripcionesResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/" + credencialesEntity.getScotiauser().getId_cliente() + "/inscripciones",
 					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), 
@@ -579,11 +501,10 @@ public class DataServer {
 	public Points loadUserPoints() {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+		Customer credencialesEntity = (Customer) auth.getPrincipal();
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.set("Authorization", "Bearer " + credencialesEntity.getTOKENONE());
-		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
+		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
 		try {
 			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/points",
 					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
@@ -605,9 +526,8 @@ public class DataServer {
 		HttpHeaders headers = new HttpHeaders();
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
-		headers.set("Authorization", "Bearer " + credencialesEntity.getTOKENONE());
-		headers.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
+		Customer credencialesEntity = (Customer) auth.getPrincipal();
+		headers.set("AuthorizationCustomer", credencialesEntity.getJwt());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -630,9 +550,8 @@ public class DataServer {
 		HttpHeaders headers = new HttpHeaders();
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
-		headers.set("Authorization", "Bearer " + credencialesEntity.getTOKENONE());
-		headers.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
+		Customer credencialesEntity = (Customer) auth.getPrincipal();
+		headers.set("AuthorizationCustomer", credencialesEntity.getJwt());
 
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
@@ -647,7 +566,7 @@ public class DataServer {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		headers.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
+		
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -674,11 +593,10 @@ public class DataServer {
 		// se deben mostrar tarjetas
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+			Customer credencialesEntity = (Customer) auth.getPrincipal();
 			RestTemplate restTemplate = new RestTemplate();
 			HttpHeaders httpHeaders = new HttpHeaders();
-			httpHeaders.set("Authorization", credencialesEntity.getTOKENONE());
-			httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
+			httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
 			ResponseEntity<Tarjetas> tarjetasResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/cards",
 					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Tarjetas.class);
 			return tarjetasResponseEntity.getBody();
@@ -692,13 +610,13 @@ public class DataServer {
 
 	public List<UserGusto> loadGustos() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+		Customer credencialesEntity = (Customer) auth.getPrincipal();
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.set("Authorization", credencialesEntity.getTOKENONE());
+		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
 		try {
 			ResponseEntity<List<UserGusto>> gustosResponseEntity = restTemplate.exchange(
-					apiUrl + "/active_customer_gustos", HttpMethod.GET, new HttpEntity<Object>(httpHeaders),
+					apiUrl + "/get/customer_gustos", HttpMethod.GET, new HttpEntity<Object>(httpHeaders),
 					new ParameterizedTypeReference<List<UserGusto>>() {
 					});
 			return gustosResponseEntity.getBody();
@@ -709,11 +627,10 @@ public class DataServer {
 
 	public List<UserGusto> loadCustomerGustos() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+		Customer credencialesEntity = (Customer) auth.getPrincipal();
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.set("Authorization", credencialesEntity.getTOKENONE());
-		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
+		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
 		int id = credencialesEntity.getScotiauser().getId_cliente();
 		try {
 			ResponseEntity<List<UserGusto>> customerGustosResponseEntity = restTemplate.exchange(
@@ -728,11 +645,10 @@ public class DataServer {
 
 	public String saveCustomerGustos(String[] gustos) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+		Customer credencialesEntity = (Customer) auth.getPrincipal();
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.set("Authorization", credencialesEntity.getTOKENONE());
-		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
+		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
 		int id = credencialesEntity.getScotiauser().getId_cliente();
 
 		httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -754,11 +670,9 @@ public class DataServer {
 
 	public List<TagProducto> loadTagsProductos(HttpServletRequest rq) {
 		RestTemplate restTemplate = new RestTemplate();
-		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.set("Authorization", rq.getSession().getAttribute("TOKENONE").toString());
 		try {
 			ResponseEntity<List<TagProducto>> tagsProductosResponseEntity = restTemplate.exchange(
-					apiUrl + "/tags_productos/getTop10", HttpMethod.GET, new HttpEntity<Object>(httpHeaders),
+					apiUrl + "/get/tags_productos/getTop10", HttpMethod.GET, HttpEntity.EMPTY,
 					new ParameterizedTypeReference<List<TagProducto>>() {
 					});
 			return tagsProductosResponseEntity.getBody();
@@ -769,11 +683,10 @@ public class DataServer {
 
 	public CustomerReward realizarCanjeDirecto(int idProducto) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+		Customer credencialesEntity = (Customer) auth.getPrincipal();
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.set("Authorization", credencialesEntity.getTOKENONE());
-		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
+		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
 
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 		map.add("id_producto", Integer.toString(idProducto));
@@ -789,11 +702,10 @@ public class DataServer {
 
 	public boolean inscribirPuntos(int idProducto, String cardKey, String cardNumber, int quantity) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		CredencialesEntity credencialesEntity = (CredencialesEntity) auth.getPrincipal();
+		Customer credencialesEntity = (Customer) auth.getPrincipal();
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.set("Authorization", credencialesEntity.getTOKENONE());
-		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getTOKENTWO());
+		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
 
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 		map.add("id_producto", Integer.toString(idProducto));

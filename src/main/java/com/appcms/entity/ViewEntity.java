@@ -4,18 +4,12 @@ package com.appcms.entity;
 public class ViewEntity {
 
 	private int id_view;
-
+	
 	private String name;
 	
-
 	private String content;
 	
-
-	private String status;
-	
-
-	private String idviewfk;
-	
+	private String estado;	
 
     public int getId_view() {
 		return id_view;
@@ -45,25 +39,14 @@ public class ViewEntity {
 		this.content = content;
 	}
 
-	public String getStatus() {
-		return status;
+	public String getEstado() {
+		return estado;
 	}
 
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setEstado(String estado) {
+		this.estado = estado;
 	}
-
-
-	public String getIdviewfk() {
-		return idviewfk;
-	}
-
-
-	public void setIdviewfk(String idviewfk) {
-		this.idviewfk = idviewfk;
-	}
-
-    
+	
 }
 
