@@ -5,15 +5,9 @@ public class CanjeProducto {
 	int idProducto;
 	String nombreAsociado;
 	String rutAsociado; 
-<<<<<<< HEAD
 	int cantidad = 1;
 	int monto = 0;
-	String cardNumber;
 	String cardKey;
-=======
-	int cantidad;
-	int monto;
->>>>>>> refs/heads/master
 	String csrf_token;
 	String actionx;
 
@@ -86,14 +80,6 @@ public class CanjeProducto {
 
 	public void setMonto(int monto) {
 		this.monto = monto;
-	}
-	
-	public String getCardNumber() {
-		return cardNumber;
-	}
-
-	public void setCardNumber(String cardNumber) {
-		this.cardNumber = cardNumber;
 	}
 
 	public String getCardKey() {
