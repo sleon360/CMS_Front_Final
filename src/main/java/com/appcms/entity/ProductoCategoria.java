@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class ProductoCategoria {
 
 	@JsonProperty("id_categoria_producto")
-<<<<<<< HEAD
 	int id;
 	String nombre;
 	String strIndex;
@@ -18,16 +17,6 @@ public class ProductoCategoria {
 	String colorHover;
 	int tipo; // 1:Productos  2:formulario
 	List<ProductoTipoLike> productos = new ArrayList<>();
-=======
-	static int id;
-	static String nombre;
-	static String strIndex;
-	static String descripccion;
-	static String imagen;
-	static String colorHover;
-	static int tipo; // 1:Productos  2:formulario
-	static List<ProductoTipoLike> productos = new ArrayList<>();
->>>>>>> refs/heads/master
 
 	public ProductoCategoria() {
 		super();
