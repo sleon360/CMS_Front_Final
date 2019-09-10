@@ -1,5 +1,7 @@
 package com.appcms.front;
 
+import java.io.IOException;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -10,7 +12,11 @@ import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.util.NestedServletException;
 import org.thymeleaf.templateresolver.StringTemplateResolver;
+
+import com.appcms.security.RestAuthentication;
+
 import org.thymeleaf.dialect.IDialect;
 import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
 import org.thymeleaf.spring4.SpringTemplateEngine;
@@ -41,9 +47,14 @@ public class CustomConfig extends WebMvcConfigurerAdapter {
 		return templateEngine;
 	}
 
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+	/*public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/WEB-INF/resources/**").addResourceLocations("/WEB-INF/resources/");
+<<<<<<< HEAD
 	}
+=======
+
+*/
+>>>>>>> refs/heads/master
 
 	@Bean
 	public IDialect springSecurityDialect() {
@@ -53,9 +64,29 @@ public class CustomConfig extends WebMvcConfigurerAdapter {
 	
 	@Bean(name = "apiUrl")
     public String getApiUrl() throws NamingException {
-		Context ctx = new InitialContext();
-		String apiUrl = (String) ctx.lookup("apiUrl");
-		return apiUrl;
+		//Context ctx = new InitialContext();
+		//String apiUrl = (String) ctx.lookup("apiUrl");
+		//return apiUrl;
+		
+		return "http://142.93.62.102:9080/cmsrest";
+    }
+	
+	
+	@Bean(name = "TOKENONE")
+    public String getTokenRest() throws NamingException {
+		RestAuthentication app=new RestAuthentication();
+		try {
+			app.RestAutenticationLayerOne2(this.getApiUrl());
+			return app.getTOKENONE();
+		} catch (NestedServletException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+		
     }
 
 }

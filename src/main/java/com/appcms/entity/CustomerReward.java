@@ -25,37 +25,7 @@ public class CustomerReward {
 
 	public CustomerReward() {}
 	
-	public CustomerReward(int customer_reward_id, int customer_id, int order_id, String description, int points,
-			String date_added, String date_vencimiento, int id_campana, int id_trx, int id_jos_ticket,
-			int tipo_reward) {
-		super();
-		this.customer_reward_id = customer_reward_id;
-		this.customer_id = customer_id;
-		this.order_id = order_id;
-		this.description = description;
-		this.points = points;
-		this.date_added = date_added;
-		this.date_vencimiento = date_vencimiento;
-		this.id_campana = id_campana;
-		this.id_trx = id_trx;
-		this.id_jos_ticket = id_jos_ticket;
-		this.tipo_reward = tipo_reward;
-	}
-	public CustomerReward(int customer_id, int order_id, String description, int points,
-			String date_added, String date_vencimiento, int id_campana, int id_trx, int id_jos_ticket,
-			int tipo_reward) {
-		super();
-		this.customer_id = customer_id;
-		this.order_id = order_id;
-		this.description = description;
-		this.points = points;
-		this.date_added = date_added;
-		this.date_vencimiento = date_vencimiento;
-		this.id_campana = id_campana;
-		this.id_trx = id_trx;
-		this.id_jos_ticket = id_jos_ticket;
-		this.tipo_reward = tipo_reward;
-	}
+
 	public int getCustomer_reward_id() {
 		return customer_reward_id;
 	}
@@ -144,12 +114,5 @@ public class CustomerReward {
 		this.tipo_reward = tipo_reward;
 	}
 
-	@Override
-	public String toString() {
-		return "CustomerReward [customer_reward_id=" + customer_reward_id + ", customer_id=" + customer_id
-				+ ", order_id=" + order_id + ", description=" + description + ", points=" + points + ", date_added="
-				+ date_added + ", date_vencimiento=" + date_vencimiento + ", id_campana=" + id_campana + ", id_trx="
-				+ id_trx + ", id_jos_ticket=" + id_jos_ticket + ", tipo_reward=" + tipo_reward + "]";
-	}
 
 }

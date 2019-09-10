@@ -20,19 +20,19 @@ public class StockTicket {
 		this.quemado = QUEMADO;
 	}
 	public String getEmpresa() {
-		return empresa;
+		return this.empresa;
 	}
 	public void setEmpresa(String empresa) {
 		this.empresa = empresa;
 	}
 	public int getActivo() {
-		return activo;
+		return this.activo;
 	}
 	public void setActivo(int activo) {
 		this.activo = activo;
 	}
 	public int getQuemado() {
-		return quemado;
+		return this.quemado;
 	}
 	public void setQuemado(int quemado) {
 		this.quemado = quemado;

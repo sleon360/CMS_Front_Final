@@ -28,21 +28,7 @@ public class Categoria {
    public Categoria() {
    }
  
-   public Categoria(int id, String nombre, String descripcion, String color, String color_hover, int tipo, String icono,
-		String titulo_descipccion, String fecha_creacion, String fecha_modificacion, int estado) {
-	super();
-	this.id = id;
-	this.nombre = nombre;
-	this.descripcion = descripcion;
-	this.color = color;
-	this.color_hover = color_hover;
-	this.tipo = tipo;
-	this.icono = icono;
-	this.titulo_descipccion = titulo_descipccion;
-	this.fecha_creacion = fecha_creacion;
-	this.fecha_modificacion = fecha_modificacion;
-	this.estado = estado;
-}
+
 
 public String getNombre() {
       return this.nombre;

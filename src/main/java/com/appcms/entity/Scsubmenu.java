@@ -14,7 +14,6 @@ public class Scsubmenu {
 	String color;
 	String color_hover;
 	String color_borde;
-	@JsonProperty("id_tipo_submenu")
 	int tipo;
 	String icono;
 	String imagen;
@@ -30,18 +29,16 @@ public class Scsubmenu {
 	Information informationHtml = null;
 	boolean visibleTop = true;
 	boolean visibleOnlyLogin = false;
+<<<<<<< HEAD
 	List<TagProducto> tagsProductos = new ArrayList<>();
 	
+=======
+
+>>>>>>> refs/heads/master
 	public Scsubmenu() {
 		super();
 	}
 
-	public Scsubmenu(String strIndex, String nombre, String link) {
-		super();
-		this.strIndex = strIndex;
-		this.nombre = nombre;
-		this.link = link;
-	}
 
 	public Scsubmenu(String strIndex, int id, String nombre, String link, String color, String color_hover,
 			String color_borde, int tipo, String icono, String imagen, String titulo_descripcion, String descripcion,
@@ -63,28 +60,10 @@ public class Scsubmenu {
 		this.fecha_modificacion = fecha_modificacion;
 		this.estado = estado;
 	}
+	
+	
+	
 
-	public Scsubmenu(String strIndex, int id, String nombre, String link, String color, String color_hover,
-			String color_borde, int tipo, String icono, String imagen, String titulo_descripcion, String descripcion,
-			String fecha_creacion, String fecha_modificacion, int estado,boolean visibleTop ) {
-		super();
-		this.strIndex = strIndex;
-		this.id = id;
-		this.nombre = nombre;
-		this.link = link;
-		this.color = color;
-		this.color_hover = color_hover;
-		this.color_borde = color_borde;
-		this.tipo = tipo;
-		this.icono = icono;
-		this.imagen = imagen;
-		this.titulo_descripcion = titulo_descripcion;
-		this.descripcion = descripcion;
-		this.fecha_creacion = fecha_creacion;
-		this.fecha_modificacion = fecha_modificacion;
-		this.estado = estado;
-		this.visibleTop = visibleTop;
-	}
 	
 	public String getStrIndex() {
 		return strIndex;
@@ -143,7 +122,7 @@ public class Scsubmenu {
 	}
 
 	public int getTipo() {
-		return tipo;
+		return this.tipo;
 	}
 
 	public void setTipo(int tipo) {
@@ -222,6 +201,7 @@ public class Scsubmenu {
 		this.visibleOnlyLogin = visibleOnlyLogin;
 	}
 
+<<<<<<< HEAD
 	@Override
 	public String toString() {
 		return "Scsubmenu [id=" + id + ", nombre=" + nombre + ", strIndex=" + strIndex + ", link=" + link + ", color="
@@ -282,4 +262,6 @@ public class Scsubmenu {
 		this.tagsProductos = tagsProductos;
 	}
 
+=======
+>>>>>>> refs/heads/master
 }

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data-sources>
+	<data-source id="microsoft-169cafa0c9b-6f2b54351747d3c2" provider="sqlserver" driver="microsoft" name="MS SQL Server - cms360" save-password="true" read-only="false">
+		<connection host="192.241.186.100" port="1433" server="" database="cms360" url="jdbc:sqlserver://;serverName=192.241.186.100;databaseName=cms360" user="sa" password="HwEHLFVCQFJWRFZe9g==" type="dev">
+			<property name="trustServerCertificate" value="true"/>
+			<provider-property name="@dbeaver-authentication@" value="SQL_SERVER_PASSWORD"/>
+			<provider-property name="@dbeaver-show-all-schemas@" value="false"/>
+		</connection>
+		<virtual-meta-data>
+			<container name="model">
+				<container name="cms360">
+					<container name="dbo">
+						<entity name="SCSUBMENU" description="NOMBRE"/>
+						<entity name="SCMENU" description="NOMBRE"/>
+						<entity name="PRODUCTOCATEGORIA" description="STRINDEX"/>
+						<entity name="PRODUCTOTIPOLIKE" description="SUBTITULO"/>
+						<entity name="TIPO_SUBMENU">
+							<constraint name="PRIMARY" type="VIRTUAL KEY">
+								<attribute name="ID_TIPO"/>
+								<attribute name="nombre_tipo"/>
+								<attribute name="descripcion_tipo"/>
+								<attribute name="activo"/>
+							</constraint>
+						</entity>
+					</container>
+				</container>
+			</container>
+		</virtual-meta-data>
+	</data-source>
+	<data-source id="mysql8-169de22b673-475954d4b00dbb0c" provider="mysql" driver="mysql8" name="MySQL 8+ - 165.227.109.246" save-password="true" read-only="false">
+		<connection host="165.227.109.246" port="3306" server="" database="" url="jdbc:mysql://165.227.109.246:3306/" user="root" password="F11QJhMVHBMEQwU/QxdGASUVUxMTRUcrdXFHBBdk5A==" type="dev"/>
+	</data-source>
+	<data-source id="microsoft-16a459907c8-65c49863759c4d75" provider="sqlserver" driver="microsoft" name="MS SQL Server - cms360 2" save-password="true" read-only="false">
+		<connection host="192.241.186.100" port="1433" server="" database="cms360" url="jdbc:sqlserver://;serverName=192.241.186.100;databaseName=cms360" user="sa" password="HwEHLFVCQFJWRFZe9g==" type="dev">
+			<property name="trustServerCertificate" value="true"/>
+			<provider-property name="@dbeaver-authentication@" value="SQL_SERVER_PASSWORD"/>
+			<provider-property name="@dbeaver-show-all-schemas@" value="false"/>
+		</connection>
+	</data-source>
+	<data-source id="microsoft-16a459b15c9-360fab74e68a2a6a" provider="sqlserver" driver="microsoft" name="MS SQL Server - cms360 Enmanuel" save-password="true" read-only="false">
+		<connection host="10.235.211.33" port="1433" server="" database="cms360" url="jdbc:sqlserver://;serverName=10.235.211.33;databaseName=cms360" user="sa" password="QlZVQKA=" type="dev">
+			<property name="trustServerCertificate" value="true"/>
+			<provider-property name="@dbeaver-authentication@" value="SQL_SERVER_PASSWORD"/>
+			<provider-property name="@dbeaver-show-all-schemas@" value="false"/>
+		</connection>
+	</data-source>
+	<filters/>
+</data-sources>

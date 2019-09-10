@@ -64,9 +64,7 @@ public class Scotiauser {
 		return id_grupo;
 	}
 
-	public void setId_grupo(String id_grupo) {
-		this.id_grupo = id_grupo;
-	}
+
 
 	public String getEmail() {
 		return email;

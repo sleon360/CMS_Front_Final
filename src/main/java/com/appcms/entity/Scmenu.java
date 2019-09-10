@@ -16,22 +16,13 @@ public class Scmenu {
 	boolean visibleTop = true;
 	boolean visibleOnlyLogin = false;
 	boolean userElement = false;
-
 	private List<Scsubmenu> submenues;
+
 
 	public Scmenu() {
 		super();
 		this.id = 0;
 	}
-
-	public Scmenu(String strIndex, String nombre, String link, List<Scsubmenu> submenues) {
-		super();
-		this.strIndex = strIndex;
-		this.nombre = nombre;
-		this.link = link;
-		this.submenues = submenues;
-	}
-
 	public Scmenu(String strIndex, String nombre, String link, List<Scsubmenu> submenues, boolean visibleTop) {
 		super();
 		this.strIndex = strIndex;
@@ -55,6 +46,8 @@ public class Scmenu {
 		this.estado = estado;
 		this.submenues = submenues;
 	}
+
+
 
 	public String getStrIndex() {
 		return strIndex;

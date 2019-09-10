@@ -1,18 +1,27 @@
 package com.appcms.entity;
 
+
 public class CanjeProducto {
 	int idProducto;
 	String nombreAsociado;
 	String rutAsociado; 
+<<<<<<< HEAD
 	int cantidad = 1;
 	int monto = 0;
 	String cardNumber;
 	String cardKey;
+=======
+	int cantidad;
+	int monto;
+>>>>>>> refs/heads/master
 	String csrf_token;
-	String actionx = "";
+	String actionx;
 
 	public CanjeProducto() {
 		super();
+		this.cantidad = 1;
+		this.monto = 0;
+		this.actionx = "";
 	}
 
 	public CanjeProducto(int idProducto, String nombreAsociado, String rutAsociado, int cantidad) {
