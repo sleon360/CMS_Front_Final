@@ -1,7 +1,5 @@
 package com.appcms.router;
 
-import java.io.UnsupportedEncodingException;
-import java.net.ConnectException;
 <<<<<<< HEAD
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,11 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ByteArrayResource;
-<<<<<<< HEAD
-=======
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
->>>>>>> refs/heads/master
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
@@ -40,6 +35,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.NestedServletException;
@@ -70,42 +66,21 @@ import com.cms.views.ViewApp;
 
 @Controller
 public class Routes {
-<<<<<<< HEAD
-=======
-///
-	public final String csrf_token = "afxn123xnx360";
-	private ViewApp vi;
-	private final DataServer dtserver;
->>>>>>> refs/heads/master
-
 	
 	@Autowired
-    public Routes(DataServer xdtserver) {
-		this.dtserver = xdtserver;
-		vi=new ViewApp(dtserver.getApiUrl(),dtserver.getToken());
-    }
+	ViewApp viewApp;
 	
-	public void setViewApp(ViewApp xvi)
-	{
-		this.vi=xvi;
+	@Autowired
+    public Routes(DataServer dtserver) {
+		this.dtserver = dtserver;
 	}
 	
-	
-
-<<<<<<< HEAD
-	public void setHeaderx(ModelAndView mav, HttpServletRequest rq) {
-		System.out.println("Setting headers");
-		mav.addObject("menuesHeader", dtserver.loadAllScmenu(rq));
-=======
 	public void setHeaderx(ModelAndView mav) {
 		mav.addObject("menuesHeader", dtserver.loadAllScmenu().getBody());
->>>>>>> refs/heads/master
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
-		System.out.println("esta login: " + resolver.isAnonymous(auth));
 		if (!resolver.isAnonymous(auth)) {
 			Customer customer = (Customer) auth.getPrincipal();
-
 			mav.addObject("usuario", customer.getScotiauser());
 			mav.addObject("points", dtserver.loadUserPoints());
 			// Se agregan los gustos del usuario
@@ -125,31 +100,6 @@ public class Routes {
 		} else {
 			mav.addObject("usuario", new Scotiauser());
 		}
-<<<<<<< HEAD
-=======
-		
-		// mav.addObject("usuario",Emudata.getUsusarioOff());
->>>>>>> refs/heads/master
-	}
-
-	@GetMapping("/404")
-	public ModelAndView notfound(HttpServletRequest rq) {
-<<<<<<< HEAD
-
-		ViewApp vi = new ViewApp(apiUrl);
-		vi.addView("head");
-		vi.addView("404");
-		vi.addView("footer");
-		ModelAndView mav = new ModelAndView(vi.render());
-		this.setHeaderx(mav, rq);
-=======
-		this.vi.addView("head");
-		this.vi.addView("404");
-		this.vi.addView("footer");
-		ModelAndView mav = new ModelAndView(this.vi.render());
-		this.setHeaderx(mav);
->>>>>>> refs/heads/master
-		return mav;
 	}
 
 	@ExceptionHandler(value = { Exception.class, MultipartException.class, NestedServletException.class,
@@ -166,8 +116,7 @@ public class Routes {
 	}
 
 	@GetMapping("/error/{err}")
-	public ModelAndView errorprint(@PathVariable("err") int err, HttpServletRequest rq) {
-		System.out.println("Controlador de errores");
+	public ModelAndView errorprint(@PathVariable("err") int err) {
 		String errorMsg = "Error al procesar la solicitud.";
 		int clean = 0;
 		int httpErrorCode = err;
@@ -196,97 +145,30 @@ public class Routes {
 			}
 			}
 		} catch (Exception ex) {
-			
 			errorMsg = "Http Error Code: 500. Internal Server Error";
-
 		}
-
-<<<<<<< HEAD
-		ViewApp vi = new ViewApp(apiUrl);
-		vi.addView("head");
-		vi.addView("error");
-		vi.addView("footer");
-		ModelAndView mav = new ModelAndView(vi.render());
-=======
-		this.vi.addView("head");
-		this.vi.addView("error");
-		this.vi.addView("footer");
-		ModelAndView mav = new ModelAndView(this.vi.render());
-
->>>>>>> refs/heads/master
+		ModelAndView mav = new ModelAndView(viewApp.loadView("head", "error", "footer"));
 		mav.addObject("titulo_error", httpErrorCode);
 		mav.addObject("descripcion_error", errorMsg);
 		mav.addObject("clean", clean);
-<<<<<<< HEAD
-		return mav;
-	}
-=======
-
 		this.setHeaderx(mav);
 		return mav;
 	}
 
-	@GetMapping("/logout")
-	public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth != null) {
-			new SecurityContextLogoutHandler().logout(request, response, auth);
-		}
-
-		Cookie cookie = new Cookie("welcomex", null); // cookie que muestra detalle al inciar
-		cookie.setMaxAge(0);
-		response.addCookie(cookie);
-
-		return "redirect:/";
-	}
-
->>>>>>> refs/heads/master
-
-<<<<<<< HEAD
 	@GetMapping("/")
 	public ModelAndView home(HttpServletRequest rq) {
-		ViewApp vi = new ViewApp(apiUrl);
-		vi.addView("head");
-		vi.addView("index");
-		vi.addView("footer");
-		ModelAndView mav = new ModelAndView(vi.render());
-		System.out.println("Se creó el MAV");
-		mav.addObject("banners", dtserver.loadBannerAll(0, rq));
-		System.out.println("Se obtuvieron los banners 0");
-		mav.addObject("banners_resp", dtserver.loadBannerAll(1, rq));
-		System.out.println("Se obtuvieron los banners");
-		mav.addObject("descuentos_destacados", dtserver.loadscmenuinformationFomScmenu(10, rq));
-		System.out.println("Se obtuvieron los descuentos destacados");
-		this.setHeaderx(mav, rq);
-=======
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public ModelAndView home() {
-		// return new ModelAndView("redirect:/home");	
-		this.vi.addView("head");
-		this.vi.addView("index");
-		this.vi.addView("footer");
-		ModelAndView mav = new ModelAndView(this.vi.render());
-		mav.addObject("banners", dtserver.loadBannerAll(0).getBody()); // Emudata.getBanners()
-		mav.addObject("banners_resp", dtserver.loadBannerAll(1).getBody());
-
-		mav.addObject("descuentos_destacados", dtserver.loadscmenuinformationFomScmenu(10).getBody());
-
+		ModelAndView mav = new ModelAndView(viewApp.loadView("head", "index", "footer"));
+		mav.addObject("banners", dtserver.loadBannerAll(0));
+		mav.addObject("banners_resp", dtserver.loadBannerAll(1));
+		mav.addObject("descuentos_destacados", dtserver.loadscmenuinformationFomScmenu(10));
 		this.setHeaderx(mav);
-
->>>>>>> refs/heads/master
 		return mav;
 	}
 
 	@GetMapping("/categoria/{menu}/{submenu}")
-	public ModelAndView menuSubmenu(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu) throws UnsupportedEncodingException {
-		// ModelAndView mav = new ModelAndView("categorias");
-<<<<<<< HEAD
-		ViewApp vi = new ViewApp(apiUrl);
+	public ModelAndView menuSubmenu(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu) {
 
-		Scmenu scmenu = dtserver.loadScmenuByName(rq, menu);
-=======
-		Scmenu scmenu = dtserver.loadScmenuByName( menu).getBody();
->>>>>>> refs/heads/master
+		Scmenu scmenu = dtserver.loadScmenuByName(menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 
 		try {
@@ -300,14 +182,11 @@ public class Routes {
 				}
 			}
 		} catch (Exception e) {
-			return new ModelAndView("redirect:/404");
-
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND)
 		}
 
 		if (scmenuurlsub.getId() == 0) {
-			System.out.println("Seccion no encontrada");
-			return new ModelAndView("redirect:/404");
-
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND)
 		}
 
 		switch (scmenuurlsub.getTipo()) {
