@@ -1,23 +1,14 @@
 package com.appcms.router;
 
-<<<<<<< HEAD
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-=======
->>>>>>> refs/heads/master
-import java.util.Calendar;
-<<<<<<< HEAD
 import java.util.Date;
-=======
->>>>>>> refs/heads/master
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -45,22 +36,12 @@ import com.appcms.entity.CustomerInscripcion;
 import com.appcms.entity.CustomerReward;
 import com.appcms.entity.Information;
 import com.appcms.entity.ProductoCategoria;
-import com.appcms.entity.ProductoTipoLike;
-import com.appcms.entity.Scinformacionsubmenu;
 import com.appcms.entity.Scmenu;
 import com.appcms.entity.Scotiauser;
 import com.appcms.entity.Scsubmenu;
-import com.appcms.entity.StockTicket;
-<<<<<<< HEAD
 import com.appcms.entity.UserCupon;
-=======
->>>>>>> refs/heads/master
 import com.appcms.entity.UserGusto;
-<<<<<<< HEAD
 import com.appcms.entity.customer.Customer;
-=======
-import com.appcms.entity.points.Points;
->>>>>>> refs/heads/master
 import com.appcms.model.DataServer;
 import com.cms.views.ViewApp;
 
@@ -343,12 +324,9 @@ public class Routes {
 			@PathVariable("submenu") String submenu,
 			@RequestHeader(value = "referer", required = false) final String referer) {
 		producto.setCantidad(1);
-		Customer customer = new Customer();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
-		if (!resolver.isAnonymous(auth)) {
-			customer = (Customer) auth.getPrincipal();
-		} else {
+		if (resolver.isAnonymous(auth)) {
 			// Para evitar que una página quede como ?login?login se hace el replace
 			return new ModelAndView("redirect:" + referer.replace("?login", "") + "?login");
 		}
@@ -445,24 +423,11 @@ public class Routes {
 		if (resolver.isAnonymous(auth)) {
 			return new ModelAndView("redirect:" + referer.replace("?login", "") + "?login");
 		}
-
-<<<<<<< HEAD
-		ViewApp vi = new ViewApp(apiUrl);
-
-		vi.addView("HEAD");
-		vi.addView("HEADER_CATEGORIAS");
-
-		ModelAndView mav = new ModelAndView(vi.render());
-=======
-		this.vi.addView("HEAD");
-		this.vi.addView("HEADER_CATEGORIAS");
-		
-		ModelAndView mav = new ModelAndView(this.vi.render());
->>>>>>> refs/heads/master
-
-		Scmenu scmenu = dtserver.loadScmenuByName(menu).getBody();
+		String html = viewApp.loadView("HEAD", "HEADER_CATEGORIAS");
+		Scmenu scmenu = dtserver.loadScmenuByName(menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 
+		ModelAndView mav = null;
 		try {
 			if (scmenu != null) {
 				for (Scsubmenu scmenuurlsubtemp : scmenu.getSubmenues()) // buscamos el submenu que seleccionó
@@ -474,30 +439,23 @@ public class Routes {
 				}
 			}
 		} catch (Exception e) {
-			return new ModelAndView("redirect:/404");
-
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
-
 		if (scmenuurlsub.getId() == 0) {
-			System.out.println("Seccion no encontrada");
-			return new ModelAndView("redirect:/404");
-
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
 
 		switch (scmenuurlsub.getTipo()) {
 		case 20: // information
-			System.out.println("Tipo 20"); // TIPO MI CARTOLA
-			this.vi.addView("MI-CARTOLA");
-			this.vi.addView("FOOTER");
-			mav = new ModelAndView(this.vi.render());
-			mav.addObject("cartola", dtserver.loadUserCartola().getBody());
+			// TIPO MI CARTOLA
+			html += viewApp.loadView("MI-CARTOLA", "FOOTER");
+			mav = new ModelAndView(html);
+			mav.addObject("cartola", dtserver.loadUserCartola());
 			break;
 		case 21: // information
-			System.out.println("Tipo 21"); // TIPO INSCRIPCCION
-<<<<<<< HEAD
-			vi.addView("mis-inscripciones");
-			vi.addView("FOOTER");
-			mav = new ModelAndView(vi.render());
+			// TIPO INSCRIPCCION
+			html += viewApp.loadView("mis-inscripciones", "FOOTER");
+			mav = new ModelAndView(html);
 			List<CustomerInscripcion> inscripciones = dtserver.loadUserInscripciones();
 			Date fechaActual = new Date();
 			for (CustomerInscripcion customerInscripcion : inscripciones) {
@@ -513,19 +471,11 @@ public class Routes {
 				}
 			}
 			mav.addObject("inscripciones", inscripciones);
-=======
-			this.vi.addView("mis-inscripciones");
-			this.vi.addView("FOOTER");
-			mav = new ModelAndView(this.vi.render());
-			mav.addObject("inscripciones", Emudata.getInscripciones());
->>>>>>> refs/heads/master
 			break;
 		case 22: // information
-			System.out.println("Tipo 22"); // TIPO MIS CUPONES
-<<<<<<< HEAD
-			vi.addView("mis-cupones");
-			vi.addView("FOOTER");
-			mav = new ModelAndView(vi.render());
+			// TIPO MIS CUPONES
+			html += viewApp.loadView("mis-cupones", "FOOTER");
+			mav = new ModelAndView(html);
 			List<UserCupon> cupones = dtserver.loadCupones();
 			List<UserCupon> giftCards = new ArrayList<UserCupon>();
 			List<UserCupon> entradasCine = new ArrayList<UserCupon>();
@@ -565,30 +515,13 @@ public class Routes {
 			mav.addObject("giftCards", giftCards);
 			mav.addObject("entradasCine", entradasCine);
 			mav.addObject("panoramas", panoramas);
-=======
-			this.vi.addView("mis-cupones");
-			this.vi.addView("FOOTER");
-			mav = new ModelAndView(this.vi.render());
-			System.out.println("Mis cupones: usr: " + credentialUser.getScotiauser().getId_cliente());
-			mav.addObject("usercupones", dtserver.loadCupones(credentialUser.getScotiauser().getId_cliente()));
->>>>>>> refs/heads/master
-
-//			scmenuurlsub.informationsubmenu = Emudata.getInformatiotest();
 			break;
 		case 23: // information
-			System.out.println("Tipo 23"); // TIPO MIS GUSTOS
-<<<<<<< HEAD
-			vi.addView("mis-preferencias");
-			vi.addView("FOOTER");
-			mav = new ModelAndView(vi.render());
-			// No se hace nada, los gustos ya se agregan en setHeaderx porque pueden
-			// aparecer en caulquier parte
-=======
-			this.vi.addView("mis-preferencias");
-			this.vi.addView("FOOTER");
-			mav = new ModelAndView(this.vi.render());
-			List<UserGusto> gustos = dtserver.loadGustos().getBody();
-			List<UserGusto> gustosCliente = dtserver.loadCustomerGustos().getBody();
+			// TIPO MIS GUSTOS
+			html += viewApp.loadView("mis-preferencias", "FOOTER");
+			mav = new ModelAndView(html);
+			List<UserGusto> gustos = dtserver.loadGustos();
+			List<UserGusto> gustosCliente = dtserver.loadCustomerGustos();
 			for (int i = 0; i < gustos.size(); i++) {
 				UserGusto gusto = gustos.get(i);
 				for (int j = 0; j < gustosCliente.size(); j++) {
@@ -600,125 +533,51 @@ public class Routes {
 				}
 			}
 			mav.addObject("gustos", gustos);
->>>>>>> refs/heads/master
 			break;
 		case 24: // information
-			System.out.println("Tipo 24"); // TIPO TRANSFERIR
-<<<<<<< HEAD
-			// scmenuurlsub.informationsubmenu = Emudata.getInformatiotest();
-			vi.addView("transfiere-scotiapesos");
-			vi.addView("FOOTER");
-			mav = new ModelAndView(vi.render());
-=======
-			
-			Scinformacionsubmenu information = new Scinformacionsubmenu(1,1,"Restorado8",1,"/resource/images/woman-computer.jpg","Obtén desde un","15% dcto. en restaurantes","Reserva ahora y obtén desde un 15% de dcto. en el total de tu cuenta","#","Reserva acá","[\"Restorando les ofrece a miles de comensales la posibilidad de descubrir miles de lugares para salir a comer, acceder a ofertas y beneficios en tiempo real y asegurar su mesa sin tener que esperar para sentarse.\",\"Restorando trabaja junto con los restaurantes para mejorar las experiencias gastron\\u00f3micas de los comensales en latinoam\\u00e9rica.\",\"XXC\",\"t2\"]","2018-12-11 18:15:04","2019-02-13 18:03:57",1);
-			scmenuurlsub.informationsubmenu =information;
-			
-			//scmenuurlsub.informationsubmenu = Emudata.getInformatiotest();
-			this.vi.addView("transfiere-scotiapesos");
-			this.vi.addView("FOOTER");
-			mav = new ModelAndView(this.vi.render());
->>>>>>> refs/heads/master
+			// TIPO TRANSFERIR
+			html += viewApp.loadView("transfiere-scotiapesos", "FOOTER");
+			mav = new ModelAndView(html);
 			break;
 		default:
-			System.out.println("Seccion fuera de menu");
-			return new ModelAndView("redirect:/404");
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
-<<<<<<< HEAD
-
-=======
->>>>>>> refs/heads/master
 		mav.addObject("menuurl", scmenu);
 		mav.addObject("submenuurl", scmenuurlsub);
-
 		this.setHeaderx(mav);
-
 		return mav;
-
 	}
 
 	@GetMapping("/information/{nombreInformation}")
-	public ModelAndView getinformation(@PathVariable("nombreInformation") String nombreInformation) throws UnsupportedEncodingException {
-//		ModelAndView mav = new ModelAndView("user");
-<<<<<<< HEAD
-		ViewApp vi = new ViewApp(apiUrl);
-=======
-		this.vi.addView("HEAD");
-		this.vi.addView("INFORMATION");
-		this.vi.addView("FOOTER");
->>>>>>> refs/heads/master
-
-		ModelAndView mav = new ModelAndView(this.vi.render());
-
+	public ModelAndView getinformation(@PathVariable("nombreInformation") String nombreInformation) {
+		ModelAndView mav = new ModelAndView(viewApp.loadView("HEAD", "INFORMATION", "FOOTER"));
 		Information informationhtml = new Information();
-		informationhtml = dtserver.loadInformationByName(nombreInformation).getBody();
+		informationhtml = dtserver.loadInformationByName(nombreInformation);
 		if (informationhtml == null) {
-			return new ModelAndView("redirect:/404");
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
-
 		mav.addObject("informationhtml", informationhtml);
-
 		this.setHeaderx(mav);
-
 		return mav;
-
-	}
-
-<<<<<<< HEAD
-=======
-	@PostMapping("/user/login")
-	public ModelAndView loginuser(@ModelAttribute("loginForm") LoginUser loginForm) {
-		this.vi.addView("HEAD");
-		this.vi.addView("FOOTER");
-		ModelAndView mav = new ModelAndView(this.vi.render());
-		ResponseEntity<String> resultlogin = dtserver.testLogin(loginForm.getRut(), loginForm.getPass());
-
-		//if (resultlogin.getStatusCode().OK==HttpStatus.OK) { // token de sesion devuelto
-
-		//} else {
-
-		//}
-		this.setHeaderx(mav);
-
-		return mav;
-
 	}
 
 	@GetMapping("/cupon/get/{id_reward}")
-	public ModelAndView getCuponByRew(@PathVariable("id_reward") int id_reward,@RequestHeader(value = "referer", required = false) final String referer)
-			throws UnsupportedEncodingException {
-		CredencialesEntity credentialUser = new CredencialesEntity();
+	public ModelAndView getCuponByRew(@PathVariable("id_reward") int id_reward,@RequestHeader(value = "referer", required = false) final String referer) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
-		if (!resolver.isAnonymous(auth)) {
-			credentialUser = (CredencialesEntity) auth.getPrincipal();
-		} else {
-			System.out.println("User no login");
+		if (resolver.isAnonymous(auth)) {
 			return new ModelAndView("redirect:" + referer + "?login");
 		}
 
-		this.vi.addView("HEAD");
-		this.vi.addView("INFORMATION");
-		this.vi.addView("FOOTER");
-
-		ModelAndView mav = new ModelAndView(this.vi.render());
-
+		ModelAndView mav = new ModelAndView(viewApp.loadView("HEAD", "INFORMATION", "FOOTER"));
 		this.setHeaderx(mav);
-
 		return mav;
-
 	}
 
->>>>>>> refs/heads/master
 	@GetMapping("/getcupon/{id_rew}")
-<<<<<<< HEAD
 	public Object getFile(@PathVariable("id_rew") int idReward, HttpServletRequest rq,
 			@RequestHeader(value = "referer", required = false) final String referer) {
 		Customer customer = new Customer();
-=======
-	public Object getFile(@PathVariable("id_rew") int id_rew,@RequestHeader(value = "referer", required = false) final String referer) {
-		CredencialesEntity credentialUser = new CredencialesEntity();
->>>>>>> refs/heads/master
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
 		if (!resolver.isAnonymous(auth)) {
@@ -727,27 +586,15 @@ public class Routes {
 			// Para evitar que una página quede como ?login?login se hace el replace
 			return new ModelAndView("redirect:" + referer.replace("?login", "") + "?login");
 		}
-<<<<<<< HEAD
-		byte[] response = dtserver.loadCuponAsPdf(customer.getScotiauser().getId_cliente(), idReward, rq);
-=======
-		
-		System.out.println("DDDDDDDDDDDDDDDDD"+credentialUser.getScotiauser().getId_cliente());
-		byte[] response = dtserver.loadCuponAsPdf(credentialUser.getScotiauser().getId_cliente(), id_rew).getBody();
->>>>>>> refs/heads/master
+		byte[] response = dtserver.loadCuponAsPdf(customer.getScotiauser().getId_cliente(), idReward);
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).body(new ByteArrayResource(response));
 	}
 
 	@PostMapping("/gustos/actualizar")
-<<<<<<< HEAD
 	public void actualizarGustos(@RequestParam(value = "gusto", required = false) String[] gustos) {
-=======
-	public boolean actualizarGustos(@RequestParam(value = "gusto", required = false) String[] gustos) {
-		System.out.println("Se llega al front");
->>>>>>> refs/heads/master
 		if (gustos == null) {
 			gustos = new String[0];
 		}
-<<<<<<< HEAD
 		dtserver.saveCustomerGustos(gustos);
 	}
 
@@ -763,11 +610,19 @@ public class Routes {
 			// Para evitar que una página quede como ?login?login se hace el replace
 			return new ModelAndView("redirect:" + referer.replace("?login", "") + "?login");
 		}
-=======
-		System.out.println("consultando al dtserver");
-		String success = dtserver.saveCustomerGustos(gustos).getBody();
-		return true;
->>>>>>> refs/heads/master
+	}
+	
+	@PostMapping("/despegar")
+	public ModelAndView getDespegarLink(@RequestHeader(value = "referer", required = false) final String referer) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
+		if (!resolver.isAnonymous(auth)) {
+			String despegarLink = dtserver.getDespegarLink();
+			return new ModelAndView("redirect:" + despegarLink);
+		} else {
+			// Para evitar que una página quede como ?login?login se hace el replace
+			return new ModelAndView("redirect:" + referer.replace("?login", "") + "?login");
+		}
 	}
 
 }

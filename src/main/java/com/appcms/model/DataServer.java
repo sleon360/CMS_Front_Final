@@ -335,14 +335,15 @@ public class DataServer {
 		}
 	}
 
-	public ResponseEntity<byte[]> loadCuponAsPdf(int idUser, int idReward) {
+	public byte[] loadCuponAsPdf(int idUser, int idReward) {
 		HttpHeaders headers = new HttpHeaders();		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Customer credencialesEntity = (Customer) auth.getPrincipal();
 		headers.set("AuthorizationCustomer", credencialesEntity.getJwt());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
 		String url = apiUrl + "/v1/customer/" + idUser + "/cupones/" + idReward + "/getAsPdf";
-		return restTemplate.exchange(url, HttpMethod.GET, httpEntity, byte[].class);
+		ResponseEntity<byte[]> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, byte[].class);
+		return response.getBody();
 	}
 
 	public StockTicket loadStockTicket(String empresa) {
@@ -394,14 +395,14 @@ public class DataServer {
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
 		int id = credencialesEntity.getScotiauser().getId_cliente();
 		try {
-			ResponseEntity<List<UserGusto>> response = restTemplate.exchange(apiUrl + "/v1/customer/" + id + "/customer_gustos", HttpMethod.GET,new HttpEntity<Object>(httpHeaders), new ParameterizedTypeReference<List<UserGusto>>() {});
+			ResponseEntity<List<UserGusto>> response = restTemplate.exchange(apiUrl + "/v1/customer/" + id + "/customer_gustos", HttpMethod.GET, new HttpEntity<Object>(httpHeaders), new ParameterizedTypeReference<List<UserGusto>>() {});
 			return response.getBody();
 		} catch (Exception e) {
 			return new ArrayList<>();
 		}
 	}
 
-	public String saveCustomerGustos(String[] gustos) {
+	public void saveCustomerGustos(String[] gustos) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Customer credencialesEntity = (Customer) auth.getPrincipal();
 		HttpHeaders httpHeaders = new HttpHeaders();
@@ -416,11 +417,10 @@ public class DataServer {
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map,
 				httpHeaders);
 		try {
-			ResponseEntity<String> customerGustosResponseEntity = restTemplate
+			restTemplate
 					.postForEntity(apiUrl + "/v1/customer/" + id + "/customer_gustos/save", request, String.class);
-			return customerGustosResponseEntity.getBody();
 		} catch (Exception e) {
-			return null;
+			throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -465,7 +465,6 @@ public class DataServer {
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 		map.add("id_producto", Integer.toString(idProducto));
 		map.add("card_key", cardKey);
-		map.add("card_number", cardNumber);
 		map.add("quantity", Integer.toString(quantity));
 
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map,
@@ -478,8 +477,22 @@ public class DataServer {
 			return true;
 		} catch(Exception e) {
 			return false;
+		}			
+	}
+
+	public String getDespegarLink() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Customer credencialesEntity = (Customer) auth.getPrincipal();
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
+		int id = credencialesEntity.getScotiauser().getId_cliente();
+		String url = apiUrl + "/v1/customer/{id}/getDespegarLink";
+		try {
+			ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<Object>(httpHeaders), String.class, id);
+			return responseEntity.getBody();
+		} catch(Exception e) {
+			throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-			
 	}
 
 }
