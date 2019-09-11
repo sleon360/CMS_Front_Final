@@ -16,11 +16,12 @@ public class ViewApp {
 	@Autowired
 	RestTemplate restTemplate;
 
+	@Autowired
 	public ViewApp(@Qualifier("apiUrl") String apiUrl) {
 		this.apiUrl = apiUrl;
 	}	
 
-	public String loadView(String... views) {
+	public String loadViews(String... views) {
 		if (views == null) {
 			throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
 		}

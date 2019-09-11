@@ -49,10 +49,10 @@ import com.cms.views.ViewApp;
 public class Routes {
 	
 	@Autowired
-	ViewApp viewApp;
+	private ViewApp viewApp;
 	
 	@Autowired
-	DataServer dtserver;
+	private DataServer dtserver;
 	
 	public void setHeaderx(ModelAndView mav) {
 		mav.addObject("menuesHeader", dtserver.loadAllScmenu());
@@ -126,7 +126,7 @@ public class Routes {
 		} catch (Exception ex) {
 			errorMsg = "Http Error Code: 500. Internal Server Error";
 		}
-		ModelAndView mav = new ModelAndView(viewApp.loadView("head", "error", "footer"));
+		ModelAndView mav = new ModelAndView(viewApp.loadViews("head", "error", "footer"));
 		mav.addObject("titulo_error", httpErrorCode);
 		mav.addObject("descripcion_error", errorMsg);
 		mav.addObject("clean", clean);
@@ -136,7 +136,7 @@ public class Routes {
 
 	@GetMapping("/")
 	public ModelAndView home(HttpServletRequest rq) {
-		ModelAndView mav = new ModelAndView(viewApp.loadView("head", "index", "footer"));
+		ModelAndView mav = new ModelAndView(viewApp.loadViews("head", "index", "footer"));
 		mav.addObject("banners", dtserver.loadBannerAll(0));
 		mav.addObject("banners_resp", dtserver.loadBannerAll(1));
 		mav.addObject("descuentos_destacados", dtserver.loadscmenuinformationFomScmenu(10));
@@ -164,7 +164,7 @@ public class Routes {
 		if (scmenuurlsub.getId() == 0) {
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
-
+		System.out.println("Tipo de submenú:" + scmenuurlsub.getTipo());
 		switch (scmenuurlsub.getTipo()) {
 		case 1:
 			// TIPO INFORMACION
@@ -206,7 +206,7 @@ public class Routes {
 		default:
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
-		String html = viewApp.loadView("head", "HEADER_CATEGORIAS", "CATEGORIAS", "footer");
+		String html = viewApp.loadViews("head", "HEADER_CATEGORIAS", "CATEGORIAS", "footer");
 		ModelAndView mav = new ModelAndView(html);
 		mav.addObject("menuurl", scmenu);
 		mav.addObject("submenuurl", scmenuurlsub);
@@ -219,7 +219,7 @@ public class Routes {
 			@PathVariable("submenu") String submenu,
 			@PathVariable("categoria") String categoria,
 			@RequestHeader(value = "referer", required = false) final String referer) {
-		ModelAndView mav = new ModelAndView(viewApp.loadView("head", "HEADER_CATEGORIAS", "CATEGORIAS", "footer"));
+		ModelAndView mav = new ModelAndView(viewApp.loadViews("head", "HEADER_CATEGORIAS", "CATEGORIAS", "footer"));
 		Scmenu scmenu = dtserver.loadScmenuByName(menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 		try {
@@ -291,7 +291,7 @@ public class Routes {
 	@GetMapping("/categoria/{menu}/{submenu}/detalle/{producto}")
 	public ModelAndView menuDetalleProducto(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu,
 			@PathVariable("producto") int producto) {
-		ModelAndView mav = new ModelAndView(viewApp.loadView("HEAD", "HEADER_CATEGORIAS", "CANJES", "FOOTER"));
+		ModelAndView mav = new ModelAndView(viewApp.loadViews("HEAD", "HEADER_CATEGORIAS", "CANJES", "FOOTER"));
 		Scmenu scmenu = dtserver.loadScmenuByName(menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 		try {
@@ -331,7 +331,7 @@ public class Routes {
 			return new ModelAndView("redirect:" + referer.replace("?login", "") + "?login");
 		}
 
-		ModelAndView mav = new ModelAndView(viewApp.loadView("HEAD", "HEADER_CATEGORIAS", "CANJES", "FOOTER"));
+		ModelAndView mav = new ModelAndView(viewApp.loadViews("HEAD", "HEADER_CATEGORIAS", "CANJES", "FOOTER"));
 		Scmenu scmenu = dtserver.loadScmenuByName(menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 		try {
@@ -423,7 +423,7 @@ public class Routes {
 		if (resolver.isAnonymous(auth)) {
 			return new ModelAndView("redirect:" + referer.replace("?login", "") + "?login");
 		}
-		String html = viewApp.loadView("HEAD", "HEADER_CATEGORIAS");
+		String html = viewApp.loadViews("HEAD", "HEADER_CATEGORIAS");
 		Scmenu scmenu = dtserver.loadScmenuByName(menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 
@@ -448,13 +448,13 @@ public class Routes {
 		switch (scmenuurlsub.getTipo()) {
 		case 20: // information
 			// TIPO MI CARTOLA
-			html += viewApp.loadView("MI-CARTOLA", "FOOTER");
+			html += viewApp.loadViews("MI-CARTOLA", "FOOTER");
 			mav = new ModelAndView(html);
 			mav.addObject("cartola", dtserver.loadUserCartola());
 			break;
 		case 21: // information
 			// TIPO INSCRIPCCION
-			html += viewApp.loadView("mis-inscripciones", "FOOTER");
+			html += viewApp.loadViews("mis-inscripciones", "FOOTER");
 			mav = new ModelAndView(html);
 			List<CustomerInscripcion> inscripciones = dtserver.loadUserInscripciones();
 			Date fechaActual = new Date();
@@ -474,7 +474,7 @@ public class Routes {
 			break;
 		case 22: // information
 			// TIPO MIS CUPONES
-			html += viewApp.loadView("mis-cupones", "FOOTER");
+			html += viewApp.loadViews("mis-cupones", "FOOTER");
 			mav = new ModelAndView(html);
 			List<UserCupon> cupones = dtserver.loadCupones();
 			List<UserCupon> giftCards = new ArrayList<UserCupon>();
@@ -518,7 +518,7 @@ public class Routes {
 			break;
 		case 23: // information
 			// TIPO MIS GUSTOS
-			html += viewApp.loadView("mis-preferencias", "FOOTER");
+			html += viewApp.loadViews("mis-preferencias", "FOOTER");
 			mav = new ModelAndView(html);
 			List<UserGusto> gustos = dtserver.loadGustos();
 			List<UserGusto> gustosCliente = dtserver.loadCustomerGustos();
@@ -536,7 +536,7 @@ public class Routes {
 			break;
 		case 24: // information
 			// TIPO TRANSFERIR
-			html += viewApp.loadView("transfiere-scotiapesos", "FOOTER");
+			html += viewApp.loadViews("transfiere-scotiapesos", "FOOTER");
 			mav = new ModelAndView(html);
 			break;
 		default:
@@ -550,7 +550,7 @@ public class Routes {
 
 	@GetMapping("/information/{nombreInformation}")
 	public ModelAndView getinformation(@PathVariable("nombreInformation") String nombreInformation) {
-		ModelAndView mav = new ModelAndView(viewApp.loadView("HEAD", "INFORMATION", "FOOTER"));
+		ModelAndView mav = new ModelAndView(viewApp.loadViews("HEAD", "INFORMATION", "FOOTER"));
 		Information informationhtml = new Information();
 		informationhtml = dtserver.loadInformationByName(nombreInformation);
 		if (informationhtml == null) {
@@ -569,7 +569,7 @@ public class Routes {
 			return new ModelAndView("redirect:" + referer + "?login");
 		}
 
-		ModelAndView mav = new ModelAndView(viewApp.loadView("HEAD", "INFORMATION", "FOOTER"));
+		ModelAndView mav = new ModelAndView(viewApp.loadViews("HEAD", "INFORMATION", "FOOTER"));
 		this.setHeaderx(mav);
 		return mav;
 	}
@@ -612,12 +612,12 @@ public class Routes {
 		}
 	}
 	
-	@PostMapping("/despegar")
+	@GetMapping("/despegar")
 	public ModelAndView getDespegarLink(@RequestHeader(value = "referer", required = false) final String referer) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
 		if (!resolver.isAnonymous(auth)) {
-			String despegarLink = dtserver.getDespegarLink();
+			String despegarLink = dtserver.getDespegarLink().replace("\n", "").replace("\r", "");;
 			return new ModelAndView("redirect:" + despegarLink);
 		} else {
 			// Para evitar que una página quede como ?login?login se hace el replace

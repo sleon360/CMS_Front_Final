@@ -91,8 +91,10 @@ public class DataServer {
 				String post_id = arr.get(i).getAsString();
 				information.addCondicioneslista(post_id);
 			}
+			System.out.println("Excepción no generada");
 			return information;
 		} catch(Exception e) {
+			System.out.println("Excepción generada");
 			throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
