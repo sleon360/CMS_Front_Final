@@ -34,7 +34,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 	private String apiUrl;
 
 	@Autowired
-	RestTemplate restTemplate;
+	private RestTemplate restTemplate;
 	
 	@Autowired
 	public CustomAuthenticationProvider(@Qualifier("apiUrl") String apiUrl) {

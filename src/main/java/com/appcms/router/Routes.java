@@ -1,9 +1,5 @@
 package com.appcms.router;
 
-<<<<<<< HEAD
-=======
-
->>>>>>> refs/heads/master
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 <<<<<<< HEAD

@@ -7,6 +7,8 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -18,8 +20,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import com.appcms.entity.Banner;
@@ -43,199 +47,94 @@ import com.appcms.entity.UserGusto;
 import com.appcms.entity.customer.Customer;
 import com.appcms.entity.points.ExpiringPoints;
 import com.appcms.entity.points.Points;
-<<<<<<< HEAD
-=======
-import com.cms.views.ViewApp;
->>>>>>> refs/heads/master
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
-@Component
+@Service
 public class DataServer {
 
-	private String apiUrl;
-	private String TOKENONE;
+	private String apiUrl;	
 	
-	
-	private RestTemplate restTemplate = new RestTemplate();
-	
-	StringBuilder sb = new StringBuilder("");
+	@Autowired
+	private RestTemplate restTemplate;
 
-	public DataServer(@Qualifier("apiUrl") String xapiUrl,@Qualifier("TOKENONE") String xTOKENONE) {
-		this.apiUrl = xapiUrl;
-		this.TOKENONE = xTOKENONE;
-		System.out.println("AAAAAAAASSSSSSSSSSSSDDDDDDDDDDDFFFFFFFF:"+xTOKENONE);
-	}
-	
-	public void setRestemplate(RestTemplate xrestTemplate)
-	{
-		this.restTemplate=xrestTemplate;
+	@Autowired
+	public DataServer(@Qualifier("apiUrl") String apiUrl) {
+		this.apiUrl = apiUrl;
 	}
 
-<<<<<<< HEAD
-	public Scmenu loadScmenuByName(HttpServletRequest rq, String scmenuName) {
-		HttpHeaders headers = new HttpHeaders();
-		
-		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
-		RestTemplate restTemplate = new RestTemplate();
-=======
-	public String getApiUrl()
-	{
-		return this.apiUrl;
-	}
-	
-	public String getToken()
-	{
-		return this.TOKENONE;
-	}
->>>>>>> refs/heads/master
-
-	
-	public ResponseEntity<Scmenu> loadScmenuByName( String scmenuName) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization", TOKENONE);
-		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
-		
+	public Scmenu loadScmenuByName(String scmenuName) {
 		String url = apiUrl + "/get/scmenuByName/" + scmenuName;
-		 ResponseEntity<Scmenu> retorno=restTemplate.exchange(url, HttpMethod.GET, httpEntity,Scmenu.class);
-		return retorno;
+		try {
+			return restTemplate.getForObject(url, Scmenu.class);
+		} catch(Exception e) {
+			throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
+		}		
 	}
 
-<<<<<<< HEAD
-	@Cacheable(cacheNames = "menu")
-	public List<Scmenu> loadAllScmenu(HttpServletRequest rq) {
-		RestTemplate restTemplate = new RestTemplate();
-
+	public List<Scmenu> loadAllScmenu() {
 		String url = apiUrl + "/get/scmenu";
-
 		try {
 			ResponseEntity<List<Scmenu>> responseEntity = restTemplate.exchange(url, HttpMethod.GET, HttpEntity.EMPTY,
 					new ParameterizedTypeReference<List<Scmenu>>() {
 					});
 			return responseEntity.getBody();
 		} catch (Exception e) {
-			return null;
+			throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
-=======
-	public ResponseEntity<List<Scmenu>> loadAllScmenu() {
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization", TOKENONE);
-		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
-		String url = apiUrl + "/get/scmenu";	
-		ResponseEntity<List<Scmenu>> retorno=restTemplate.exchange(url, HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Scmenu>>() {});
-		return retorno;
->>>>>>> refs/heads/master
 	}
 
-	public ResponseEntity<Scinformacionsubmenu> loadInformatioSub(int idsubmenu) {
-
-		HttpHeaders headers = new HttpHeaders();
-<<<<<<< HEAD
-
-=======
-		headers.set("Authorization", TOKENONE);
->>>>>>> refs/heads/master
-		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
+	public Scinformacionsubmenu loadInformatioSub(int idsubmenu) {
 		String url = apiUrl + "/get/informationsubmenu/" + idsubmenu;
-<<<<<<< HEAD
-
-		ResponseEntity<Scinformacionsubmenu> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
-				Scinformacionsubmenu.class);
-
-		if (xresponse.getStatusCodeValue() == 200) {
-
-			Scinformacionsubmenu information = xresponse.getBody();
+		try {
+			Scinformacionsubmenu information = restTemplate.getForObject(url, Scinformacionsubmenu.class);
 			String json = information.getJson_condiciones();
-=======
-			ResponseEntity<Scinformacionsubmenu> information = restTemplate.exchange(url, HttpMethod.GET, httpEntity,Scinformacionsubmenu.class); 
-			String json = information.getBody().getJson_condiciones();
->>>>>>> refs/heads/master
 			JsonArray jsonObject = new JsonParser().parse(json).getAsJsonArray();
-
 			JsonArray arr = jsonObject.getAsJsonArray();
 			for (int i = 0; i < arr.size(); i++) {
 				String post_id = arr.get(i).getAsString();
-<<<<<<< HEAD
 				information.addCondicioneslista(post_id);
-=======
-				information.getBody().addCondicioneslista(post_id);
->>>>>>> refs/heads/master
 			}
 			return information;
-
-	}
-
-<<<<<<< HEAD
-	public List<ProductoTipoLike> loadProductosLike(int idsubmenu, HttpServletRequest rq) {
-		RestTemplate restTemplate = new RestTemplate();
-
-=======
-	public ResponseEntity<List<ProductoTipoLike>> loadProductosLike(int idsubmenu) {
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization", TOKENONE);
-		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
->>>>>>> refs/heads/master
-		String url = apiUrl + "/get/productosSubmenu/" + idsubmenu;
-<<<<<<< HEAD
-
-		ResponseEntity<List<ProductoTipoLike>> xresponse = restTemplate.exchange(url, HttpMethod.GET, HttpEntity.EMPTY,
-				new ParameterizedTypeReference<List<ProductoTipoLike>>() {
-				});
-
-		if (xresponse.getStatusCodeValue() == 200) {
-			return xresponse.getBody();
-		} else {
-			return null;
+		} catch(Exception e) {
+			throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-=======
-		ResponseEntity<List<ProductoTipoLike>> retorno=restTemplate.exchange(url, HttpMethod.GET, httpEntity,new ParameterizedTypeReference<List<ProductoTipoLike>>(){});
-		return retorno;
->>>>>>> refs/heads/master
-
 	}
 
-	public ResponseEntity<List<ProductoTipoLike>> loadProductosLikeSubmenuCategoria(int idsubmenu, String categoria) {
+	public List<ProductoTipoLike> loadProductosLike(int idsubmenu) {
+		String url = apiUrl + "/get/productosSubmenu/" + idsubmenu;
+		try {
+			ResponseEntity<List<ProductoTipoLike>> response = restTemplate.exchange(url, HttpMethod.GET, HttpEntity.EMPTY,
+					new ParameterizedTypeReference<List<ProductoTipoLike>>() {
+					});
+			return response.getBody();
+		} catch(Exception e) {
+			throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
-		HttpHeaders headers = new HttpHeaders();
-<<<<<<< HEAD
-
-		
-=======
-		headers.set("Authorization", TOKENONE);
->>>>>>> refs/heads/master
-		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
-
+	public List<ProductoTipoLike> loadProductosLikeSubmenuCategoria(int idsubmenu, String categoria) {
 		String url = apiUrl + "/get/productosSubmenuCategoria/" + categoria + "/" + idsubmenu;
-		return restTemplate.exchange(url, HttpMethod.GET, httpEntity,new ParameterizedTypeReference<List<ProductoTipoLike>>() {});
+		try {
+			ResponseEntity<List<ProductoTipoLike>> response = restTemplate.exchange(url, HttpMethod.GET, HttpEntity.EMPTY,
+					new ParameterizedTypeReference<List<ProductoTipoLike>>() {
+					});
+			return response.getBody();
+		} catch(Exception e) {
+			throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
-<<<<<<< HEAD
-	public List<Scinformacionsubmenu> loadscmenuinformationFomScmenu(int idscbmenu, HttpServletRequest rq) {
-		RestTemplate restTemplate = new RestTemplate();
-
-=======
-	public ResponseEntity<List<Scinformacionsubmenu>> loadscmenuinformationFomScmenu(int idscbmenu) {
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization", TOKENONE);
-		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
->>>>>>> refs/heads/master
+	public List<Scinformacionsubmenu> loadscmenuinformationFomScmenu(int idscbmenu) {
 		String url = apiUrl + "/get/informationsubmenuList/" + idscbmenu;
-<<<<<<< HEAD
-
 		try {
 			ResponseEntity<List<Scinformacionsubmenu>> responseEntity = restTemplate.exchange(url, HttpMethod.GET, HttpEntity.EMPTY,
 					new ParameterizedTypeReference<List<Scinformacionsubmenu>>() {
 					});
 			return responseEntity.getBody();
 		} catch(Exception e) {
-			return null;
+			throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-=======
-		return restTemplate.exchange(url, HttpMethod.GET, httpEntity,new ParameterizedTypeReference<List<Scinformacionsubmenu>>() {});
->>>>>>> refs/heads/master
 	}
 
 	public List<ProductoTipoLike> loadProductosDetalle(int idproducto) {

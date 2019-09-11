@@ -148,12 +148,5 @@ public class Scinformacionsubmenu {
 	public void addCondicioneslista(String condiciones) {
 		this.condicioneslista.add(condiciones);
 	}
-<<<<<<< HEAD
 
-=======
-	
-	
-	
-	
->>>>>>> refs/heads/master
 }
