@@ -167,10 +167,8 @@ public class Routes {
 
 	@GetMapping("/categoria/{menu}/{submenu}")
 	public ModelAndView menuSubmenu(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu) {
-
 		Scmenu scmenu = dtserver.loadScmenuByName(menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
-
 		try {
 			if (scmenu != null) {
 				for (Scsubmenu scmenuurlsubtemp : scmenu.getSubmenues()) // buscamos el submenu que seleccionó
@@ -190,97 +188,49 @@ public class Routes {
 		}
 
 		switch (scmenuurlsub.getTipo()) {
-		case 1: // information
-			System.out.println("Tipo 1:" + scmenuurlsub.getId()); // TIPO INFORMACION
-<<<<<<< HEAD
-			// scmenuurlsub.informationsubmenu =
-			// dtserver.loadInformatioSub(scmenuurlsub.getId(), rq);//
-			// Emudata.getInformatiotest();
-			scmenuurlsub.setInformationsubmenu(dtserver.loadInformatioSub(scmenuurlsub.getId(), rq));// Emudata.getInformatiotest();
-=======
-			scmenuurlsub.informationsubmenu = dtserver.loadInformatioSub(scmenuurlsub.getId()).getBody();// Emudata.getInformatiotest();
->>>>>>> refs/heads/master
+		case 1:
+			// TIPO INFORMACION
+			scmenuurlsub.setInformationsubmenu(dtserver.loadInformatioSub(scmenuurlsub.getId()));
 			break;
 		case 2:
-			System.out.println("Tipo 2:" + scmenuurlsub.getId()); // TIPO PRODUCTO CON LIKE
-<<<<<<< HEAD
-			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosLike(scmenuurlsub.getId(), rq));// Emudata.getProductosLikeTest();
-=======
-			
-			ResponseEntity<List<ProductoTipoLike>> retorno=dtserver.loadProductosLike(scmenuurlsub.getId());
-			scmenuurlsub.productosLikeLista = retorno.getBody();// Emudata.getProductosLikeTest();
->>>>>>> refs/heads/master
+			// TIPO PRODUCTOS CON LIKE
+			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosLike(scmenuurlsub.getId()));
 			break;
 		case 3:
-			System.out.println("Tipo 3"); // TIPO CON CUPON
-<<<<<<< HEAD
-			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosLike(scmenuurlsub.getId(), rq));// Emudata.getProductosLikeTest();
-=======
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId()).getBody();// Emudata.getProductosiNFOTest();
->>>>>>> refs/heads/master
+			// TIPO CON CUPON
+			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosLike(scmenuurlsub.getId()));
 			break;
 		case 4:
-			System.out.println("Tipo 4"); // TIPO PRODUCTO E-COMERCE
-<<<<<<< HEAD
-			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosLike(scmenuurlsub.getId(), rq));// Emudata.getProductosLikeTest();
-=======
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId()).getBody();// Emudata.getProductoseEcomerceTest();
-			System.out.println("prodconstock:" + scmenuurlsub.productosLikeLista.toString());
->>>>>>> refs/heads/master
+			// TIPO PRODUCTO E-COMERCE
+			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosLike(scmenuurlsub.getId()));
 			break;
 		case 5:
-			System.out.println("Tipo 5"); // TIPO CANJE CON CATEGORIAS
-<<<<<<< HEAD
-			scmenuurlsub.setCategoriaProductoLista(dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId(), rq));// Emudata.getCategoriasProductosTest();//
-=======
-			scmenuurlsub.categoriaProductoLista = dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId()).getBody();// Emudata.getCategoriasProductosTest();//
->>>>>>> refs/heads/master
+			// TIPO CANJE CON CATEGORIAS
+			scmenuurlsub.setCategoriaProductoLista(dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId()));
 			break;
 		case 6:
-<<<<<<< HEAD
-			System.out.println("Tipo 6"); // TIPO CANJE CON CATEGORIAS PARA FORMULARIO (TIPO INSCRIPCION)
-			scmenuurlsub.setCategoriaProductoLista(dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId(), rq));// Emudata.getCategoriasProductosTestTipo6();
-=======
-			System.out.println("Tipo 6"); // TIPO CANJE CON CATEGORIAS PARA FORMULARIO
-			scmenuurlsub.categoriaProductoLista = dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId()).getBody();// Emudata.getCategoriasProductosTestTipo6();
->>>>>>> refs/heads/master
+			// TIPO CANJE CON CATEGORIAS PARA FORMULARIO (TIPO INSCRIPCION)
+			scmenuurlsub.setCategoriaProductoLista(dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId()));
 			break;
 		case 7:
-			System.out.println("Tipo 7"); // TIPO CANJE CASHBACK
+			// TIPO CANJE CASHBACK
 			scmenuurlsub.setTarjetasCliente(dtserver.loadUserTarjetas().getTarjetasCliente());
 			break;
 		case 8:
-			System.out.println("Tipo 8"); // TIPO CANJE DESCUENTOS
-<<<<<<< HEAD
-			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosLike(scmenuurlsub.getId(), rq));// Emudata.getProductosLikeTest();
-			scmenuurlsub.setTagsProductos(dtserver.loadTagsProductos(rq));// Emudata.getProductosLikeTest();
-=======
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosLike(scmenuurlsub.getId()).getBody();// Emudata.getProductosLikeTest();
-			//scmenuurlsub.tagsProductos = dtserver.loadTagsProductos(rq);// Emudata.getProductosLikeTest();
-			//System.out.println("<<<<< " + scmenuurlsub.tagsProductos + " >>>>>");
->>>>>>> refs/heads/master
+			// TIPO CANJE DESCUENTOS
+			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosLike(scmenuurlsub.getId()));
+			scmenuurlsub.setTagsProductos(dtserver.loadTagsProductos());
 			break;
 		case 9:
-			System.out.println("Tipo 9"); // TIPO VISTA INFORMATION
-<<<<<<< HEAD
-			scmenuurlsub.setInformationHtml(dtserver.loadInformationScsubmenu(scmenuurlsub.getId(), rq));// Emudata.getInformationHtml();loadInformationScsubmenu
-=======
-			scmenuurlsub.informationHtml = dtserver.loadInformationScsubmenu(scmenuurlsub.getId()).getBody();// Emudata.getInformationHtml();loadInformationScsubmenu
->>>>>>> refs/heads/master
+			// TIPO VISTA INFORMATION
+			scmenuurlsub.setInformationHtml(dtserver.loadInformationScsubmenu(scmenuurlsub.getId()));
 			break;
 		}
-
-		this.vi.addView("head");
-		this.vi.addView("HEADER_CATEGORIAS");
-		this.vi.addView("CATEGORIAS");
-		this.vi.addView("footer");
-
-		ModelAndView mav = new ModelAndView(this.vi.render());
+		String html = viewApp.loadView("head", "HEADER_CATEGORIAS", "CATEGORIAS", "footer");
+		ModelAndView mav = new ModelAndView(html);
 		mav.addObject("menuurl", scmenu);
 		mav.addObject("submenuurl", scmenuurlsub);
-
 		this.setHeaderx(mav);
-
 		return mav;
 	}
 
