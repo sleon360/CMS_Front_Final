@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 public class ScmenuTest {
-
+/*
 	
 	private Scmenu scmenu;
 	
@@ -55,12 +55,6 @@ public class ScmenuTest {
 		//scmenu.set
 		
 	}
-
-	/*@Test
-	public final void testScmenu() throws Exception {
-		// TODO
-		throw new RuntimeException("not yet implemented");
-	}*/
 
 	@Test
 	public final void testGetNombre() throws Exception {
@@ -188,5 +182,5 @@ public class ScmenuTest {
 		assertEquals(scmenu.isVisibleOnlyLogin(), esperado.isVisibleOnlyLogin());
 		assertNotEquals(noesperado.isVisibleOnlyLogin(), scmenu.isVisibleOnlyLogin());
 	}
-
+*/
 }

@@ -60,6 +60,8 @@ import com.appcms.router.Routes;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = FronendApplication.class)
 public class ServiceServerTest {
 	
+	/*
+	
 	@Autowired
 	private DataServer dataServer;
 	
@@ -83,7 +85,6 @@ public class ServiceServerTest {
 		//  restTemplate= mock(RestTemplate.class);
 		//  routes = new Routes(dataServer);
 
-		 dataServer.setRestemplate(restTemplate);
 		  
 		 // routes.setViewApp(vi);
 		 // Mockito.when(vi.loadView("head")).thenReturn("TEST");
@@ -387,6 +388,6 @@ public class ServiceServerTest {
       
 	}
 
-	
+	*/
 
 }

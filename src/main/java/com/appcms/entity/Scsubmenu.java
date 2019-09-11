@@ -3,8 +3,6 @@ package com.appcms.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class Scsubmenu {
 
 	int id;
@@ -29,41 +27,7 @@ public class Scsubmenu {
 	Information informationHtml = null;
 	boolean visibleTop = true;
 	boolean visibleOnlyLogin = false;
-<<<<<<< HEAD
 	List<TagProducto> tagsProductos = new ArrayList<>();
-	
-=======
-
->>>>>>> refs/heads/master
-	public Scsubmenu() {
-		super();
-	}
-
-
-	public Scsubmenu(String strIndex, int id, String nombre, String link, String color, String color_hover,
-			String color_borde, int tipo, String icono, String imagen, String titulo_descripcion, String descripcion,
-			String fecha_creacion, String fecha_modificacion, int estado) {
-		super();
-		this.strIndex = strIndex;
-		this.id = id;
-		this.nombre = nombre;
-		this.link = link;
-		this.color = color;
-		this.color_hover = color_hover;
-		this.color_borde = color_borde;
-		this.tipo = tipo;
-		this.icono = icono;
-		this.imagen = imagen;
-		this.titulo_descripcion = titulo_descripcion;
-		this.descripcion = descripcion;
-		this.fecha_creacion = fecha_creacion;
-		this.fecha_modificacion = fecha_modificacion;
-		this.estado = estado;
-	}
-	
-	
-	
-
 	
 	public String getStrIndex() {
 		return strIndex;
@@ -201,19 +165,6 @@ public class Scsubmenu {
 		this.visibleOnlyLogin = visibleOnlyLogin;
 	}
 
-<<<<<<< HEAD
-	@Override
-	public String toString() {
-		return "Scsubmenu [id=" + id + ", nombre=" + nombre + ", strIndex=" + strIndex + ", link=" + link + ", color="
-				+ color + ", color_hover=" + color_hover + ", color_borde=" + color_borde + ", tipo=" + tipo
-				+ ", icono=" + icono + ", imagen=" + imagen + ", titulo_descripcion=" + titulo_descripcion
-				+ ", descripcion=" + descripcion + ", fecha_creacion=" + fecha_creacion + ", fecha_modificacion="
-				+ fecha_modificacion + ", estado=" + estado + ", informationsubmenu=" + informationsubmenu
-				+ ", productosLikeLista=" + productosLikeLista + ", categoriaProductoLista=" + categoriaProductoLista
-				+ ", TarjetaClienteLista=" + tarjetasCliente + ", informationHtml=" + informationHtml
-				+ ", visibleTop=" + visibleTop + ", visibleOnlyLogin=" + visibleOnlyLogin + "]";
-	}
-
 	public Scinformacionsubmenu getInformationsubmenu() {
 		return informationsubmenu;
 	}
@@ -262,6 +213,4 @@ public class Scsubmenu {
 		this.tagsProductos = tagsProductos;
 	}
 
-=======
->>>>>>> refs/heads/master
 }

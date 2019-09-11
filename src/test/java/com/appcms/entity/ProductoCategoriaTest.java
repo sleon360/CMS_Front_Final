@@ -14,7 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ProductoCategoriaTest {
-
+/*
 	private ProductoCategoria productoCategoria;
 	@Before
 	public void setUp() throws Exception {
@@ -144,5 +144,5 @@ public class ProductoCategoriaTest {
 		assertFalse(productoCategoria.equalsProductoTipoLike(esperado.getProductos()));
 		assertFalse(productoCategoria.equalsProductoTipoLike(noproductos));
 	}
-
+*/
 }

@@ -1,6 +1,6 @@
 package com.appcms.entity;
+
 import java.util.List;
-import java.util.ListIterator;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -27,21 +27,13 @@ public class ProductoTipoLike {
 	@JsonProperty("titulo_tipo2")
 	String tutulo_direcciones;
 	@JsonProperty("formatos_detalles")
-<<<<<<< HEAD
 	List<FormatoDetalle> formatosDetalles;
 	List<FormatoDetalle> detalles = null;
 	List<FormatoDetalle> direcciones = null;
-=======
-	public List<FormatoDetalle> formatosDetalles;
-	public List<FormatoDetalle> detalles;
-	public List<FormatoDetalle> direcciones;
->>>>>>> refs/heads/master
 	String codigo;
-
 	int stock;
 	int canjeados;
 	
-<<<<<<< HEAD
 	@JsonProperty("tags_producto")
 	public List<TagProducto> tagsProducto;
 	
@@ -53,22 +45,6 @@ public class ProductoTipoLike {
 	
 	@JsonProperty("id_tipo_canje")
 	int idTipoCanje;
-=======
-	public ProductoTipoLike(int id, String nombre, String titulo, String subtitulo, String imagen,
-			String porcentajeInfo, String direccionTxt1, String direccionTxt2, String direccionTxt3, int like) { // CONSTRUCTOR TIPO 2
-		super();
-		this.id = id;
-		this.nombre = nombre;
-		this.titulo = titulo;
-		this.subtitulo = subtitulo;
-		this.imagen = imagen;
-		this.porcentajeInfo = porcentajeInfo;
-		this.direccionTxt1 = direccionTxt1;
-		this.direccionTxt2 = direccionTxt2;
-		this.direccionTxt3 = direccionTxt3;
-		this.like = like;
-	}
->>>>>>> refs/heads/master
 	
 	public int getStock() {
 		return stock;
@@ -251,7 +227,6 @@ public class ProductoTipoLike {
 		this.codigo = codigo;
 	}
 	
-<<<<<<< HEAD
 	public List<TagProducto> getTagsProducto() {
 		return tagsProducto;
 	}
@@ -259,65 +234,5 @@ public class ProductoTipoLike {
 	public void setTagsProducto(List<TagProducto> tagsProducto) {
 		this.tagsProducto = tagsProducto;
 	}
-=======
-	public boolean equalsFormatosDetalles(List<FormatoDetalle> f1) {
-		ListIterator<FormatoDetalle> e1 = f1.listIterator();
-		ListIterator<FormatoDetalle> e2 = this.getFormatosDetalles().listIterator();
-	
-		if(f1.size()!=this.getFormatosDetalles().size())
-		{
-			return false;
-		}
-		
-			while (e1.hasNext()) {
-				FormatoDetalle o1 = e1.next();
-				FormatoDetalle o2 = e2.next();
-			    if (!o1.getDetalle().equals(o2.getDetalle()))
-			    	 return false;
-			  }
-			  return true;
-		}
-	
-	
-	public boolean equalsDirecciones(List<FormatoDetalle> f1) {
-		ListIterator<FormatoDetalle> e1 = f1.listIterator();
-		ListIterator<FormatoDetalle> e2 = this.getDirecciones().listIterator();
-	
-		if(f1.size()!=this.getDirecciones().size())
-		{
-			return false;
-		}
-		
-			while (e1.hasNext()) {
-				FormatoDetalle o1 = e1.next();
-				FormatoDetalle o2 = e2.next();
-			    if (!o1.getDetalle().equals(o2.getDetalle()))
-			    	 return false;
-			  }
-			  return true;
-		}
->>>>>>> refs/heads/master
 
-	
-	
-	public boolean equalsgetDetalles(List<FormatoDetalle> f1) {
-		ListIterator<FormatoDetalle> e1 = f1.listIterator();
-		ListIterator<FormatoDetalle> e2 = this.getDetalles().listIterator();
-	
-		if(f1.size()!=this.getDetalles().size())
-		{
-			return false;
-		}
-		
-			while (e1.hasNext()) {
-				FormatoDetalle o1 = e1.next();
-				FormatoDetalle o2 = e2.next();
-			    if (!o1.getDetalle().equals(o2.getDetalle()))
-			    	 return false;
-			  }
-			  return true;
-		}
-
-	
-	
 }

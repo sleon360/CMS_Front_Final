@@ -65,7 +65,7 @@ import com.appcms.entity.points.Points;
 import com.appcms.front.FronendApplication;
 import com.appcms.router.ResourceRoutes;
 import com.appcms.router.Routes;
-import com.appcms.services.GetRestService;
+import com.appcms.services.ResourceService;
 import com.cms.views.ViewApp;
 
 
@@ -73,7 +73,7 @@ import com.cms.views.ViewApp;
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = FronendApplication.class)
 public class DataServerTest {
-
+/*
 	
 	private MockMvc mvc;
 	@Autowired
@@ -771,7 +771,7 @@ public class DataServerTest {
 		
 		
 	}
-
+*/
 	/*
 
 	@Test

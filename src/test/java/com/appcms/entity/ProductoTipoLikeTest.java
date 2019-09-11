@@ -9,6 +9,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -20,6 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 public class ProductoTipoLikeTest {
 
+	/*
 	private ProductoTipoLike productotipolike;
 	
 	@BeforeClass
@@ -409,4 +411,56 @@ public class ProductoTipoLikeTest {
 		assertNotEquals(noesperado.getCodigo(), productotipolike.getCodigo());
 	}
 
+	public boolean equalsFormatosDetalles(List<FormatoDetalle> f1) {
+		ListIterator<FormatoDetalle> e1 = f1.listIterator();
+		ListIterator<FormatoDetalle> e2 = this.getFormatosDetalles().listIterator();
+	
+		if(f1.size()!=this.getFormatosDetalles().size())
+		{
+			return false;
+		}
+		
+			while (e1.hasNext()) {
+				FormatoDetalle o1 = e1.next();
+				FormatoDetalle o2 = e2.next();
+			    if (!o1.getDetalle().equals(o2.getDetalle()))
+			    	 return false;
+			  }
+			  return true;
+		}
+	
+	
+	public boolean equalsDirecciones(List<FormatoDetalle> f1) {
+		ListIterator<FormatoDetalle> e1 = f1.listIterator();
+		ListIterator<FormatoDetalle> e2 = this.getDirecciones().listIterator();
+	
+		if(f1.size()!=this.getDirecciones().size()) {
+			return false;
+		}
+		while (e1.hasNext()) {
+			FormatoDetalle o1 = e1.next();
+			FormatoDetalle o2 = e2.next();
+			if (!o1.getDetalle().equals(o2.getDetalle()))
+				return false;
+			}
+		return true;
+	}
+	
+	public boolean equalsgetDetalles(List<FormatoDetalle> f1) {
+		ListIterator<FormatoDetalle> e1 = f1.listIterator();
+		ListIterator<FormatoDetalle> e2 = this.getDetalles().listIterator();
+	
+		if(f1.size()!=this.getDetalles().size()) {
+			return false;
+		}
+		while (e1.hasNext()) {
+			FormatoDetalle o1 = e1.next();
+			FormatoDetalle o2 = e2.next();
+			if (!o1.getDetalle().equals(o2.getDetalle())) {
+				return false;
+			}
+		}
+		return true;
+	}
+	*/
 }
