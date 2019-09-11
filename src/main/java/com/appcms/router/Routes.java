@@ -71,12 +71,10 @@ public class Routes {
 	ViewApp viewApp;
 	
 	@Autowired
-    public Routes(DataServer dtserver) {
-		this.dtserver = dtserver;
-	}
+	DataServer dtserver;
 	
 	public void setHeaderx(ModelAndView mav) {
-		mav.addObject("menuesHeader", dtserver.loadAllScmenu().getBody());
+		mav.addObject("menuesHeader", dtserver.loadAllScmenu());
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
 		if (!resolver.isAnonymous(auth)) {
@@ -103,7 +101,7 @@ public class Routes {
 	}
 
 	@ExceptionHandler(value = { Exception.class, MultipartException.class, NestedServletException.class,
-			NestedServletException.class, ConnectException.class, RequestRejectedException.class })
+			NestedServletException.class, RequestRejectedException.class })
 	@GetMapping("/errores")
 	public String error(HttpServletRequest rq) {
 		try {
@@ -180,11 +178,10 @@ public class Routes {
 				}
 			}
 		} catch (Exception e) {
-			throw new HttpClientErrorException(HttpStatus.NOT_FOUND)
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
-
 		if (scmenuurlsub.getId() == 0) {
-			throw new HttpClientErrorException(HttpStatus.NOT_FOUND)
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
 
 		switch (scmenuurlsub.getTipo()) {
@@ -225,6 +222,8 @@ public class Routes {
 			// TIPO VISTA INFORMATION
 			scmenuurlsub.setInformationHtml(dtserver.loadInformationScsubmenu(scmenuurlsub.getId()));
 			break;
+		default:
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
 		String html = viewApp.loadView("head", "HEADER_CATEGORIAS", "CATEGORIAS", "footer");
 		ModelAndView mav = new ModelAndView(html);
@@ -236,39 +235,12 @@ public class Routes {
 
 	@GetMapping("/categoria/{menu}/{submenu}/productos/{categoria}")
 	public ModelAndView menuProductoCategoria(@PathVariable("menu") String menu,
-<<<<<<< HEAD
-			@PathVariable("submenu") String submenu, @PathVariable("categoria") String categoria,
-			@RequestHeader(value = "referer", required = false) final String referer, HttpServletRequest rq)
-=======
-			@PathVariable("submenu") String submenu, @PathVariable("categoria") String categoria)
->>>>>>> refs/heads/master
-			throws UnsupportedEncodingException {
-<<<<<<< HEAD
-		ViewApp vi = new ViewApp(apiUrl);
-
-		vi.addView("head");
-		vi.addView("HEADER_CATEGORIAS");
-		vi.addView("CATEGORIAS");
-		vi.addView("footer");
-		ModelAndView mav = new ModelAndView(vi.render());
-=======
-//		ModelAndView mav = new ModelAndView("categorias");
-		
-		this.vi.addView("head");
-		this.vi.addView("HEADER_CATEGORIAS");
-		this.vi.addView("CATEGORIAS");
-		this.vi.addView("footer");
-		ModelAndView mav = new ModelAndView(this.vi.render());
->>>>>>> refs/heads/master
-
-<<<<<<< HEAD
-		Scmenu scmenu = dtserver.loadScmenuByName(rq, menu);
-=======
-		
-		Scmenu scmenu = dtserver.loadScmenuByName(menu).getBody();
->>>>>>> refs/heads/master
+			@PathVariable("submenu") String submenu,
+			@PathVariable("categoria") String categoria,
+			@RequestHeader(value = "referer", required = false) final String referer) {
+		ModelAndView mav = new ModelAndView(viewApp.loadView("head", "HEADER_CATEGORIAS", "CATEGORIAS", "footer"));
+		Scmenu scmenu = dtserver.loadScmenuByName(menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
-
 		try {
 			if (scmenu != null) {
 				for (Scsubmenu scmenuurlsubtemp : scmenu.getSubmenues()) // buscamos el submenu que seleccionó
@@ -280,41 +252,26 @@ public class Routes {
 				}
 			}
 		} catch (Exception e) {
-			return new ModelAndView("redirect:/404");
-
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
-
 		if (scmenuurlsub.getId() == 0) {
-			System.out.println("Seccion no encontrada");
-			return new ModelAndView("redirect:/404");
-
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
-
 		
-		
-		System.out.println("VVVVVVVVVVVVV:"+scmenuurlsub.getTipo());
 		switch (scmenuurlsub.getTipo()) { // SI O SI TIENE QUE SER SUB CATEGORIA TIPO 5 o 6 PARA TENER PRODUCTOS A LA
 											// CATEGORIAPRODUCTOS ASOCIADA
 		case 5:
-			System.out.println("Tipo 5"); // TIPO CANJE CON CATEGORIAS
-<<<<<<< HEAD
-
+			// TIPO CANJE CON CATEGORIAS
 			scmenuurlsub.setCategoriaProductoLista(
-					dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(), categoria, rq));// Emudata.getCateProductosFromCategoria(categoria);
-
-=======
-
-			scmenuurlsub.categoriaProductoLista = dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(),categoria).getBody();// Emudata.getCateProductosFromCategoria(categoria);
->>>>>>> refs/heads/master
+					dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(), categoria));
 			mav.addObject("verProductosCategoria", true);
 			break;
 
 		case 6:
-			System.out.println("Tipo 6"); // TIPO CANJE CON CATEGORIAS FORMULARIO
+			// TIPO INSCRIPCIÓN DE PUNTOS
 			// se pasa la categoria para seleccionar el primer producto de ella, deberia
 			// siempre tener 1 producto MAXIMO por categoria tipo formulario
 
-<<<<<<< HEAD
 			// Si el usuario no se ha autenticado, no debería avanzarse ya que se requieren
 			// los puntos y las tarjetas del cliente
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -325,10 +282,7 @@ public class Routes {
 			}
 
 			scmenuurlsub.setProductosLikeLista(
-					dtserver.loadProductosLikeSubmenuCategoria(scmenuurlsub.getId(), categoria, rq));// Emudata.getProductosLikeTest();
-=======
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosLikeSubmenuCategoria(scmenuurlsub.getId(),categoria).getBody();// Emudata.getProductosLikeTest();
->>>>>>> refs/heads/master
+					dtserver.loadProductosLikeSubmenuCategoria(scmenuurlsub.getId(), categoria));
 			mav.addObject("producto", new CanjeProducto());
 			mav.addObject("verProductosCategoria", true);
 
@@ -338,24 +292,16 @@ public class Routes {
 			scmenuurlsub.setTarjetasCliente(dtserver.loadUserTarjetas().getTarjetasCliente());
 			break;
 		case 8:
-			System.out.println("Tipo 8"); // TIPO CANJE CON CATEGORIAS
-<<<<<<< HEAD
+			// TIPO CANJE CON CATEGORIAS
 			scmenuurlsub.setCategoriaProductoLista(
-					dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(), categoria, rq));
-=======
-			scmenuurlsub.categoriaProductoLista = dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(),categoria).getBody();// Emudata.getCateProductosFromCategoria(categoria);
->>>>>>> refs/heads/master
+					dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(), categoria));
 			mav.addObject("verProductosCategoria", true);
 			break;
 		default:
-			System.out.println("Seccion no encontrada");
-			return new ModelAndView("redirect:/404");
-
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
-
 		mav.addObject("menuurl", scmenu);
 		mav.addObject("submenuurl", scmenuurlsub);
-
 		this.setHeaderx(mav);
 
 		return mav;
@@ -363,22 +309,10 @@ public class Routes {
 
 	@GetMapping("/categoria/{menu}/{submenu}/detalle/{producto}")
 	public ModelAndView menuDetalleProducto(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu,
-			@PathVariable("producto") int producto) throws UnsupportedEncodingException {
-//		ModelAndView mav = new ModelAndView("canjes");
-<<<<<<< HEAD
-		ViewApp vi = new ViewApp(apiUrl);
-=======
-		this.vi.addView("HEAD");
-		this.vi.addView("HEADER_CATEGORIAS");
-		this.vi.addView("CANJES");
-		this.vi.addView("FOOTER");
-		ModelAndView mav = new ModelAndView(this.vi.render());
->>>>>>> refs/heads/master
-
-		
-		Scmenu scmenu = dtserver.loadScmenuByName(menu).getBody();
+			@PathVariable("producto") int producto) {
+		ModelAndView mav = new ModelAndView(viewApp.loadView("HEAD", "HEADER_CATEGORIAS", "CANJES", "FOOTER"));
+		Scmenu scmenu = dtserver.loadScmenuByName(menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
-
 		try {
 			if (scmenu != null) {
 				for (Scsubmenu scmenuurlsubtemp : scmenu.getSubmenues()) // buscamos el submenu que seleccionó
@@ -390,75 +324,38 @@ public class Routes {
 				}
 			}
 		} catch (Exception e) {
-			return new ModelAndView("redirect:/404");
-
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
-
 		if (scmenuurlsub.getId() == 0) {
-			System.out.println("Seccion no encontrada");
-			return new ModelAndView("redirect:/404");
-
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
 
-<<<<<<< HEAD
-		scmenuurlsub.setProductosLikeLista(dtserver.loadProductosDetalle(producto, rq));
-
-=======
-		scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto); // Emudata.getProductoSearch(producto);
-		
->>>>>>> refs/heads/master
+		scmenuurlsub.setProductosLikeLista(dtserver.loadProductosDetalle(producto));
 		mav.addObject("menuurl", scmenu);
 		mav.addObject("submenuurl", scmenuurlsub);
-
 		this.setHeaderx(mav);
-
 		return mav;
 	}
 
 	@PostMapping("/categoria/{menu}/{submenu}/canje")
-	public ModelAndView menuCanje(@ModelAttribute("producto") CanjeProducto producto, @PathVariable("menu") String menu,
-<<<<<<< HEAD
-			@PathVariable("submenu") String submenu, HttpServletRequest rq,
+	public ModelAndView menuCanje(@ModelAttribute("producto") CanjeProducto producto,
+			@PathVariable("menu") String menu,
+			@PathVariable("submenu") String submenu,
 			@RequestHeader(value = "referer", required = false) final String referer) {
-		System.out.println("Adentro de controlador");
-=======
-			@PathVariable("submenu") String submenu,@RequestHeader(value = "referer", required = false) final String referer)
-			throws NamingException, ErrorControllerExection {
-		// ModelAndView mav = new ModelAndView("canjes");
-
->>>>>>> refs/heads/master
 		producto.setCantidad(1);
-
 		Customer customer = new Customer();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
 		if (!resolver.isAnonymous(auth)) {
 			customer = (Customer) auth.getPrincipal();
 		} else {
-			System.out.println("User no login, redirect");
 			// Para evitar que una página quede como ?login?login se hace el replace
 			return new ModelAndView("redirect:" + referer.replace("?login", "") + "?login");
 		}
 
-<<<<<<< HEAD
-		ViewApp vi = new ViewApp(apiUrl);
-=======
-		this.vi.addView("HEAD");
-		this.vi.addView("HEADER_CATEGORIAS");
-		this.vi.addView("CANJES");
-		this.vi.addView("FOOTER");
-		ModelAndView mav = new ModelAndView(this.vi.render());
->>>>>>> refs/heads/master
-
-		Scmenu scmenu = dtserver.loadScmenuByName(menu).getBody();
+		ModelAndView mav = new ModelAndView(viewApp.loadView("HEAD", "HEADER_CATEGORIAS", "CANJES", "FOOTER"));
+		Scmenu scmenu = dtserver.loadScmenuByName(menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
-<<<<<<< HEAD
-
-=======
-		
-		
-		
->>>>>>> refs/heads/master
 		try {
 			if (scmenu != null) {
 				for (Scsubmenu scmenuurlsubtemp : scmenu.getSubmenues()) // buscamos el submenu que seleccionó
@@ -470,23 +367,18 @@ public class Routes {
 				}
 			}
 		} catch (Exception e) {
-			return new ModelAndView("redirect:/404");
-
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
 
 		if (scmenuurlsub.getId() == 0) {
-			System.out.println("Seccion no encontrada");
-			return new ModelAndView("redirect:/404");
-
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
-		System.out.println("Tipo de submenú: " + scmenuurlsub.getTipo());
 		switch (scmenuurlsub.getTipo()) {
-		case 1: // TIPO INFORMACION
-			System.out.println("Error tipo");
+		case 1:
+			// TIPO INFORMACION
 			scmenuurlsub.setTipo(0);
 			break;
 		case 2: // TIPO PRODUCTO CON LIKE
-			System.out.println("Error tipo");
 			scmenuurlsub.setTipo(0);
 			break;
 		case 3: // TIPO CON CUPON
@@ -494,104 +386,12 @@ public class Routes {
 			mav.addObject("canjeExito", true);
 			break;
 		case 4: // TIPO PRODUCTO E-COMERCE
-			System.out.println("Tipo 4");
-			// efectuar canje, datos en objeto "producto"
-
 			try {
-				// OBTENEMOS EL PRODUCTO
-				ProductoTipoLike detalleProducto = dtserver.loadProductoById(producto.getIdProducto()).getBody();
-				int idPruductoCanje = detalleProducto.getId();
-
-				// PRODUCTO DISPONIBLE (NO FUNCIONA)
-				if (idPruductoCanje == 0 || producto.getCantidad() < 1) {
-					System.out.println("no producto");
-					return new ModelAndView("redirect:/404");
-				} else {
-
-					// DESCRIPCION DEL CANJE
-					String descipcionAbono = "Canje: " + detalleProducto.getTitulo();
-					java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-
-					// SETEO DE PUNTOS
-					int totalPuntos = detalleProducto.getPrecio() * producto.getCantidad();
-<<<<<<< HEAD
-					Scotiauser usuario = customer.getScotiauser();
-
-					usuario.setPoints(dtserver.loadUserPoints().getAvailablePoints());
-=======
-					Scotiauser usuario = credentialUser.getScotiauser();
-					
-					Points puntos=dtserver.loadUserPoints().getBody();
-					usuario.setPoints(puntos.getAvailablePoints());
->>>>>>> refs/heads/master
-
-<<<<<<< HEAD
-					StockTicket stockticket = dtserver.loadStockTicket(detalleProducto.getNombre(), rq);
-					System.out.println("activosticket: " + stockticket.toString());
-					System.out.println("puntos canje: " + totalPuntos + "puntos disponibles: " + usuario.getPoints());
-
-=======
-
-					StockTicket stockticket = dtserver.loadStockTicket(detalleProducto.getNombre()).getBody();
-					System.out.println("activosticket: " + detalleProducto.getNombre());
-					//System.out.println("puntos canje: " + totalPuntos + "puntos disponibles: " + usuario.getPoints());
-
->>>>>>> refs/heads/master
-					int stockProducto = stockticket.getActivo();
-
-					if (stockProducto < 1) {// sin stock
-						mav.addObject("canjeExito", false);
-						mav.addObject("error_code", 10);// Sin stock
-
-					} else if (totalPuntos > usuario.getPoints()) {
-						mav.addObject("canjeExito", false);
-						mav.addObject("error_code", 11);// Puntos insuficientes
-					} else {
-	
-						CustomerReward movimientoActual=new CustomerReward();
-						movimientoActual.setCustomer_id(usuario.getId_cliente());
-						movimientoActual.setOrder_id(producto.getIdProducto());
-						movimientoActual.setDescription(descipcionAbono);
-						movimientoActual.setPoints(totalPuntos);
-						movimientoActual.setDate_added(date.toString());
-						movimientoActual.setDate_vencimiento(date.toString());
-						movimientoActual.setId_trx(0);			
-						movimientoActual.setTipo_reward(1);
-						
-						String agregado = dtserver.setReward(movimientoActual, detalleProducto.getNombre(),usuario.getRut()).getBody();
-						System.out.println("RESULTSETREWARDS: " + agregado);
-						if (agregado != null) {
-							System.out.println("Movimiento agregado");
-							mav.addObject("canjeExito", true);
-
-<<<<<<< HEAD
-							// JsonArray jsonObjectAgregado = new
-							// JsonParser().parse(agregado).getAsJsonArray();
-//							mav.addObject("idrewards", jsonObjectAgregado.get);
-							// agregado: RETORNA STATUS DEL CANJE ("customer_reward_id")
-							// SI
-							// CONSULTA VOUCHER TICKETERA
-							// MUESTRA RESULTADO CANJE
-							// NO
-							// VALIDA ERROR (SESSION FINALIZADA, PUNTOS INSUFICIENTES, TOKEN INVALIDO, ETC)
-							// MUESTRA MENSAJE A CLIENTE
-						} else { // PROPBLEMA AL CONSULTAR
-=======
-							JsonArray jsonObjectAgregado = new JsonParser().parse(agregado).getAsJsonArray();
-
-						} else {
->>>>>>> refs/heads/master
-							System.out.println("Movimiento no agregado");
-							mav.addObject("canjeExito", false);
-						}
-
-					}
-				}
-
-			} catch (Exception ex) {
-				System.out.println("canjeex: " + ex.getMessage());
+				
+			} catch(Exception e) {
+				mav.addObject("canjeExito", false);
+				mav.addObject("canjeExito", false);
 			}
-
 			break;
 		case 5: // TIPO CANJE CON CATEGORIAS
 			if (producto.getActionx().equalsIgnoreCase("finish")) {
@@ -599,70 +399,47 @@ public class Routes {
 				mav.addObject("canjeExito", true);
 			} else {
 				producto.setActionx("finish");
-			} // dtserver.loadProductosDetalle(scmenuurlsub.getId());//
-<<<<<<< HEAD
-			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosDetalle(producto.getIdProducto(), rq));
-=======
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto());// Emudata.getProductoSearchById(producto.getIdProducto());//dtserver.loadProductosDetalle(scmenuurlsub.getId());//Emudata.getProductoSearchById(producto.getIdProducto());//
->>>>>>> refs/heads/master
+			}
+			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosDetalle(producto.getIdProducto()));
 			mav.addObject("producto", producto);
 			break;
 		case 6: // TIPO CANJE CON CATEGORIAS PARA FORMULARIO
 			if (producto.getActionx().equalsIgnoreCase("finish")) {
-				dtserver.inscribirPuntos(producto.getIdProducto(), producto.getCardKey(), producto.getCardNumber(),
+				dtserver.inscribirPuntos(producto.getIdProducto(), producto.getCardKey(),
 						producto.getMonto());
 				mav.addObject("canjeExito", true);
 			} else {
-//				return new ModelAndView("redirect:/404");
 				producto.setActionx("finish");
-			}
-			
-			System.out.println("CCCCCCCCCCCCC:"+producto.getIdProducto());
-
-<<<<<<< HEAD
-			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosDetalle(producto.getIdProducto(), rq));
-			ProductoCategoria categoriaProducto = dtserver.loadProductoCategoria(producto.getIdProducto(), rq);// Emudata.getProductoSearchById(producto.getIdProducto());
+			}			
+			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosDetalle(producto.getIdProducto()));
+			ProductoCategoria categoriaProducto = dtserver.loadProductoCategoria(producto.getIdProducto());
 			if (categoriaProducto != null) {
 				scmenuurlsub.getProductosLikeLista().get(0).setImagen(categoriaProducto.getImagen());
 				scmenuurlsub.getProductosLikeLista().get(0).setNombre(categoriaProducto.getNombre());
 			}
-=======
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto());// Emudata.getProductoSearchById(producto.getIdProducto());
->>>>>>> refs/heads/master
 			mav.addObject("producto", producto);
 			break;
 		case 7: // TIPO CANJE CASHBACK
 			break;
-		case 8: // TIPO CANJE DESCUENTOS
-<<<<<<< HEAD
-			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosDetalle(producto.getIdProducto(), rq));
-=======
-			scmenuurlsub.productosLikeLista = dtserver.loadProductosDetalle(producto.getIdProducto());// Emudata.getProductoSearchById(producto.getIdProducto());//dtserver.loadProductosDetalle(scmenuurlsub.getId());//Emudata.getProductoSearchById(producto.getIdProducto());
->>>>>>> refs/heads/master
+		case 8:
+			// TIPO CANJE DESCUENTOS
+			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosDetalle(producto.getIdProducto()));
 			mav.addObject("producto", producto);
 			mav.addObject("canjeExito", true);
 			break;
 		default:
-			System.out.println("Seccion fuera de menu");
-			return new ModelAndView("redirect:/404");
-
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
 		mav.addObject("menuurl", scmenu);
 		mav.addObject("submenuurl", scmenuurlsub);
-
 		this.setHeaderx(mav);
-
 		return mav;
 	}
 
-<<<<<<< HEAD
-=======
-
-	
->>>>>>> refs/heads/master
 	@GetMapping("/user/{menu}/{submenu}")
-	public ModelAndView menuUser(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu, @RequestHeader(value = "referer", required = false) final String referer)
-			throws UnsupportedEncodingException {
+	public ModelAndView menuUser(@PathVariable("menu") String menu,
+			@PathVariable("submenu") String submenu,
+			@RequestHeader(value = "referer", required = false) final String referer) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
 		if (resolver.isAnonymous(auth)) {

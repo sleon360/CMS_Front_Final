@@ -456,7 +456,7 @@ public class DataServer {
 		return tagsProductosResponseEntity.getBody();
 	}
 
-	public boolean inscribirPuntos(int idProducto, String cardKey, String cardNumber, int quantity) {
+	public boolean inscribirPuntos(int idProducto, String cardKey, int quantity) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Customer credencialesEntity = (Customer) auth.getPrincipal();
 		HttpHeaders httpHeaders = new HttpHeaders();
