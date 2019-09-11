@@ -34,78 +34,20 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 	private String apiUrl;
 
 	@Autowired
+	RestTemplate restTemplate;
+	
+	@Autowired
 	public CustomAuthenticationProvider(@Qualifier("apiUrl") String apiUrl) {
 		this.apiUrl = apiUrl;
 	}
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-<<<<<<< HEAD
 		String user = authentication.getName();
 		String password = authentication.getCredentials().toString();
 		if (!user.matches("^\\d{8}-(\\d|k|K)$")) {
 			throw new BadCredentialsException("RUT no válido, debe ser de la forma XXXXXXXX-X");
-=======
-
-		try {
-			// Map<String, Object> info = (Map<String,
-			// Object>)SecurityContextHolder.getContext().getAuthentication().getDetails();
-			/// String tok = (String) info.get("TOKENONE");
-
-			System.out.println(
-					authentication.getDetails() + " AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBB");
-
-			/// String name = authentication.getName();
-			// String password = authentication.getCredentials().toString();
-			System.out.println(authentication.getName() + " - " + authentication.getCredentials() + " TESTTTTTT!!! "
-					+ authentication.getName().equals("admin") + " - "
-					+ authentication.getCredentials().equals("admin"));
-
-			CredencialesEntity credenciales = (CredencialesEntity) authentication.getCredentials();
-			// System.out.println(CustomerAuthentication.CustomerAuth(authentication.getName(),
-			// authentication.getCredentials().toString(), ""));
-			Customer customer = CustomerAuthentication
-					.CustomerAuth(credenciales.getUserName(), credenciales.getPassword(), credenciales.getTOKENONE());
-			
-			System.out.println("TokenTwo: " + customer.getJwt().replace("Bearer ", ""));
-			if (customer != null) {
-				System.out.println("PASOLOGIN+++++++++++++++++++++++++++++++");
-				List<SimpleGrantedAuthority> grantedAuths = new ArrayList<>();
-				// grantedAuths.add(new SimpleGrantedAuthority("USER"));
-				grantedAuths.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-				// return createSuccessAuthentication(authentication);
-
-				// UsernamePasswordAuthenticationToken token = new
-				// UsernamePasswordAuthenticationToken(authentication.getName(),
-				// authentication.getCredentials());
-				// Authentication auth = new UsernamePasswordAuthenticationToken
-				// (authentication.getName(), authentication.getCredentials(), grantedAuths);
-				// auth.setAuthenticated(true);
-				// return auth;
-				// return new UsernamePasswordAuthenticationToken(authentication.getName(),
-				// authentication.getCredentials(), grantedAuths);
-				credenciales.setTOKENTWO(customer.getJwt());
-				System.out.println("Usuario autenticado, scotiauser: " + customer.getScotiauser().toString());
-				credenciales.setScotiauser(customer.getScotiauser());
-				final Authentication auth = new UsernamePasswordAuthenticationToken(credenciales,
-						credenciales.getPassword(), grantedAuths);
-
-				// System.out.println("Authentication: " +
-				// SecurityContextHolder.getContext().getAuthentication());
-				// SecurityContextHolder.getContext().setAuthentication(auth);
-				// System.out.println("Authentication: " +
-				// SecurityContextHolder.getContext().getAuthentication());
-				return auth;
-
-			} else {
-				System.out.println("No pasó login");
-				return null;
-			}
-		} catch (Exception ex) {
-			return null;
->>>>>>> refs/heads/master
 		}
-		RestTemplate restTemplate = new RestTemplate();
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
