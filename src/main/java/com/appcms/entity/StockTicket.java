@@ -3,13 +3,15 @@ package com.appcms.entity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class StockTicket {
+	
 	@JsonProperty("empresa")
 	String empresa;
+	
 	@JsonProperty("ACTIVO")
 	int activo;
+	
 	@JsonProperty("QUEMADO")
 	int quemado;
-	
 	
 	public StockTicket() {
 		super();
