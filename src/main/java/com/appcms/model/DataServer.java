@@ -26,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 import com.appcms.entity.Banner;
 import com.appcms.entity.CustomerInscripcion;
 import com.appcms.entity.CustomerReward;
+import com.appcms.entity.CustomerRewardResponse;
 import com.appcms.entity.FormatoDetalle;
 import com.appcms.entity.Information;
 import com.appcms.entity.ProductoCategoria;
@@ -439,7 +440,50 @@ public class DataServer {
 		}
 	}
 
-	public CustomerReward realizarCanjeDirecto(int idProducto) {
+	public CustomerRewardResponse realizarCanje(int idProducto) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Customer credencialesEntity = (Customer) auth.getPrincipal();
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
+		Scotiauser scotiauser = credencialesEntity.getScotiauser();
+		
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		map.add("id_producto", Integer.toString(idProducto));
+		map.add("nombre_beneficiario", scotiauser.getFirstname());
+		map.add("rut_beneficiario", scotiauser.getRut());
+
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map,
+				httpHeaders);
+
+		int id = scotiauser.getId_cliente();
+		String url = apiUrl + "/v1/customer/{id}/cupones/exchange";
+		ResponseEntity<CustomerRewardResponse> tagsProductosResponseEntity = restTemplate.postForEntity(
+				url, request, CustomerRewardResponse.class, id);
+		return tagsProductosResponseEntity.getBody();
+	}
+	
+	public CustomerRewardResponse realizarCanje(int idProducto, String nombreBeneficiario, String rutBeneficiario) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Customer credencialesEntity = (Customer) auth.getPrincipal();
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
+
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		map.add("id_producto", Integer.toString(idProducto));
+		map.add("nombre_beneficiario", nombreBeneficiario);
+		map.add("rut_beneficiario", rutBeneficiario);
+
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map,
+				httpHeaders);
+
+		int id = credencialesEntity.getScotiauser().getId_cliente();
+		String url = apiUrl + "/v1/customer/{id}/cupones/exchange";
+		ResponseEntity<CustomerRewardResponse> tagsProductosResponseEntity = restTemplate.postForEntity(
+				url, request, CustomerRewardResponse.class, id);
+		return tagsProductosResponseEntity.getBody();
+	}
+	
+	public CustomerRewardResponse realizarCanjeDirecto(int idProducto) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Customer credencialesEntity = (Customer) auth.getPrincipal();
 		HttpHeaders httpHeaders = new HttpHeaders();
@@ -453,9 +497,9 @@ public class DataServer {
 
 		int id = credencialesEntity.getScotiauser().getId_cliente();
 		String url = apiUrl + "/v1/customer/{id}/cupones/exchangeDirectly";
-		ResponseEntity<CustomerReward> tagsProductosResponseEntity = restTemplate.postForEntity(
-				url, request, CustomerReward.class, id);
-		return tagsProductosResponseEntity.getBody();
+		ResponseEntity<CustomerRewardResponse> exchangeDirectlyResponse = restTemplate.postForEntity(
+				url, request, CustomerRewardResponse.class, id);
+		return exchangeDirectlyResponse.getBody();
 	}
 
 	public boolean inscribirPuntos(int idProducto, String cardKey, int quantity) {

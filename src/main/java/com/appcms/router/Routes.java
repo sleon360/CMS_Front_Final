@@ -33,7 +33,7 @@ import org.springframework.web.util.NestedServletException;
 
 import com.appcms.entity.CanjeProducto;
 import com.appcms.entity.CustomerInscripcion;
-import com.appcms.entity.CustomerReward;
+import com.appcms.entity.CustomerRewardResponse;
 import com.appcms.entity.Information;
 import com.appcms.entity.ProductoCategoria;
 import com.appcms.entity.Scmenu;
@@ -364,16 +364,16 @@ public class Routes {
 			mav.addObject("canjeExito", true);
 			break;
 		case 4: // TIPO PRODUCTO E-COMERCE
-			try {
-				
-			} catch(Exception e) {
-				mav.addObject("canjeExito", false);
-				mav.addObject("canjeExito", false);
+			CustomerRewardResponse exchangeResponse = dtserver.realizarCanje(producto.getIdProducto());
+			if (exchangeResponse.getStatus().equals("OK")) {
+				mav.addObject("canjeExito", true);
+			} else {
+				mav.addObject("canjeExito", true);
+				mav.addObject("errorMessage", exchangeResponse.getMensaje());
 			}
 			break;
 		case 5: // TIPO CANJE CON CATEGORIAS
 			if (producto.getActionx().equalsIgnoreCase("finish")) {
-
 				mav.addObject("canjeExito", true);
 			} else {
 				producto.setActionx("finish");
@@ -401,9 +401,16 @@ public class Routes {
 			break;
 		case 8:
 			// TIPO CANJE DESCUENTOS
+			System.out.println("TIPO 8");
 			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosDetalle(producto.getIdProducto()));
-			mav.addObject("producto", producto);
-			mav.addObject("canjeExito", true);
+			CustomerRewardResponse exchangeDirectlyResponse = dtserver.realizarCanjeDirecto(producto.getIdProducto());
+			if (exchangeDirectlyResponse.getStatus().equals("OK")) {
+				mav.addObject("producto", producto);
+				mav.addObject("canjeExito", true);
+			} else {
+				mav.addObject("canjeExito", false);
+				mav.addObject("errorMessage", exchangeDirectlyResponse.getMensaje());
+			}			
 			break;
 		default:
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
@@ -596,20 +603,6 @@ public class Routes {
 			gustos = new String[0];
 		}
 		dtserver.saveCustomerGustos(gustos);
-	}
-
-	@PostMapping("/cupones/descargar-cupon")
-	public ModelAndView descargarCupon(@RequestParam(value = "id-producto", required = false) int idProducto,
-			@RequestHeader(value = "referer", required = false) final String referer) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
-		if (!resolver.isAnonymous(auth)) {
-			CustomerReward customerReward = dtserver.realizarCanjeDirecto(idProducto);
-			return new ModelAndView("redirect:/getcupon/" + customerReward.getCustomer_reward_id());
-		} else {
-			// Para evitar que una página quede como ?login?login se hace el replace
-			return new ModelAndView("redirect:" + referer.replace("?login", "") + "?login");
-		}
 	}
 	
 	@GetMapping("/despegar")
