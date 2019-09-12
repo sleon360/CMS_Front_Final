@@ -22,7 +22,7 @@ public class ResourceService {
 		this.apiUrl = apiUrl;
 	}
 	
-	public ResourceEntity getResouce(String folder,String resourceName) {
+	public ResourceEntity getResouce(String folder, String resourceName) {
 		String url = apiUrl + "/get/resource/" + folder + "?name={name}";
 		try {
 			return restTemplate

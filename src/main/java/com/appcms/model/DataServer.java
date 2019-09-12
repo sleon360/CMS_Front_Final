@@ -457,9 +457,9 @@ public class DataServer {
 
 		int id = scotiauser.getId_cliente();
 		String url = apiUrl + "/v1/customer/{id}/cupones/exchange";
-		ResponseEntity<CustomerRewardResponse> tagsProductosResponseEntity = restTemplate.postForEntity(
+		ResponseEntity<CustomerRewardResponse> exchangeResponseEntity = restTemplate.postForEntity(
 				url, request, CustomerRewardResponse.class, id);
-		return tagsProductosResponseEntity.getBody();
+		return exchangeResponseEntity.getBody();
 	}
 	
 	public CustomerRewardResponse realizarCanje(int idProducto, String nombreBeneficiario, String rutBeneficiario) {
@@ -478,9 +478,9 @@ public class DataServer {
 
 		int id = credencialesEntity.getScotiauser().getId_cliente();
 		String url = apiUrl + "/v1/customer/{id}/cupones/exchange";
-		ResponseEntity<CustomerRewardResponse> tagsProductosResponseEntity = restTemplate.postForEntity(
+		ResponseEntity<CustomerRewardResponse> exchangeResponseEntity = restTemplate.postForEntity(
 				url, request, CustomerRewardResponse.class, id);
-		return tagsProductosResponseEntity.getBody();
+		return exchangeResponseEntity.getBody();
 	}
 	
 	public CustomerRewardResponse realizarCanjeDirecto(int idProducto) {

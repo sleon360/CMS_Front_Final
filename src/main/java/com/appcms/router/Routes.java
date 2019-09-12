@@ -368,18 +368,18 @@ public class Routes {
 			if (exchangeResponse.getStatus().equals("OK")) {
 				mav.addObject("canjeExito", true);
 			} else {
-				mav.addObject("canjeExito", true);
+				mav.addObject("canjeExito", false);
 				mav.addObject("errorMessage", exchangeResponse.getMensaje());
 			}
 			break;
 		case 5: // TIPO CANJE CON CATEGORIAS
-			if (producto.getActionx().equalsIgnoreCase("finish")) {
+			CustomerRewardResponse exchangeCategoryResponse = dtserver.realizarCanje(producto.getIdProducto(), producto.getNombreAsociado(), producto.getRutAsociado());
+			if (exchangeCategoryResponse.getStatus().equals("OK")) {
 				mav.addObject("canjeExito", true);
 			} else {
-				producto.setActionx("finish");
+				mav.addObject("canjeExito", false);
+				mav.addObject("errorMessage", exchangeCategoryResponse.getMensaje());
 			}
-			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosDetalle(producto.getIdProducto()));
-			mav.addObject("producto", producto);
 			break;
 		case 6: // TIPO CANJE CON CATEGORIAS PARA FORMULARIO
 			if (producto.getActionx().equalsIgnoreCase("finish")) {
