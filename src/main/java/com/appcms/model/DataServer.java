@@ -449,7 +449,8 @@ public class DataServer {
 		
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 		map.add("id_producto", Integer.toString(idProducto));
-		map.add("nombre_beneficiario", scotiauser.getFirstname());
+		String nombreApellidoCliente = scotiauser.getFirstname() + "_" + scotiauser.getLastname();
+		map.add("nombre_beneficiario", nombreApellidoCliente);
 		map.add("rut_beneficiario", scotiauser.getRut());
 
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map,
