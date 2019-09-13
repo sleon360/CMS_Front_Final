@@ -457,9 +457,17 @@ public class DataServer {
 
 		int id = scotiauser.getId_cliente();
 		String url = apiUrl + "/v1/customer/{id}/cupones/exchange";
-		ResponseEntity<CustomerRewardResponse> exchangeResponseEntity = restTemplate.postForEntity(
-				url, request, CustomerRewardResponse.class, id);
-		return exchangeResponseEntity.getBody();
+		try {
+			ResponseEntity<CustomerRewardResponse> exchangeResponseEntity = restTemplate.postForEntity(
+					url, request, CustomerRewardResponse.class, id);
+			return exchangeResponseEntity.getBody();
+		} catch(Exception e) {
+			CustomerRewardResponse customerRewardResponse = new CustomerRewardResponse();
+			customerRewardResponse.setStatus("FAIL");
+			customerRewardResponse.setMensaje("Ocurrió un error, no se pudo realizar el canje");
+			return customerRewardResponse;
+		}
+		
 	}
 	
 	public CustomerRewardResponse realizarCanje(int idProducto, String nombreBeneficiario, String rutBeneficiario) {
@@ -478,9 +486,16 @@ public class DataServer {
 
 		int id = credencialesEntity.getScotiauser().getId_cliente();
 		String url = apiUrl + "/v1/customer/{id}/cupones/exchange";
-		ResponseEntity<CustomerRewardResponse> exchangeResponseEntity = restTemplate.postForEntity(
-				url, request, CustomerRewardResponse.class, id);
-		return exchangeResponseEntity.getBody();
+		try {
+			ResponseEntity<CustomerRewardResponse> exchangeResponseEntity = restTemplate.postForEntity(
+					url, request, CustomerRewardResponse.class, id);
+			return exchangeResponseEntity.getBody();
+		} catch(Exception e) {
+			CustomerRewardResponse customerRewardResponse = new CustomerRewardResponse();
+			customerRewardResponse.setStatus("FAIL");
+			customerRewardResponse.setMensaje("Ocurrió un error, no se pudo realizar el canje");
+			return customerRewardResponse;
+		}
 	}
 	
 	public CustomerRewardResponse realizarCanjeDirecto(int idProducto) {
@@ -497,9 +512,16 @@ public class DataServer {
 
 		int id = credencialesEntity.getScotiauser().getId_cliente();
 		String url = apiUrl + "/v1/customer/{id}/cupones/exchangeDirectly";
-		ResponseEntity<CustomerRewardResponse> exchangeDirectlyResponse = restTemplate.postForEntity(
-				url, request, CustomerRewardResponse.class, id);
-		return exchangeDirectlyResponse.getBody();
+		try {
+			ResponseEntity<CustomerRewardResponse> exchangeDirectlyResponse = restTemplate.postForEntity(
+					url, request, CustomerRewardResponse.class, id);
+			return exchangeDirectlyResponse.getBody();
+		} catch(Exception e) {
+			CustomerRewardResponse customerRewardResponse = new CustomerRewardResponse();
+			customerRewardResponse.setStatus("FAIL");
+			customerRewardResponse.setMensaje("Ocurrió un error, no se pudo realizar el canje");
+			return customerRewardResponse;
+		}
 	}
 
 	public boolean inscribirPuntos(int idProducto, String cardKey, int quantity) {
