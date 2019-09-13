@@ -30,6 +30,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.NestedServletException;
+import org.thymeleaf.util.StringUtils;
 
 import com.appcms.entity.CanjeProducto;
 import com.appcms.entity.CustomerInscripcion;
@@ -373,7 +374,33 @@ public class Routes {
 			}
 			break;
 		case 5: // TIPO CANJE CON CATEGORIAS
-			CustomerRewardResponse exchangeCategoryResponse = dtserver.realizarCanje(producto.getIdProducto(), producto.getNombreAsociado(), producto.getRutAsociado());
+			// Se valida el nombre del beneficiario
+			String nombreBeneficiario = producto.getNombreAsociado();
+			if (nombreBeneficiario == null) {
+				mav.addObject("canjeExito", false);
+				mav.addObject("errorMessage", "El nombre del beneficiario no puede estar en blanco");
+				break;
+			} else {
+				if (StringUtils.isEmptyOrWhitespace(nombreBeneficiario)) {
+					mav.addObject("canjeExito", false);
+					mav.addObject("errorMessage", "El nombre del beneficiario no puede estar en blanco");
+					break;
+				}
+			}
+			// Se valida el RUT del beneficiario
+			String rutBeneficiario = producto.getRutAsociado();
+			if (rutBeneficiario == null) {
+				mav.addObject("canjeExito", false);
+				mav.addObject("errorMessage", "El RUT del beneficiario no puede estar en blanco");
+				break;
+			} else {
+				if (StringUtils.isEmptyOrWhitespace(rutBeneficiario)) {
+					mav.addObject("canjeExito", false);
+					mav.addObject("errorMessage", "El RUT del beneficiario no puede estar en blanco");
+					break;
+				}
+			}
+			CustomerRewardResponse exchangeCategoryResponse = dtserver.realizarCanje(producto.getIdProducto(), nombreBeneficiario, rutBeneficiario);
 			if (exchangeCategoryResponse.getStatus().equals("OK")) {
 				mav.addObject("canjeExito", true);
 			} else {
