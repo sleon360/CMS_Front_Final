@@ -148,9 +148,9 @@ public class DataServer {
 			if (formatosDetalles != null) {
 				for (int i = 0; i < formatosDetalles.size(); i++) {
 					FormatoDetalle formatoDetalle = formatosDetalles.get(i);
-					if (formatoDetalle.getTipo() == 1) { // Si es tipo 1 es detalle
+					if (formatoDetalle.getFinalidad() == 1) { // Si es tipo 1 es detalle
 						detalles.add(formatoDetalle);
-					} else { // Si es tipo 2 (u otro) es direccion
+					} else if (formatoDetalle.getFinalidad() == 2) { // Si es tipo 2 es direccion
 						direcciones.add(formatoDetalle);
 					}
 				}
