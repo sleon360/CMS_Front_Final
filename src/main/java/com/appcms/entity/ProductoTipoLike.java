@@ -14,8 +14,11 @@ public class ProductoTipoLike {
 	String imagen;
 	@JsonProperty("porcentaje_info")
 	String porcentajeInfo;
+	@JsonProperty("direccion_txt1")
 	String direccionTxt1;
+	@JsonProperty("direccion_txt2")
 	String direccionTxt2;
+	@JsonProperty("direccion_txt3")
 	String direccionTxt3;
 	int like;
 	int precio;
