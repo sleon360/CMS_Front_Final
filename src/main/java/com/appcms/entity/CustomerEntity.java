@@ -1,17 +1,24 @@
 package com.appcms.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class CustomerEntity {
 
-	private int id;
+	@JsonProperty("id_customer")
+	private int idCustomer;
 	
 	private String rut;
 	
+	@JsonProperty("primer_nombre")
 	private String primerNombre;
 	
+	@JsonProperty("segundo_nombre")
 	private String segundoNombre;
 
+	@JsonProperty("primer_apellido")
 	private String primerApellido;
 	
+	@JsonProperty("segundo_apellido")
 	private String segundoApellido;
 	
 	private String email;
@@ -20,22 +27,18 @@ public class CustomerEntity {
 	
 	private String telefono;
 	
+	@JsonProperty("fecha_registro")
 	private String fechaRegistro;
 	
-	private String idCustomerGroupFK;
-	
-	protected String password;
-	
-	private String csrf;
-	
-	private String token;
+	@JsonProperty("tipo_cliente")
+	private String tipoCliente;
 
-	public int getId() {
-		return id;
+	public int getIdCustomer() {
+		return idCustomer;
 	}
 
-	public void setIdCustomer(int id) {
-		this.id = id;
+	public void setIdCustomer(int idCustomer) {
+		this.idCustomer = idCustomer;
 	}
 
 	public String getRut() {
@@ -110,36 +113,13 @@ public class CustomerEntity {
 		this.fechaRegistro = fechaRegistro;
 	}
 
-	public String getIdCustomerGroupFK() {
-		return idCustomerGroupFK;
+	public String getTipoCliente() {
+		return tipoCliente;
 	}
 
-	public void setIdCustomerGroupFK(String idCustomerGroupFK) {
-		this.idCustomerGroupFK = idCustomerGroupFK;
+	public void setTipoCliente(String tipoCliente) {
+		this.tipoCliente = tipoCliente;
 	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getCsrf() {
-		return csrf;
-	}
-
-	public void setCsrf(String csrf) {
-		this.csrf = csrf;
-	}
-
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
-		this.token = token;
-	}
+	
 
 }

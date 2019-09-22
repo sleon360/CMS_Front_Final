@@ -14,12 +14,12 @@ public class ProductoTipoLike {
 	String imagen;
 	@JsonProperty("porcentaje_info")
 	String porcentajeInfo;
-	@JsonProperty("direccion_txt1")
-	String direccionTxt1;
-	@JsonProperty("direccion_txt2")
-	String direccionTxt2;
-	@JsonProperty("direccion_txt3")
-	String direccionTxt3;
+	@JsonProperty("condiciones_comercio")
+	String condicionesComercio;
+	@JsonProperty("direcciones")
+	String direcciones;
+	@JsonProperty("condiciones_legales")
+	String condicionesLegales;
 	int like;
 	int precio;
 	int equipesos;
@@ -31,8 +31,6 @@ public class ProductoTipoLike {
 	String tutulo_direcciones;
 	@JsonProperty("formatos_detalles")
 	List<FormatoDetalle> formatosDetalles;
-	List<FormatoDetalle> detalles = null;
-	List<FormatoDetalle> direcciones = null;
 	String codigo;
 	int stock;
 	int canjeados;
@@ -118,28 +116,28 @@ public class ProductoTipoLike {
 		this.porcentajeInfo = porcentajeInfo;
 	}
 
-	public String getDireccionTxt1() {
-		return direccionTxt1;
+	public String getCondicionesComercio() {
+		return condicionesComercio;
 	}
 
-	public void setDireccionTxt1(String direccionTxt1) {
-		this.direccionTxt1 = direccionTxt1;
+	public void setCondicionesComercio(String condicionesComercio) {
+		this.condicionesComercio = condicionesComercio;
 	}
 
-	public String getDireccionTxt2() {
-		return direccionTxt2;
+	public String getCondicionesLegales() {
+		return condicionesLegales;
 	}
 
-	public void setDireccionTxt2(String direccionTxt2) {
-		this.direccionTxt2 = direccionTxt2;
+	public void setCondicionesLegales(String condicionesLegales) {
+		this.condicionesLegales = condicionesLegales;
+	}
+	
+	public String getDirecciones() {
+		return direcciones;
 	}
 
-	public String getDireccionTxt3() {
-		return direccionTxt3;
-	}
-
-	public void setDireccionTxt3(String direccionTxt3) {
-		this.direccionTxt3 = direccionTxt3;
+	public void setDirecciones(String direcciones) {
+		this.direcciones = direcciones;
 	}
 
 	public int getLike() {
@@ -204,22 +202,6 @@ public class ProductoTipoLike {
 
 	public void setFormatosDetalles(List<FormatoDetalle> formatosDetalles) {
 		this.formatosDetalles = formatosDetalles;
-	}
-
-	public List<FormatoDetalle> getDetalles() {
-		return this.detalles;
-	}
-
-	public void setDetalles(List<FormatoDetalle> detalles) {
-		this.detalles = detalles;
-	}
-
-	public List<FormatoDetalle> getDirecciones() {
-		return this.direcciones;
-	}
-
-	public void setDirecciones(List<FormatoDetalle> direcciones) {
-		this.direcciones = direcciones;
 	}
 
 	public String getCodigo() {

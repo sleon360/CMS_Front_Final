@@ -16,29 +16,25 @@ public class CustomerEntityTest {
 	public void setUp() throws Exception {
 		customerEntity=new CustomerEntity();
 		customerEntity.setIdCustomer(11111);
-		customerEntity.setIdCustomerGroupFK("1556");
 		customerEntity.setEstado(1);
 		customerEntity.setEmail("email@gmail.com");
-		customerEntity.setCsrf("5g4f5s5d5d5546546546524345243");
 		customerEntity.setFechaRegistro("01-01-2019");
-		customerEntity.setPassword("$#123#$%2548");
 		customerEntity.setPrimerApellido("PRIMER APELLIDO");
 		customerEntity.setPrimerNombre("PRIMER NOMBRE");
 		customerEntity.setRut("12345678-9");
 		customerEntity.setSegundoNombre("SEGUNDO NOMBRE");
 		customerEntity.setSegundoApellido("SEGUNDO APELLIDO");
 		customerEntity.setTelefono("+56987456288");
-		customerEntity.setToken("186tTH8766df46546546524345243");
 	}
 
 	@Test
 	public final void testGetId() throws Exception {
 		CustomerEntity esperado = mock(CustomerEntity.class);
 		CustomerEntity noesperado = mock(CustomerEntity.class);
-		when(esperado.getId()).thenReturn(11111);
-		when(noesperado.getId()).thenReturn(555);
-		assertEquals(customerEntity.getId(), esperado.getId());
-		assertNotEquals(noesperado.getId(), customerEntity.getId());
+		when(esperado.getIdCustomer()).thenReturn(11111);
+		when(noesperado.getIdCustomer()).thenReturn(555);
+		assertEquals(customerEntity.getIdCustomer(), esperado.getIdCustomer());
+		assertNotEquals(noesperado.getIdCustomer(), customerEntity.getIdCustomer());
 	}
 
 	@Test
@@ -129,46 +125,6 @@ public class CustomerEntityTest {
 		when(noesperado.getFechaRegistro()).thenReturn("05-01-2019");
 		assertEquals(customerEntity.getFechaRegistro(), esperado.getFechaRegistro());
 		assertNotEquals(noesperado.getFechaRegistro(), customerEntity.getFechaRegistro());
-	}
-
-	@Test
-	public final void testGetIdCustomerGroupFK() throws Exception {
-		CustomerEntity esperado = mock(CustomerEntity.class);
-		CustomerEntity noesperado = mock(CustomerEntity.class);
-		when(esperado.getIdCustomerGroupFK()).thenReturn("1556");
-		when(noesperado.getIdCustomerGroupFK()).thenReturn("1456");
-		assertEquals(customerEntity.getIdCustomerGroupFK(), esperado.getIdCustomerGroupFK());
-		assertNotEquals(noesperado.getIdCustomerGroupFK(), customerEntity.getIdCustomerGroupFK());
-	}
-
-	@Test
-	public final void testGetPassword() throws Exception {
-		CustomerEntity esperado = mock(CustomerEntity.class);
-		CustomerEntity noesperado = mock(CustomerEntity.class);
-		when(esperado.getPassword()).thenReturn("$#123#$%2548");
-		when(noesperado.getPassword()).thenReturn("$ASD3#$%2548");
-		assertEquals(customerEntity.getPassword(), esperado.getPassword());
-		assertNotEquals(noesperado.getPassword(), customerEntity.getPassword());
-	}
-
-	@Test
-	public final void testGetCsrf() throws Exception {
-		CustomerEntity esperado = mock(CustomerEntity.class);
-		CustomerEntity noesperado = mock(CustomerEntity.class);
-		when(esperado.getCsrf()).thenReturn("5g4f5s5d5d5546546546524345243");
-		when(noesperado.getCsrf()).thenReturn("dfgeryw3452w34te6524345243");
-		assertEquals(customerEntity.getCsrf(), esperado.getCsrf());
-		assertNotEquals(noesperado.getCsrf(), customerEntity.getCsrf());
-	}
-
-	@Test
-	public final void testGetToken() throws Exception {
-		CustomerEntity esperado = mock(CustomerEntity.class);
-		CustomerEntity noesperado = mock(CustomerEntity.class);
-		when(esperado.getToken()).thenReturn("186tTH8766df46546546524345243");
-		when(noesperado.getToken()).thenReturn("345345766fgh5446524345243");
-		assertEquals(customerEntity.getToken(), esperado.getToken());
-		assertNotEquals(noesperado.getToken(), customerEntity.getToken());
 	}
 
 }

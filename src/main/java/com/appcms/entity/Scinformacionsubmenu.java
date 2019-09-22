@@ -1,8 +1,5 @@
 package com.appcms.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Scinformacionsubmenu {
@@ -17,136 +14,105 @@ public class Scinformacionsubmenu {
 	String subtitulo;
 	String descripcion;
 	String link;
-	String texto_link;
-	String json_condiciones;
-	String fecha_creacion;
-	String fecha_modificacion;
-	String imagen_logo;
-	List<String> condicioneslista = new ArrayList<>();
-	int estado;
 	
-	public String getImagen_logo() {
-		return imagen_logo;
-	}
-
-	public void setImagen_logo(String imagen_logo) {
-		this.imagen_logo = imagen_logo;
-	}
-
+	@JsonProperty("texto_link")
+	String textoLink;
+	
+	String condiciones;
+	
+	@JsonProperty("fecha_creacion")
+	String fechaCreacion;
+	
+	@JsonProperty("fecha_modificacion")
+	String fechaModificacion;
+	
+	@JsonProperty("imagen_logo")
+	String imagenLogo;
+	
+	int estado;
 	public int getId() {
 		return id;
 	}
-
 	public void setId(int id) {
 		this.id = id;
 	}
-
 	public int getId_submenu() {
 		return id_submenu;
 	}
-
 	public void setId_submenu(int id_submenu) {
 		this.id_submenu = id_submenu;
 	}
-
 	public String getSubmenuStrindex() {
 		return submenuStrindex;
 	}
-
 	public void setSubmenuStrindex(String submenuStrindex) {
 		this.submenuStrindex = submenuStrindex;
 	}
-
 	public String getImagen() {
 		return imagen;
 	}
-
 	public void setImagen(String imagen) {
 		this.imagen = imagen;
 	}
-
 	public String getTitulo() {
 		return titulo;
 	}
-
 	public void setTitulo(String titulo) {
 		this.titulo = titulo;
 	}
-
 	public String getSubtitulo() {
 		return subtitulo;
 	}
-
 	public void setSubtitulo(String subtitulo) {
 		this.subtitulo = subtitulo;
 	}
-
 	public String getDescripcion() {
 		return descripcion;
 	}
-
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
-
 	public String getLink() {
 		return link;
 	}
-
 	public void setLink(String link) {
 		this.link = link;
 	}
-
-	public String getTexto_link() {
-		return texto_link;
+	public String getTextoLink() {
+		return textoLink;
 	}
-
-	public void setTexto_link(String texto_link) {
-		this.texto_link = texto_link;
+	public void setTextoLink(String textoLink) {
+		this.textoLink = textoLink;
 	}
-
-	public String getJson_condiciones() {
-		return json_condiciones;
+	public String getCondiciones() {
+		return condiciones;
 	}
-
-	public void setJson_condiciones(String json_condiciones) {
-		this.json_condiciones = json_condiciones;
+	public void setCondiciones(String condiciones) {
+		this.condiciones = condiciones;
 	}
-
-	public String getFecha_creacion() {
-		return fecha_creacion;
+	public String getFechaCreacion() {
+		return fechaCreacion;
 	}
-
-	public void setFecha_creacion(String fecha_creacion) {
-		this.fecha_creacion = fecha_creacion;
+	public void setFechaCreacion(String fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
 	}
-
-	public String getFecha_modificacion() {
-		return fecha_modificacion;
+	public String getFechaModificacion() {
+		return fechaModificacion;
 	}
-
-	public void setFecha_modificacion(String fecha_modificacion) {
-		this.fecha_modificacion = fecha_modificacion;
+	public void setFechaModificacion(String fechaModificacion) {
+		this.fechaModificacion = fechaModificacion;
 	}
-
+	public String getImagenLogo() {
+		return imagenLogo;
+	}
+	public void setImagenLogo(String imagenLogo) {
+		this.imagenLogo = imagenLogo;
+	}
 	public int getEstado() {
 		return estado;
 	}
-
 	public void setEstado(int estado) {
 		this.estado = estado;
-	}
-
-	public List<String> getCondicioneslista() {
-		return condicioneslista;
-	}
-
-	public void setCondicioneslista(List<String> condicioneslista) {
-		this.condicioneslista = condicioneslista;
-	}
-
-	public void addCondicioneslista(String condiciones) {
-		this.condicioneslista.add(condiciones);
 	}
 
 }

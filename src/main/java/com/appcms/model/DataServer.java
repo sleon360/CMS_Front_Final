@@ -27,7 +27,6 @@ import com.appcms.entity.Banner;
 import com.appcms.entity.CustomerInscripcion;
 import com.appcms.entity.CustomerReward;
 import com.appcms.entity.CustomerRewardResponse;
-import com.appcms.entity.FormatoDetalle;
 import com.appcms.entity.Information;
 import com.appcms.entity.ProductoCategoria;
 import com.appcms.entity.ProductoTipoLike;
@@ -44,8 +43,6 @@ import com.appcms.entity.UserGusto;
 import com.appcms.entity.customer.Customer;
 import com.appcms.entity.points.ExpiringPoints;
 import com.appcms.entity.points.Points;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
 
 @Service
 public class DataServer {
@@ -85,17 +82,8 @@ public class DataServer {
 		String url = apiUrl + "/get/informationsubmenu/" + idsubmenu;
 		try {
 			Scinformacionsubmenu information = restTemplate.getForObject(url, Scinformacionsubmenu.class);
-			String json = information.getJson_condiciones();
-			JsonArray jsonObject = new JsonParser().parse(json).getAsJsonArray();
-			JsonArray arr = jsonObject.getAsJsonArray();
-			for (int i = 0; i < arr.size(); i++) {
-				String post_id = arr.get(i).getAsString();
-				information.addCondicioneslista(post_id);
-			}
-			System.out.println("Excepción no generada");
 			return information;
 		} catch(Exception e) {
-			System.out.println("Excepción generada");
 			throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -141,22 +129,6 @@ public class DataServer {
 		try {
 			ResponseEntity<ProductoTipoLike> xresponse = restTemplate.exchange(url, HttpMethod.GET, HttpEntity.EMPTY, new ParameterizedTypeReference<ProductoTipoLike>() {});
 			ProductoTipoLike producto = xresponse.getBody();
-			List<FormatoDetalle> formatosDetalles = producto.getFormatosDetalles();
-
-			ArrayList<FormatoDetalle> detalles = new ArrayList<>();
-			ArrayList<FormatoDetalle> direcciones = new ArrayList<>();
-			if (formatosDetalles != null) {
-				for (int i = 0; i < formatosDetalles.size(); i++) {
-					FormatoDetalle formatoDetalle = formatosDetalles.get(i);
-					if (formatoDetalle.getFinalidad() == 1) { // Si es tipo 1 es detalle
-						detalles.add(formatoDetalle);
-					} else if (formatoDetalle.getFinalidad() == 2) { // Si es tipo 2 es direccion
-						direcciones.add(formatoDetalle);
-					}
-				}
-			}
-			producto.setDetalles(detalles);
-			producto.setDirecciones(direcciones);
 			ArrayList<ProductoTipoLike> productoList = new ArrayList<>();
 			productoList.add(producto);
 			return productoList;
@@ -290,7 +262,7 @@ public class DataServer {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
 		try {
-			ResponseEntity<List<CustomerInscripcion>> inscripcionesResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/" + credencialesEntity.getScotiauser().getId_cliente() + "/inscripciones",
+			ResponseEntity<List<CustomerInscripcion>> inscripcionesResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/" + credencialesEntity.getScotiauser().getIdCliente() + "/inscripciones",
 					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), 
 					new ParameterizedTypeReference<List<CustomerInscripcion>>() {
 					});
@@ -327,7 +299,7 @@ public class DataServer {
 		Customer credencialesEntity = (Customer) auth.getPrincipal();
 		headers.set("AuthorizationCustomer", credencialesEntity.getJwt());
 		HttpEntity<?> httpEntity = new HttpEntity<Object>(headers);
-		String url = apiUrl + "/v1/customer/" + credencialesEntity.getScotiauser().getId_cliente() + "/cupones" ;
+		String url = apiUrl + "/v1/customer/" + credencialesEntity.getScotiauser().getIdCliente() + "/cupones" ;
 		try {
 			ResponseEntity<List<UserCupon>> xresponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 					new ParameterizedTypeReference<List<UserCupon>>() {
@@ -396,7 +368,7 @@ public class DataServer {
 		Customer credencialesEntity = (Customer) auth.getPrincipal();
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
-		int id = credencialesEntity.getScotiauser().getId_cliente();
+		int id = credencialesEntity.getScotiauser().getIdCliente();
 		try {
 			ResponseEntity<List<UserGusto>> response = restTemplate.exchange(apiUrl + "/v1/customer/" + id + "/customer_gustos", HttpMethod.GET, new HttpEntity<Object>(httpHeaders), new ParameterizedTypeReference<List<UserGusto>>() {});
 			return response.getBody();
@@ -410,7 +382,7 @@ public class DataServer {
 		Customer credencialesEntity = (Customer) auth.getPrincipal();
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
-		int id = credencialesEntity.getScotiauser().getId_cliente();
+		int id = credencialesEntity.getScotiauser().getIdCliente();
 
 		httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
@@ -456,7 +428,7 @@ public class DataServer {
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map,
 				httpHeaders);
 
-		int id = scotiauser.getId_cliente();
+		int id = scotiauser.getIdCliente();
 		String url = apiUrl + "/v1/customer/{id}/cupones/exchange";
 		try {
 			ResponseEntity<CustomerRewardResponse> exchangeResponseEntity = restTemplate.postForEntity(
@@ -485,7 +457,7 @@ public class DataServer {
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map,
 				httpHeaders);
 
-		int id = credencialesEntity.getScotiauser().getId_cliente();
+		int id = credencialesEntity.getScotiauser().getIdCliente();
 		String url = apiUrl + "/v1/customer/{id}/cupones/exchange";
 		try {
 			ResponseEntity<CustomerRewardResponse> exchangeResponseEntity = restTemplate.postForEntity(
@@ -511,7 +483,7 @@ public class DataServer {
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map,
 				httpHeaders);
 
-		int id = credencialesEntity.getScotiauser().getId_cliente();
+		int id = credencialesEntity.getScotiauser().getIdCliente();
 		String url = apiUrl + "/v1/customer/{id}/cupones/exchangeDirectly";
 		try {
 			ResponseEntity<CustomerRewardResponse> exchangeDirectlyResponse = restTemplate.postForEntity(
@@ -539,7 +511,7 @@ public class DataServer {
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map,
 				httpHeaders);
 
-		int id = credencialesEntity.getScotiauser().getId_cliente();
+		int id = credencialesEntity.getScotiauser().getIdCliente();
 		String url = apiUrl + "/v1/customer/{id}/points/inscribe";
 		try {
 			restTemplate.postForEntity(url, request, CustomerReward.class, id);
@@ -554,7 +526,7 @@ public class DataServer {
 		Customer credencialesEntity = (Customer) auth.getPrincipal();
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
-		int id = credencialesEntity.getScotiauser().getId_cliente();
+		int id = credencialesEntity.getScotiauser().getIdCliente();
 		String url = apiUrl + "/v1/customer/{id}/getDespegarLink";
 		try {
 			ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<Object>(httpHeaders), String.class, id);

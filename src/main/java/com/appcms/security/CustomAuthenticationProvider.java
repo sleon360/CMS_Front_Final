@@ -62,9 +62,12 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 			CustomerEntity customerEntity = responseEntity.getBody();
 			String jwt = responseEntity.getHeaders().getFirst("Authorization").replace("Bearer ", "");
 			
-			Scotiauser scotiauser = new Scotiauser(customerEntity.getId(), customerEntity.getRut(),
-					customerEntity.getPrimerNombre(), customerEntity.getPrimerApellido(), customerEntity.getEmail(),
-					customerEntity.getIdCustomerGroupFK());
+			Scotiauser scotiauser = new Scotiauser();
+			scotiauser.setIdCliente(customerEntity.getIdCustomer());
+			scotiauser.setRut(customerEntity.getRut());
+			scotiauser.setFirstname(customerEntity.getPrimerNombre());
+			scotiauser.setLastname(customerEntity.getPrimerApellido());
+			scotiauser.setTipoCliente(customerEntity.getTipoCliente());
 			Customer customer = new Customer(jwt, scotiauser);
 			return new UsernamePasswordAuthenticationToken(customer, password, AuthorityUtils.createAuthorityList("ROLE_CUSTOMER"));
 		} catch(HttpClientErrorException e) {

@@ -408,11 +408,28 @@ public class Routes {
 				mav.addObject("errorMessage", exchangeCategoryResponse.getMensaje());
 			}
 			break;
-		case 6: // TIPO CANJE CON CATEGORIAS PARA FORMULARIO
+		case 6:
+			// TIPO INCRIPCIÓN DE PUNTOS
 			if (producto.getActionx().equalsIgnoreCase("finish")) {
-				dtserver.inscribirPuntos(producto.getIdProducto(), producto.getCardKey(),
-						producto.getMonto());
-				mav.addObject("canjeExito", true);
+				// Se valida el monto a inscribir y la tarjeta de cliente
+				int monto = producto.getMonto();
+				String tarjeta = producto.getCardKey();
+				if (monto <= 0) {
+					mav.addObject("canjeExito", false);
+					mav.addObject("errorMessage", "La cantidad de puntos a inscribir no es válida");
+				} else if (StringUtils.isEmptyOrWhitespace(tarjeta)) {
+					mav.addObject("canjeExito", false);
+					mav.addObject("errorMessage", "La tarjeta seleccionada no es válida");
+				} else {
+					boolean exito = dtserver.inscribirPuntos(producto.getIdProducto(), tarjeta,
+							monto);
+					if (exito) {
+						mav.addObject("canjeExito", true);
+					} else {
+						mav.addObject("canjeExito", false);
+						mav.addObject("errorMessage", "Hubo un error inscribiendo puntos");
+					}
+				}
 			} else {
 				producto.setActionx("finish");
 			}			
@@ -620,7 +637,7 @@ public class Routes {
 			// Para evitar que una página quede como ?login?login se hace el replace
 			return new ModelAndView("redirect:" + referer.replace("?login", "") + "?login");
 		}
-		byte[] response = dtserver.loadCuponAsPdf(customer.getScotiauser().getId_cliente(), idReward);
+		byte[] response = dtserver.loadCuponAsPdf(customer.getScotiauser().getIdCliente(), idReward);
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).body(new ByteArrayResource(response));
 	}
 
