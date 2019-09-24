@@ -15,6 +15,7 @@ public class ProductoCategoria {
 	@JsonProperty("condiciones_legales")
 	private String condicionesLegales;
 	String imagen;
+	@JsonProperty("color_hover")
 	String colorHover;
 	int tipo; // 1:Productos  2:formulario
 	List<ProductoTipoLike> productos = new ArrayList<>();
