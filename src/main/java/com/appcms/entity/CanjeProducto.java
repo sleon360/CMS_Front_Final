@@ -8,6 +8,7 @@ public class CanjeProducto {
 	int cantidad = 1;
 	int monto = 0;
 	String cardKey;
+	String cardNumber;
 	String csrf_token;
 	String actionx;
 
@@ -88,6 +89,14 @@ public class CanjeProducto {
 
 	public void setCardKey(String cardKey) {
 		this.cardKey = cardKey;
+	}
+	
+	public String getCardNumber() {
+		return cardNumber;
+	}
+
+	public void setCardNumber(String cardNumber) {
+		this.cardNumber = cardNumber;
 	}
 
 	@Override

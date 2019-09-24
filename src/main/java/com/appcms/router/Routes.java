@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,17 +45,21 @@ import com.appcms.entity.UserCupon;
 import com.appcms.entity.UserGusto;
 import com.appcms.entity.customer.Customer;
 import com.appcms.model.DataServer;
+import com.appcms.services.CustomerService;
 import com.cms.views.ViewApp;
 
 @Controller
 public class Routes {
-	
+
 	@Autowired
 	private ViewApp viewApp;
-	
+
 	@Autowired
 	private DataServer dtserver;
-	
+
+	@Autowired
+	private CustomerService customerModel;
+
 	public void setHeaderx(ModelAndView mav) {
 		mav.addObject("menuesHeader", dtserver.loadAllScmenu());
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -62,10 +67,10 @@ public class Routes {
 		if (!resolver.isAnonymous(auth)) {
 			Customer customer = (Customer) auth.getPrincipal();
 			mav.addObject("usuario", customer.getScotiauser());
-			mav.addObject("points", dtserver.loadUserPoints());
+			mav.addObject("points", customerModel.loadUserPoints());
 			// Se agregan los gustos del usuario
 			List<UserGusto> gustos = dtserver.loadGustos();
-			List<UserGusto> gustosCliente = dtserver.loadCustomerGustos();
+			List<UserGusto> gustosCliente = customerModel.loadCustomerGustos();
 			for (int i = 0; i < gustos.size(); i++) {
 				UserGusto gusto = gustos.get(i);
 				for (int j = 0; j < gustosCliente.size(); j++) {
@@ -189,11 +194,11 @@ public class Routes {
 			break;
 		case 6:
 			// TIPO CANJE CON CATEGORIAS PARA FORMULARIO (TIPO INSCRIPCION)
-			scmenuurlsub.setCategoriaProductoLista(dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId()));
+			scmenuurlsub.setCategoriaProductoLista(dtserver.loadScsubmenuRubros(scmenuurlsub.getId()));
 			break;
 		case 7:
 			// TIPO CANJE CASHBACK
-			scmenuurlsub.setTarjetasCliente(dtserver.loadUserTarjetas().getTarjetasCliente());
+			scmenuurlsub.setTarjetasCliente(customerModel.loadUserTarjetas().getTarjetasCliente());
 			break;
 		case 8:
 			// TIPO CANJE DESCUENTOS
@@ -217,8 +222,7 @@ public class Routes {
 
 	@GetMapping("/categoria/{menu}/{submenu}/productos/{categoria}")
 	public ModelAndView menuProductoCategoria(@PathVariable("menu") String menu,
-			@PathVariable("submenu") String submenu,
-			@PathVariable("categoria") String categoria,
+			@PathVariable("submenu") String submenu, @PathVariable("categoria") String categoria,
 			@RequestHeader(value = "referer", required = false) final String referer) {
 		ModelAndView mav = new ModelAndView(viewApp.loadViews("head", "HEADER_CATEGORIAS", "CATEGORIAS", "footer"));
 		Scmenu scmenu = dtserver.loadScmenuByName(menu);
@@ -239,7 +243,7 @@ public class Routes {
 		if (scmenuurlsub.getId() == 0) {
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
-		
+
 		switch (scmenuurlsub.getTipo()) { // SI O SI TIENE QUE SER SUB CATEGORIA TIPO 5 o 6 PARA TENER PRODUCTOS A LA
 											// CATEGORIAPRODUCTOS ASOCIADA
 		case 5:
@@ -263,15 +267,15 @@ public class Routes {
 				return new ModelAndView("redirect:" + referer.replace("?login", "") + "?login");
 			}
 
-			scmenuurlsub.setProductosLikeLista(
-					dtserver.loadProductosLikeSubmenuCategoria(scmenuurlsub.getId(), categoria));
+			scmenuurlsub
+					.setProductosLikeLista(dtserver.loadProductosLikeSubmenuCategoria(scmenuurlsub.getId(), categoria));
 			mav.addObject("producto", new CanjeProducto());
 			mav.addObject("verProductosCategoria", true);
 
 			// Se agregan los puntos de cliente
-			mav.addObject("puntosDisponibles", dtserver.loadUserPoints().getAvailablePoints());
+			mav.addObject("puntosDisponibles", customerModel.loadUserPoints().getAvailablePoints());
 			// Se agregan las tarjetas del cliente
-			scmenuurlsub.setTarjetasCliente(dtserver.loadUserTarjetas().getTarjetasCliente());
+			scmenuurlsub.setTarjetasCliente(customerModel.loadUserTarjetas().getTarjetasCliente());
 			break;
 		case 8:
 			// TIPO CANJE CON CATEGORIAS
@@ -320,10 +324,10 @@ public class Routes {
 	}
 
 	@PostMapping("/categoria/{menu}/{submenu}/canje")
-	public ModelAndView menuCanje(@ModelAttribute("producto") CanjeProducto producto,
-			@PathVariable("menu") String menu,
+	public ModelAndView menuCanje(@ModelAttribute("producto") CanjeProducto producto, @PathVariable("menu") String menu,
 			@PathVariable("submenu") String submenu,
-			@RequestHeader(value = "referer", required = false) final String referer) {
+			@RequestHeader(value = "referer", required = false) final String referer, HttpServletRequest request)
+			throws ServletException {
 		producto.setCantidad(1);
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
@@ -365,7 +369,7 @@ public class Routes {
 			mav.addObject("canjeExito", true);
 			break;
 		case 4: // TIPO PRODUCTO E-COMERCE
-			CustomerRewardResponse exchangeResponse = dtserver.realizarCanje(producto.getIdProducto());
+			CustomerRewardResponse exchangeResponse = customerModel.realizarCanje(producto.getIdProducto());
 			if (exchangeResponse.getStatus().equals("OK")) {
 				mav.addObject("canjeExito", true);
 			} else {
@@ -400,7 +404,8 @@ public class Routes {
 					break;
 				}
 			}
-			CustomerRewardResponse exchangeCategoryResponse = dtserver.realizarCanje(producto.getIdProducto(), nombreBeneficiario, rutBeneficiario);
+			CustomerRewardResponse exchangeCategoryResponse = customerModel.realizarCanje(producto.getIdProducto(),
+					nombreBeneficiario, rutBeneficiario);
 			if (exchangeCategoryResponse.getStatus().equals("OK")) {
 				mav.addObject("canjeExito", true);
 			} else {
@@ -413,16 +418,16 @@ public class Routes {
 			if (producto.getActionx().equalsIgnoreCase("finish")) {
 				// Se valida el monto a inscribir y la tarjeta de cliente
 				int monto = producto.getMonto();
-				String tarjeta = producto.getCardKey();
+				String cardKey = producto.getCardKey();
+				String cardNumber = producto.getCardNumber();
 				if (monto <= 0) {
 					mav.addObject("canjeExito", false);
 					mav.addObject("errorMessage", "La cantidad de puntos a inscribir no es válida");
-				} else if (StringUtils.isEmptyOrWhitespace(tarjeta)) {
+				} else if (StringUtils.isEmptyOrWhitespace(cardKey)) {
 					mav.addObject("canjeExito", false);
 					mav.addObject("errorMessage", "La tarjeta seleccionada no es válida");
 				} else {
-					boolean exito = dtserver.inscribirPuntos(producto.getIdProducto(), tarjeta,
-							monto);
+					boolean exito = customerModel.inscribirPuntos(producto.getIdProducto(), cardKey, cardNumber, monto);
 					if (exito) {
 						mav.addObject("canjeExito", true);
 					} else {
@@ -432,7 +437,7 @@ public class Routes {
 				}
 			} else {
 				producto.setActionx("finish");
-			}			
+			}
 			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosDetalle(producto.getIdProducto()));
 			ProductoCategoria categoriaProducto = dtserver.loadProductoCategoria(producto.getIdProducto());
 			if (categoriaProducto != null) {
@@ -447,14 +452,15 @@ public class Routes {
 			// TIPO CANJE DESCUENTOS
 			System.out.println("TIPO 8");
 			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosDetalle(producto.getIdProducto()));
-			CustomerRewardResponse exchangeDirectlyResponse = dtserver.realizarCanjeDirecto(producto.getIdProducto());
+			CustomerRewardResponse exchangeDirectlyResponse = customerModel
+					.realizarCanjeDirecto(producto.getIdProducto());
 			if (exchangeDirectlyResponse.getStatus().equals("OK")) {
 				mav.addObject("producto", producto);
 				mav.addObject("canjeExito", true);
 			} else {
 				mav.addObject("canjeExito", false);
 				mav.addObject("errorMessage", exchangeDirectlyResponse.getMensaje());
-			}			
+			}
 			break;
 		default:
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
@@ -466,8 +472,7 @@ public class Routes {
 	}
 
 	@GetMapping("/user/{menu}/{submenu}")
-	public ModelAndView menuUser(@PathVariable("menu") String menu,
-			@PathVariable("submenu") String submenu,
+	public ModelAndView menuUser(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu,
 			@RequestHeader(value = "referer", required = false) final String referer) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
@@ -501,13 +506,13 @@ public class Routes {
 			// TIPO MI CARTOLA
 			html += viewApp.loadViews("MI-CARTOLA", "FOOTER");
 			mav = new ModelAndView(html);
-			mav.addObject("cartola", dtserver.loadUserCartola());
+			mav.addObject("cartola", customerModel.loadUserCartola());
 			break;
 		case 21: // information
 			// TIPO INSCRIPCCION
 			html += viewApp.loadViews("mis-inscripciones", "FOOTER");
 			mav = new ModelAndView(html);
-			List<CustomerInscripcion> inscripciones = dtserver.loadUserInscripciones();
+			List<CustomerInscripcion> inscripciones = customerModel.loadUserInscripciones();
 			Date fechaActual = new Date();
 			for (CustomerInscripcion customerInscripcion : inscripciones) {
 				Date fechaVencimiento = customerInscripcion.getFechaVencimiento();
@@ -527,7 +532,7 @@ public class Routes {
 			// TIPO MIS CUPONES
 			html += viewApp.loadViews("mis-cupones", "FOOTER");
 			mav = new ModelAndView(html);
-			List<UserCupon> cupones = dtserver.loadCupones();
+			List<UserCupon> cupones = customerModel.loadCupones();
 			List<UserCupon> giftCards = new ArrayList<UserCupon>();
 			List<UserCupon> entradasCine = new ArrayList<UserCupon>();
 			List<UserCupon> panoramas = new ArrayList<UserCupon>();
@@ -567,12 +572,12 @@ public class Routes {
 			mav.addObject("entradasCine", entradasCine);
 			mav.addObject("panoramas", panoramas);
 			break;
-		case 23: // information
+		case 23:
 			// TIPO MIS GUSTOS
 			html += viewApp.loadViews("mis-preferencias", "FOOTER");
 			mav = new ModelAndView(html);
 			List<UserGusto> gustos = dtserver.loadGustos();
-			List<UserGusto> gustosCliente = dtserver.loadCustomerGustos();
+			List<UserGusto> gustosCliente = customerModel.loadCustomerGustos();
 			for (int i = 0; i < gustos.size(); i++) {
 				UserGusto gusto = gustos.get(i);
 				for (int j = 0; j < gustosCliente.size(); j++) {
@@ -585,7 +590,7 @@ public class Routes {
 			}
 			mav.addObject("gustos", gustos);
 			break;
-		case 24: // information
+		case 24:
 			// TIPO TRANSFERIR
 			html += viewApp.loadViews("transfiere-scotiapesos", "FOOTER");
 			mav = new ModelAndView(html);
@@ -613,7 +618,8 @@ public class Routes {
 	}
 
 	@GetMapping("/cupon/get/{id_reward}")
-	public ModelAndView getCuponByRew(@PathVariable("id_reward") int id_reward,@RequestHeader(value = "referer", required = false) final String referer) {
+	public ModelAndView getCuponByRew(@PathVariable("id_reward") int id_reward,
+			@RequestHeader(value = "referer", required = false) final String referer) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
 		if (resolver.isAnonymous(auth)) {
@@ -637,7 +643,7 @@ public class Routes {
 			// Para evitar que una página quede como ?login?login se hace el replace
 			return new ModelAndView("redirect:" + referer.replace("?login", "") + "?login");
 		}
-		byte[] response = dtserver.loadCuponAsPdf(customer.getScotiauser().getIdCliente(), idReward);
+		byte[] response = customerModel.loadCuponAsPdf(customer.getScotiauser().getIdCliente(), idReward);
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).body(new ByteArrayResource(response));
 	}
 
@@ -646,15 +652,16 @@ public class Routes {
 		if (gustos == null) {
 			gustos = new String[0];
 		}
-		dtserver.saveCustomerGustos(gustos);
+		customerModel.saveCustomerGustos(gustos);
 	}
-	
+
 	@GetMapping("/despegar")
 	public ModelAndView getDespegarLink(@RequestHeader(value = "referer", required = false) final String referer) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
 		if (!resolver.isAnonymous(auth)) {
-			String despegarLink = dtserver.getDespegarLink().replace("\n", "").replace("\r", "");;
+			String despegarLink = customerModel.getDespegarLink().replace("\n", "").replace("\r", "");
+			;
 			return new ModelAndView("redirect:" + despegarLink);
 		} else {
 			// Para evitar que una página quede como ?login?login se hace el replace
