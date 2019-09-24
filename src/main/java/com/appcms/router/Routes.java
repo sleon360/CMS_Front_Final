@@ -34,7 +34,6 @@ import org.springframework.web.util.NestedServletException;
 import org.thymeleaf.util.StringUtils;
 
 import com.appcms.entity.CanjeProducto;
-import com.appcms.entity.CustomerInscripcion;
 import com.appcms.entity.CustomerRewardResponse;
 import com.appcms.entity.Information;
 import com.appcms.entity.ProductoCategoria;
@@ -512,21 +511,7 @@ public class Routes {
 			// TIPO INSCRIPCCION
 			html += viewApp.loadViews("mis-inscripciones", "FOOTER");
 			mav = new ModelAndView(html);
-			List<CustomerInscripcion> inscripciones = customerModel.loadUserInscripciones();
-			Date fechaActual = new Date();
-			for (CustomerInscripcion customerInscripcion : inscripciones) {
-				Date fechaVencimiento = customerInscripcion.getFechaVencimiento();
-				if (fechaVencimiento == null) {
-					customerInscripcion.setVencido(false);
-				} else {
-					if (fechaVencimiento.before(fechaActual)) {
-						customerInscripcion.setVencido(true);
-					} else {
-						customerInscripcion.setVencido(false);
-					}
-				}
-			}
-			mav.addObject("inscripciones", inscripciones);
+			mav.addObject("inscripciones", customerModel.loadUserInscripciones());
 			break;
 		case 22: // information
 			// TIPO MIS CUPONES

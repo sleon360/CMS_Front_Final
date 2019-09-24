@@ -3,7 +3,6 @@ package com.appcms.entity;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CustomerInscripcion {
@@ -25,8 +24,7 @@ public class CustomerInscripcion {
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
 	Date fechaVencimiento;
 	
-	@JsonIgnore
-	boolean vencido;
+	boolean vigente;
 	
 	public int getIdInscripcion() {
 		return idInscripcion;
@@ -76,12 +74,12 @@ public class CustomerInscripcion {
 		this.fechaVencimiento = fechaVencimiento;
 	}
 
-	public boolean isVencido() {
-		return vencido;
+	public boolean isVigente() {
+		return vigente;
 	}
 
-	public void setVencido(boolean vencido) {
-		this.vencido = vencido;
+	public void setVigente(boolean vigente) {
+		this.vigente = vigente;
 	}
 	
 }

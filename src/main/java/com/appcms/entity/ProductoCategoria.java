@@ -12,7 +12,8 @@ public class ProductoCategoria {
 	int id;
 	String nombre;
 	String strIndex;
-	String descripccion;
+	@JsonProperty("condiciones_legales")
+	private String condicionesLegales;
 	String imagen;
 	String colorHover;
 	int tipo; // 1:Productos  2:formulario
@@ -55,12 +56,12 @@ public class ProductoCategoria {
 		this.nombre = nombre;
 	}
 
-	public String getDescripccion() {
-		return descripccion;
+	public String getCondicionesLegales() {
+		return condicionesLegales;
 	}
 
-	public void setDescripccion(String descripccion) {
-		this.descripccion = descripccion;
+	public void setCondicionesLegales(String condicionesLegales) {
+		this.condicionesLegales = condicionesLegales;
 	}
 
 	public String getImagen() {
