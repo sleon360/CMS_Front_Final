@@ -5,16 +5,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class ExpiringPoints {
 
 	@JsonProperty("points")
-	private int points;
+	private String points;
 	
 	@JsonProperty("expiration_date")
 	private String expirationDate;
 
-	public int getPoints() {
+	public String getPoints() {
 		return points;
 	}
 
-	public void setPoints(int points) {
+	public void setPoints(String points) {
 		this.points = points;
 	}
 

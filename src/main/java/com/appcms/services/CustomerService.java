@@ -81,12 +81,12 @@ public class CustomerService {
 			return pointsResponse.getBody();
 		} catch (Exception e) {
 			Points points = new Points();
-			points.setAvailablePoints(0);
+			points.setAvailablePoints("N/A");
 			ExpiringPoints expiringPoints = new ExpiringPoints();
-			expiringPoints.setPoints(0);
+			expiringPoints.setPoints("N/A");
 			expiringPoints.setExpirationDate("N/A");
 			points.setExpiringPoints(expiringPoints);
-			points.setRegisteredPoints(0);
+			points.setRegisteredPoints("N/A");
 			return points;
 		}
 	}
@@ -189,12 +189,12 @@ public class CustomerService {
 					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
 			points = pointsResponseEntity.getBody();
 		} catch (Exception e) {
-			points.setAvailablePoints(0);
+			points.setAvailablePoints("N/A");
 			ExpiringPoints expiringPoints = new ExpiringPoints();
-			expiringPoints.setPoints(0);
+			expiringPoints.setPoints("N/A");
 			expiringPoints.setExpirationDate("N/A");
 			points.setExpiringPoints(expiringPoints);
-			points.setRegisteredPoints(0);
+			points.setRegisteredPoints("N/A");
 		}
 
 		/* SE RECUPERAN LOS MOVIMIENTOS DE CLIENTE */

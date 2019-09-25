@@ -5,19 +5,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Points {
 
 	@JsonProperty("available_points")
-	private int availablePoints;
+	private String availablePoints;
 
 	@JsonProperty("expiring_points")
 	private ExpiringPoints expiringPoints;
 	
 	@JsonProperty("registered_points")
-	private int registeredPoints;
+	private String registeredPoints;
 
-	public int getAvailablePoints() {
+	public String getAvailablePoints() {
 		return availablePoints;
 	}
 
-	public void setAvailablePoints(int availablePoints) {
+	public void setAvailablePoints(String availablePoints) {
 		this.availablePoints = availablePoints;
 	}
 
@@ -29,11 +29,11 @@ public class Points {
 		this.expiringPoints = expiringPoints;
 	}
 
-	public int getRegisteredPoints() {
+	public String getRegisteredPoints() {
 		return registeredPoints;
 	}
 
-	public void setRegisteredPoints(int registeredPoints) {
+	public void setRegisteredPoints(String registeredPoints) {
 		this.registeredPoints = registeredPoints;
 	}
 
