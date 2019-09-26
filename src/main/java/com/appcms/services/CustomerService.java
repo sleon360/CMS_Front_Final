@@ -66,7 +66,7 @@ public class CustomerService {
 					});
 			return inscripcionesResponseEntity.getBody();
 		} catch (Exception e) {
-			logger.error("Error cargando las inscripciones de cliente");
+			logger.error("Error cargando las inscripciones de cliente: " + e.getMessage());
 			return new ArrayList<>();
 		}
 	}
@@ -80,6 +80,7 @@ public class CustomerService {
 			ResponseEntity<Points> pointsResponse = restTemplate.exchange(apiUrl + "/v1/customer/points", HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
 			return pointsResponse.getBody();
 		} catch (Exception e) {
+			logger.error("Error cargando puntos de cliente: " + e.getMessage());
 			Points points = new Points();
 			points.setAvailablePoints("N/A");
 			ExpiringPoints expiringPoints = new ExpiringPoints();
@@ -104,6 +105,7 @@ public class CustomerService {
 					});
 			return xresponse.getBody();
 		} catch (Exception e) {
+			logger.error("Error cargando cupones del cliente: " + e.getMessage());
 			return new ArrayList<>();
 		}
 	}
@@ -129,6 +131,7 @@ public class CustomerService {
 					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Tarjetas.class);
 			return tarjetasResponseEntity.getBody();
 		} catch (Exception e) {
+			logger.error("Error cargando las tarjetas del cliente: " + e.getMessage());
 			Tarjetas tarjetas = new Tarjetas();
 			tarjetas.setTarjetasCliente(new ArrayList<>());
 			tarjetas.setTipoCliente("NORMAL");
@@ -146,6 +149,7 @@ public class CustomerService {
 			ResponseEntity<List<UserGusto>> response = restTemplate.exchange(apiUrl + "/v1/customer/" + id + "/customer_gustos", HttpMethod.GET, new HttpEntity<Object>(httpHeaders), new ParameterizedTypeReference<List<UserGusto>>() {});
 			return response.getBody();
 		} catch (Exception e) {
+			logger.error("Error cargando los gustos del cliente: " + e.getMessage());
 			return new ArrayList<>();
 		}
 	}
@@ -168,6 +172,7 @@ public class CustomerService {
 			restTemplate
 					.postForEntity(apiUrl + "/v1/customer/" + id + "/customer_gustos/save", request, String.class);
 		} catch (Exception e) {
+			logger.error("Error guardando los gustos del cliente: " + e.getMessage());
 			throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -189,6 +194,7 @@ public class CustomerService {
 					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
 			points = pointsResponseEntity.getBody();
 		} catch (Exception e) {
+			logger.error("Error cargando los puntos del cliente: " + e.getMessage());
 			points.setAvailablePoints("N/A");
 			ExpiringPoints expiringPoints = new ExpiringPoints();
 			expiringPoints.setPoints("N/A");
@@ -207,6 +213,7 @@ public class CustomerService {
 					});
 			movimientos = movementsResponseEntity.getBody();
 		} catch (Exception e) {
+			logger.error("Error cargando la cartola del cliente: " + e.getMessage());
 			movimientos.clear();
 		}
 		UserCartola miCartola = new UserCartola();
@@ -232,6 +239,7 @@ public class CustomerService {
 			ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<Object>(httpHeaders), String.class, id);
 			return responseEntity.getBody();
 		} catch(Exception e) {
+			logger.error("Error obteniendo link de Despegar: " + e.getMessage());
 			throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -259,6 +267,7 @@ public class CustomerService {
 					url, request, CustomerRewardResponse.class, id);
 			return exchangeResponseEntity.getBody();
 		} catch(Exception e) {
+			logger.error("Error realizando canje de puntos: " + e.getMessage());
 			CustomerRewardResponse customerRewardResponse = new CustomerRewardResponse();
 			customerRewardResponse.setStatus("FAIL");
 			customerRewardResponse.setMensaje("Ocurrió un error, no se pudo realizar el canje");
@@ -288,6 +297,7 @@ public class CustomerService {
 					url, request, CustomerRewardResponse.class, id);
 			return exchangeResponseEntity.getBody();
 		} catch(Exception e) {
+			logger.error("Error realizando canje de puntos: " + e.getMessage());
 			CustomerRewardResponse customerRewardResponse = new CustomerRewardResponse();
 			customerRewardResponse.setStatus("FAIL");
 			customerRewardResponse.setMensaje("Ocurrió un error, no se pudo realizar el canje");
@@ -314,6 +324,7 @@ public class CustomerService {
 					url, request, CustomerRewardResponse.class, id);
 			return exchangeDirectlyResponse.getBody();
 		} catch(Exception e) {
+			logger.error("Error realizando canje directo: " + e.getMessage());
 			CustomerRewardResponse customerRewardResponse = new CustomerRewardResponse();
 			customerRewardResponse.setStatus("FAIL");
 			customerRewardResponse.setMensaje("Ocurrió un error, no se pudo realizar el canje");

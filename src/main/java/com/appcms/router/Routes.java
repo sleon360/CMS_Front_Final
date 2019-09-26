@@ -8,6 +8,8 @@ import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
@@ -50,6 +52,8 @@ import com.cms.views.ViewApp;
 @Controller
 public class Routes {
 
+	private final static Logger logger = LoggerFactory.getLogger(Routes.class);
+	
 	@Autowired
 	private ViewApp viewApp;
 
@@ -89,7 +93,8 @@ public class Routes {
 	@ExceptionHandler(value = { Exception.class, MultipartException.class, NestedServletException.class,
 			NestedServletException.class, RequestRejectedException.class })
 	@GetMapping("/errores")
-	public String error(HttpServletRequest rq) {
+	public String error(HttpServletRequest rq, Exception e) {
+		logger.error(e.getMessage());
 		try {
 			int code = (Integer) rq.getAttribute("javax.servlet.error.status_code");
 			return "redirect:/error/" + code;

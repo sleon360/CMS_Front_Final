@@ -1,5 +1,7 @@
 package com.appcms.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -12,6 +14,8 @@ import com.appcms.entity.ResourceEntity;
 @Service
 public class ResourceService {
 
+	private final static Logger logger = LoggerFactory.getLogger(ResourceService.class);
+	
 	private String apiUrl;
 	
 	@Autowired
@@ -28,7 +32,8 @@ public class ResourceService {
 			return restTemplate
 					.getForObject(url, ResourceEntity.class, resourceName);
 		} catch (Exception e) {
-			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+			logger.error(e.getMessage());
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND, e.getMessage());
 		}
 	}
 }
