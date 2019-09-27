@@ -82,12 +82,12 @@ public class CustomerService {
 		} catch (Exception e) {
 			logger.error("Error cargando puntos de cliente: " + e.getMessage());
 			Points points = new Points();
-			points.setAvailablePoints("N/A");
+			points.setAvailablePoints("-");
 			ExpiringPoints expiringPoints = new ExpiringPoints();
-			expiringPoints.setPoints("N/A");
+			expiringPoints.setPoints("-");
 			expiringPoints.setExpirationDate("N/A");
 			points.setExpiringPoints(expiringPoints);
-			points.setRegisteredPoints("N/A");
+			points.setRegisteredPoints("-");
 			return points;
 		}
 	}
@@ -195,12 +195,12 @@ public class CustomerService {
 			points = pointsResponseEntity.getBody();
 		} catch (Exception e) {
 			logger.error("Error cargando los puntos del cliente: " + e.getMessage());
-			points.setAvailablePoints("N/A");
+			points.setAvailablePoints("-");
 			ExpiringPoints expiringPoints = new ExpiringPoints();
-			expiringPoints.setPoints("N/A");
+			expiringPoints.setPoints("-");
 			expiringPoints.setExpirationDate("N/A");
 			points.setExpiringPoints(expiringPoints);
-			points.setRegisteredPoints("N/A");
+			points.setRegisteredPoints("-");
 		}
 
 		/* SE RECUPERAN LOS MOVIMIENTOS DE CLIENTE */
