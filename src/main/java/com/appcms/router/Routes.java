@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -47,6 +46,7 @@ import com.appcms.entity.UserGusto;
 import com.appcms.entity.customer.Customer;
 import com.appcms.model.DataServer;
 import com.appcms.services.CustomerService;
+import com.cms.errors.ViewRendererException;
 import com.cms.views.ViewApp;
 
 @Controller
@@ -90,6 +90,12 @@ public class Routes {
 		}
 	}
 
+	@ExceptionHandler(ViewRendererException.class)
+	public ResponseEntity<String> error(ViewRendererException e) {
+		logger.error(e.getMessage());
+		return new ResponseEntity<String>("", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
 	@ExceptionHandler(value = { Exception.class, MultipartException.class, NestedServletException.class,
 			NestedServletException.class, RequestRejectedException.class })
 	@GetMapping("/errores")
@@ -105,7 +111,7 @@ public class Routes {
 	}
 
 	@GetMapping("/error/{err}")
-	public ModelAndView errorprint(@PathVariable("err") int err) {
+	public ModelAndView errorprint(@PathVariable("err") int err) throws ViewRendererException {
 		String errorMsg = "Error al procesar la solicitud.";
 		int clean = 0;
 		int httpErrorCode = err;
@@ -145,7 +151,7 @@ public class Routes {
 	}
 
 	@GetMapping("/")
-	public ModelAndView home(HttpServletRequest rq) {
+	public ModelAndView home(HttpServletRequest rq) throws ViewRendererException {
 		ModelAndView mav = new ModelAndView(viewApp.loadViews("head", "index", "footer"));
 		mav.addObject("banners", dtserver.loadBannerAll(0));
 		mav.addObject("banners_resp", dtserver.loadBannerAll(1));
@@ -155,7 +161,7 @@ public class Routes {
 	}
 
 	@GetMapping("/categoria/{menu}/{submenu}")
-	public ModelAndView menuSubmenu(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu) {
+	public ModelAndView menuSubmenu(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu) throws ViewRendererException {
 		Scmenu scmenu = dtserver.loadScmenuByName(menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 		try {
@@ -227,7 +233,7 @@ public class Routes {
 	@GetMapping("/categoria/{menu}/{submenu}/productos/{categoria}")
 	public ModelAndView menuProductoCategoria(@PathVariable("menu") String menu,
 			@PathVariable("submenu") String submenu, @PathVariable("categoria") String categoria,
-			@RequestHeader(value = "referer", required = false) final String referer) {
+			@RequestHeader(value = "referer", required = false) final String referer) throws ViewRendererException {
 		ModelAndView mav = new ModelAndView(viewApp.loadViews("head", "HEADER_CATEGORIAS", "CATEGORIAS", "footer"));
 		Scmenu scmenu = dtserver.loadScmenuByName(menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
@@ -299,7 +305,7 @@ public class Routes {
 
 	@GetMapping("/categoria/{menu}/{submenu}/detalle/{producto}")
 	public ModelAndView menuDetalleProducto(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu,
-			@PathVariable("producto") int producto) {
+			@PathVariable("producto") int producto) throws ViewRendererException {
 		ModelAndView mav = new ModelAndView(viewApp.loadViews("HEAD", "HEADER_CATEGORIAS", "CANJES", "FOOTER"));
 		Scmenu scmenu = dtserver.loadScmenuByName(menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
@@ -331,7 +337,7 @@ public class Routes {
 	public ModelAndView menuCanje(@ModelAttribute("producto") CanjeProducto producto, @PathVariable("menu") String menu,
 			@PathVariable("submenu") String submenu,
 			@RequestHeader(value = "referer", required = false) final String referer, HttpServletRequest request)
-			throws ServletException {
+			throws ViewRendererException {
 		producto.setCantidad(1);
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
@@ -477,7 +483,7 @@ public class Routes {
 
 	@GetMapping("/user/{menu}/{submenu}")
 	public ModelAndView menuUser(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu,
-			@RequestHeader(value = "referer", required = false) final String referer) {
+			@RequestHeader(value = "referer", required = false) final String referer) throws ViewRendererException {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
 		if (resolver.isAnonymous(auth)) {
@@ -595,7 +601,7 @@ public class Routes {
 	}
 
 	@GetMapping("/information/{nombreInformation}")
-	public ModelAndView getinformation(@PathVariable("nombreInformation") String nombreInformation) {
+	public ModelAndView getinformation(@PathVariable("nombreInformation") String nombreInformation) throws ViewRendererException {
 		ModelAndView mav = new ModelAndView(viewApp.loadViews("HEAD", "INFORMATION", "FOOTER"));
 		Information informationhtml = new Information();
 		informationhtml = dtserver.loadInformationByName(nombreInformation);
@@ -609,7 +615,7 @@ public class Routes {
 
 	@GetMapping("/cupon/get/{id_reward}")
 	public ModelAndView getCuponByRew(@PathVariable("id_reward") int id_reward,
-			@RequestHeader(value = "referer", required = false) final String referer) {
+			@RequestHeader(value = "referer", required = false) final String referer) throws ViewRendererException {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
 		if (resolver.isAnonymous(auth)) {
