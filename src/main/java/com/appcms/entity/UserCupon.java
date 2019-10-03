@@ -6,20 +6,12 @@ public class UserCupon {
 	int id_cupon;
 	String codigo;
 	String nombre;
-	String valor;
+	int valor;
 	String imagen;
 	@JsonProperty("tipo_cupon")
 	int tipoCupon;
 	String fecha_emitido;
-	String fecha_vencimiento;	
-	
-	public UserCupon() {
-		super();
-	}
-
-
-	
-
+	String fecha_vencimiento;
 
 	public int getId_cupon() {
 		return id_cupon;
@@ -37,11 +29,11 @@ public class UserCupon {
 		this.nombre = nombre;
 	}
 
-	public String getValor() {
+	public int getValor() {
 		return valor;
 	}
 
-	public void setValor(String valor) {
+	public void setValor(int valor) {
 		this.valor = valor;
 	}
 	

@@ -20,7 +20,7 @@ public class UserCuponTest {
 		userCupon.setId_cupon(66);
 		userCupon.setImagen("/imagen.jpg");
 		userCupon.setNombre("NOMBRE");
-		userCupon.setValor("5000");
+		userCupon.setValor(5000);
 		userCupon.setFecha_emitido("01-01-2019");
 		userCupon.setFecha_vencimiento("01-05-2019");
 	}
@@ -49,8 +49,8 @@ public class UserCuponTest {
 	public final void testGetValor() throws Exception {
 		UserCupon esperado = mock(UserCupon.class);
 		UserCupon noesperado = mock(UserCupon.class);
-		when(esperado.getValor()).thenReturn("5000");
-		when(noesperado.getValor()).thenReturn("3000");
+		when(esperado.getValor()).thenReturn(5000);
+		when(noesperado.getValor()).thenReturn(3000);
 		assertEquals(userCupon.getValor(), esperado.getValor());
 		assertNotEquals(noesperado.getValor(), userCupon.getValor());
 	}
