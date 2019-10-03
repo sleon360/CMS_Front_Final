@@ -412,6 +412,12 @@ public class Routes {
 					mav.addObject("canjeExito", false);
 					mav.addObject("errorMessage", "El RUT del beneficiario no puede estar en blanco");
 					break;
+				} else {
+					if (!rutBeneficiario.matches("^\\d{8}-(\\d|k|K)$")) {
+						mav.addObject("canjeExito", false);
+						mav.addObject("errorMessage", "El RUT del beneficiario no es válido. Debe ser de la forma XXXXXXXX-X (sin puntos, con guión");
+						break;
+					}
 				}
 			}
 			CustomerRewardResponse exchangeCategoryResponse = customerModel.realizarCanje(producto.getIdProducto(),

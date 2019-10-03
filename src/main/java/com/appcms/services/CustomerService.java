@@ -43,6 +43,8 @@ import com.appcms.entity.points.Points;
 public class CustomerService {
 
 	private String apiUrl;	
+	SimpleDateFormat formatter;
+	Locale locale;
 	
 	private final static Logger logger = LoggerFactory.getLogger(CustomerService.class);
 	
@@ -52,6 +54,8 @@ public class CustomerService {
 	@Autowired
 	public CustomerService(@Qualifier("apiUrl") String apiUrl) {
 		this.apiUrl = apiUrl;
+		this.locale = new Locale("es", "ES");
+		this.formatter = new SimpleDateFormat("'al' dd 'de' MMMM 'de' yyyy", locale);
 	}
 	
 	public List<CustomerInscripcion> loadUserInscripciones() {
@@ -78,7 +82,20 @@ public class CustomerService {
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
 		try {
 			ResponseEntity<Points> pointsResponse = restTemplate.exchange(apiUrl + "/v1/customer/points", HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
-			return pointsResponse.getBody();
+			Points points = pointsResponse.getBody();
+			try {
+				// Se formatea la información que se va a mostrar
+				String puntosDisponibles =String.format(locale, "%,d", Integer.parseInt(points.getAvailablePoints()));
+				points.setAvailablePoints(puntosDisponibles);
+				String puntosInscritos = String.format(locale, "%,d", Integer.parseInt(points.getRegisteredPoints()));
+				points.setRegisteredPoints(puntosInscritos);
+				String puntosPorVencer = String.format(locale, "%,d", Integer.parseInt(points.getExpiringPoints().getPoints()));
+				points.getExpiringPoints().setPoints(puntosPorVencer);
+				return points;
+			} catch (Exception e) {
+				logger.error("Error formateando puntos de cliente: " + e.getMessage() + ". Se pasarán como fueron recibidos");
+				return points;
+			}			
 		} catch (Exception e) {
 			logger.error("Error cargando puntos de cliente: " + e.getMessage());
 			Points points = new Points();
@@ -90,6 +107,45 @@ public class CustomerService {
 			points.setRegisteredPoints("-");
 			return points;
 		}
+	}
+	
+	public UserCartola loadUserCartola() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Customer credencialesEntity = (Customer) auth.getPrincipal();
+		Scotiauser scotiauser = credencialesEntity.getScotiauser();
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
+
+		/* SE RECUPERAN LOS PUNTOS DE CLIENTE */
+		Points points = this.loadUserPoints();
+
+		/* SE RECUPERAN LOS MOVIMIENTOS DE CLIENTE */
+		List<UserCartolaMovimiento> movimientos = new ArrayList<>();
+		int year = Calendar.getInstance().get(Calendar.YEAR);
+		try {
+			ResponseEntity<List<UserCartolaMovimiento>> movementsResponseEntity = restTemplate.exchange(
+					apiUrl + "/v1/customer/transactions?year=" + year, HttpMethod.GET,
+					new HttpEntity<Object>(httpHeaders), new ParameterizedTypeReference<List<UserCartolaMovimiento>>() {
+					});
+			movimientos = movementsResponseEntity.getBody();
+		} catch (Exception e) {
+			logger.error("Error cargando la cartola del cliente: " + e.getMessage());
+			movimientos.clear();
+		}
+		// Se coloca la fecha actual a la cartola
+		Date date = new Date(System.currentTimeMillis());
+		String fechaActual = formatter.format(date);
+		
+		UserCartola miCartola = new UserCartola();
+		miCartola.setNombre(scotiauser.getFirstname());
+		miCartola.setApellido(scotiauser.getLastname());
+		miCartola.setStrFecha(fechaActual);
+		miCartola.setPuntosDisponibles(points.getAvailablePoints());
+		miCartola.setPuntosPorVencer(points.getExpiringPoints().getPoints());
+		miCartola.setFechaVencimiento(points.getExpiringPoints().getExpirationDate());
+		miCartola.setPuntosInscritos(points.getRegisteredPoints());
+		miCartola.setMovimientos(movimientos);
+		return miCartola;
 	}
 	
 	public List<UserCupon> loadCupones() {
@@ -175,57 +231,6 @@ public class CustomerService {
 			logger.error("Error guardando los gustos del cliente: " + e.getMessage());
 			throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-	}
-	
-	public UserCartola loadUserCartola() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		Customer credencialesEntity = (Customer) auth.getPrincipal();
-		Scotiauser scotiauser = credencialesEntity.getScotiauser();
-		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
-
-		/* SE RECUPERAN LOS PUNTOS DE CLIENTE */
-		Points points = new Points();
-		SimpleDateFormat formatter = new SimpleDateFormat("'al' dd 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
-		Date date = new Date(System.currentTimeMillis());
-		String fechaActual = formatter.format(date);
-		try {
-			ResponseEntity<Points> pointsResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/points",
-					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), Points.class);
-			points = pointsResponseEntity.getBody();
-		} catch (Exception e) {
-			logger.error("Error cargando los puntos del cliente: " + e.getMessage());
-			points.setAvailablePoints("-");
-			ExpiringPoints expiringPoints = new ExpiringPoints();
-			expiringPoints.setPoints("-");
-			expiringPoints.setExpirationDate("N/A");
-			points.setExpiringPoints(expiringPoints);
-			points.setRegisteredPoints("-");
-		}
-
-		/* SE RECUPERAN LOS MOVIMIENTOS DE CLIENTE */
-		List<UserCartolaMovimiento> movimientos = new ArrayList<>();
-		int year = Calendar.getInstance().get(Calendar.YEAR);
-		try {
-			ResponseEntity<List<UserCartolaMovimiento>> movementsResponseEntity = restTemplate.exchange(
-					apiUrl + "/v1/customer/transactions?year=" + year, HttpMethod.GET,
-					new HttpEntity<Object>(httpHeaders), new ParameterizedTypeReference<List<UserCartolaMovimiento>>() {
-					});
-			movimientos = movementsResponseEntity.getBody();
-		} catch (Exception e) {
-			logger.error("Error cargando la cartola del cliente: " + e.getMessage());
-			movimientos.clear();
-		}
-		UserCartola miCartola = new UserCartola();
-		miCartola.setNombre(scotiauser.getFirstname());
-		miCartola.setApellido(scotiauser.getLastname());
-		miCartola.setStrFecha(fechaActual);
-		miCartola.setPuntosDisponibles(points.getAvailablePoints());
-		miCartola.setPuntosPorVencer(points.getExpiringPoints().getPoints());
-		miCartola.setFechaVencimiento(points.getExpiringPoints().getExpirationDate());
-		miCartola.setPuntosInscritos(points.getRegisteredPoints());
-		miCartola.setMovimientos(movimientos);
-		return miCartola;
 	}
 	
 	public String getDespegarLink() {
