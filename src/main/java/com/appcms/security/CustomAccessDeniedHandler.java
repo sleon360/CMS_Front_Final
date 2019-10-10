@@ -22,16 +22,21 @@ public class CustomAccessDeniedHandler extends AccessDeniedHandlerImpl {
 			AccessDeniedException accessDeniedException) throws IOException, ServletException {
 		if (accessDeniedException instanceof MissingCsrfTokenException
 				|| accessDeniedException instanceof InvalidCsrfTokenException) {
-			response.setStatus(HttpStatus.UNAUTHORIZED.value());
-			response.setCharacterEncoding("UTF-8");
-			
-			AuthenticationResponse authenticationResponse = new AuthenticationResponse();
-			authenticationResponse.setStatus("FAIL");
-			authenticationResponse.setMessage("Actualiza tú página e ingresa nuevamente");
-			
-			PrintWriter out = response.getWriter();
-			out.print(new ObjectMapper().writeValueAsString(authenticationResponse));
-			out.flush();
+			if(request.getRequestURI().contains("logout")){
+				request.getSession().invalidate();
+		        response.sendRedirect(request.getContextPath()+"/");                                        
+		    } else {
+		    	response.setStatus(HttpStatus.UNAUTHORIZED.value());
+				response.setCharacterEncoding("UTF-8");
+				
+				AuthenticationResponse authenticationResponse = new AuthenticationResponse();
+				authenticationResponse.setStatus("FAIL");
+				authenticationResponse.setMessage("Actualiza tú página e ingresa nuevamente");
+				
+				PrintWriter out = response.getWriter();
+				out.print(new ObjectMapper().writeValueAsString(authenticationResponse));
+				out.flush();
+		    }			
 		} else {
 			super.handle(request, response, accessDeniedException);
 		}

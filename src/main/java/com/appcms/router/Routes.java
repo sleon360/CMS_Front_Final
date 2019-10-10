@@ -493,7 +493,7 @@ public class Routes {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
 		if (resolver.isAnonymous(auth)) {
-			return new ModelAndView("redirect:" + referer.replace("?login", "") + "?login");
+			return new ModelAndView("redirect:/?login");
 		}
 		String html = viewApp.loadViews("HEAD", "HEADER_CATEGORIAS");
 		Scmenu scmenu = dtserver.loadScmenuByName(menu);
