@@ -212,7 +212,7 @@ public class Routes {
 			break;
 		case 8:
 			// TIPO CANJE DESCUENTOS
-			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosLike(scmenuurlsub.getId()));
+			scmenuurlsub.setProductosLikeLista(dtserver.loadProductsWithoutStock(scmenuurlsub.getId()));
 			scmenuurlsub.setTagsProductos(dtserver.loadTagsProductos());
 			break;
 		case 9:
