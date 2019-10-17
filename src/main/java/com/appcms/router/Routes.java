@@ -524,8 +524,8 @@ public class Routes {
 			mav = new ModelAndView(html);
 			mav.addObject("cartola", customerModel.loadUserCartola());
 			break;
-		case 21: // information
-			// TIPO INSCRIPCCION
+		case 21:
+			// TIPO MIS INSCRIPCIONES
 			html += viewApp.loadViews("mis-inscripciones", "FOOTER");
 			mav = new ModelAndView(html);
 			mav.addObject("inscripciones", customerModel.loadUserInscripciones());

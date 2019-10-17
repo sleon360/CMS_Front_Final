@@ -26,7 +26,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import com.appcms.entity.CustomerInscripcion;
+import com.appcms.entity.Inscription;
 import com.appcms.entity.CustomerReward;
 import com.appcms.entity.CustomerRewardResponse;
 import com.appcms.entity.Scotiauser;
@@ -58,15 +58,15 @@ public class CustomerService {
 		this.formatter = new SimpleDateFormat("'al' dd 'de' MMMM 'de' yyyy", locale);
 	}
 	
-	public List<CustomerInscripcion> loadUserInscripciones() {
+	public List<Inscription> loadUserInscripciones() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Customer credencialesEntity = (Customer) auth.getPrincipal();
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
 		try {
-			ResponseEntity<List<CustomerInscripcion>> inscripcionesResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/" + credencialesEntity.getScotiauser().getIdCliente() + "/inscripciones",
+			ResponseEntity<List<Inscription>> inscripcionesResponseEntity = restTemplate.exchange(apiUrl + "/v1/customer/" + credencialesEntity.getScotiauser().getIdCliente() + "/inscripciones",
 					HttpMethod.GET, new HttpEntity<Object>(httpHeaders), 
-					new ParameterizedTypeReference<List<CustomerInscripcion>>() {
+					new ParameterizedTypeReference<List<Inscription>>() {
 					});
 			return inscripcionesResponseEntity.getBody();
 		} catch (Exception e) {
