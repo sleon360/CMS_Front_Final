@@ -188,15 +188,15 @@ public class Routes {
 			break;
 		case 2:
 			// TIPO PRODUCTOS CON LIKE
-			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosLike(scmenuurlsub.getId()));
+			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosWithoutStock(scmenuurlsub.getId()));
 			break;
 		case 3:
 			// TIPO CON CUPON
-			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosLike(scmenuurlsub.getId()));
+			scmenuurlsub.setProductosLikeLista(dtserver.loadProductos(scmenuurlsub.getId()));
 			break;
 		case 4:
 			// TIPO PRODUCTO E-COMERCE
-			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosLike(scmenuurlsub.getId()));
+			scmenuurlsub.setProductosLikeLista(dtserver.loadProductos(scmenuurlsub.getId()));
 			break;
 		case 5:
 			// TIPO CANJE CON CATEGORIAS
@@ -212,7 +212,7 @@ public class Routes {
 			break;
 		case 8:
 			// TIPO CANJE DESCUENTOS
-			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosLike(scmenuurlsub.getId()));
+			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosWithoutStock(scmenuurlsub.getId()));
 			scmenuurlsub.setTagsProductos(dtserver.loadTagsProductos());
 			break;
 		case 9:

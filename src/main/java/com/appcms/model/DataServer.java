@@ -71,8 +71,20 @@ public class DataServer {
 		}
 	}
 
-	public List<ProductoTipoLike> loadProductosLike(int idsubmenu) {
+	public List<ProductoTipoLike> loadProductos(int idsubmenu) {
 		String url = apiUrl + "/get/productosSubmenu/" + idsubmenu;
+		try {
+			ResponseEntity<List<ProductoTipoLike>> response = restTemplate.exchange(url, HttpMethod.GET, HttpEntity.EMPTY,
+					new ParameterizedTypeReference<List<ProductoTipoLike>>() {
+					});
+			return response.getBody();
+		} catch(Exception e) {
+			throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	public List<ProductoTipoLike> loadProductosWithoutStock(int idsubmenu) {
+		String url = apiUrl + "/get/submenuProductsWithoutStock/" + idsubmenu;
 		try {
 			ResponseEntity<List<ProductoTipoLike>> response = restTemplate.exchange(url, HttpMethod.GET, HttpEntity.EMPTY,
 					new ParameterizedTypeReference<List<ProductoTipoLike>>() {
