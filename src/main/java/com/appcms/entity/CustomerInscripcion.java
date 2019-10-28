@@ -1,85 +1,94 @@
 package com.appcms.entity;
 
-import java.util.Date;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CustomerInscripcion {
 
-	@JsonProperty("id_inscripcion")
-	int idInscripcion;
+	@JsonProperty("card_id")
+	String cardId;
 	
-	String rubro;
+	@JsonProperty("available_points")
+	int availablePoints;
 	
-	int monto;
+	String status;
 	
-	String tarjeta;
+	@JsonProperty("registration_date")
+	String registrationDate;
 	
-	@JsonProperty("fecha_emision")
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
-	Date fechaEmision;
+	@JsonProperty("registration_time")
+	String registrationTime;
 	
-	@JsonProperty("fecha_vencimiento")
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
-	Date fechaVencimiento;
+	@JsonProperty("registered_points")
+	int registeredPoints;
 	
-	boolean vigente;
+	@JsonProperty("category_name")
+	String categoryName;
 	
-	public int getIdInscripcion() {
-		return idInscripcion;
+	@JsonProperty("unregister_date")
+	String unregisterDate;
+
+	public String getCardId() {
+		return cardId;
 	}
 
-	public void setIdInscripcion(int idInscripcion) {
-		this.idInscripcion = idInscripcion;
+	public void setCardId(String cardId) {
+		this.cardId = cardId;
 	}
 
-	public String getRubro() {
-		return rubro;
-	}
-	
-	public void setRubro(String rubro) {
-		this.rubro = rubro;
-	}
-	
-	public int getMonto() {
-		return monto;
-	}
-	
-	public void setMonto(int monto) {
-		this.monto = monto;
-	}
-	
-	public String getTarjeta() {
-		return tarjeta;
-	}
-	
-	public void setTarjeta(String tarjeta) {
-		this.tarjeta = tarjeta;
-	}
-	
-	public Date getFechaEmision() {
-		return fechaEmision;
-	}
-	
-	public void setFechaEmision(Date fechaEmision) {
-		this.fechaEmision = fechaEmision;
-	}
-	
-	public Date getFechaVencimiento() {
-		return fechaVencimiento;
-	}
-	
-	public void setFechaVencimiento(Date fechaVencimiento) {
-		this.fechaVencimiento = fechaVencimiento;
+	public int getAvailablePoints() {
+		return availablePoints;
 	}
 
-	public boolean isVigente() {
-		return vigente;
+	public void setAvailablePoints(int availablePoints) {
+		this.availablePoints = availablePoints;
 	}
 
-	public void setVigente(boolean vigente) {
-		this.vigente = vigente;
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getRegistrationDate() {
+		return registrationDate;
+	}
+
+	public void setRegistrationDate(String registrationDate) {
+		this.registrationDate = registrationDate;
+	}
+
+	public String getRegistrationTime() {
+		return registrationTime;
+	}
+
+	public void setRegistrationTime(String registrationTime) {
+		this.registrationTime = registrationTime;
+	}
+
+	public int getRegisteredPoints() {
+		return registeredPoints;
+	}
+
+	public void setRegisteredPoints(int registeredPoints) {
+		this.registeredPoints = registeredPoints;
+	}
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+
+	public String getUnregisterDate() {
+		return unregisterDate;
+	}
+
+	public void setUnregisterDate(String unregisterDate) {
+		this.unregisterDate = unregisterDate;
 	}
 	
 }

@@ -85,7 +85,7 @@ public class CustomerService {
 			Points points = pointsResponse.getBody();
 			try {
 				// Se formatea la información que se va a mostrar
-				String puntosDisponibles =String.format(locale, "%,d", Integer.parseInt(points.getAvailablePoints()));
+				String puntosDisponibles = String.format(locale, "%,d", Integer.parseInt(points.getAvailablePoints()));
 				points.setAvailablePoints(puntosDisponibles);
 				String puntosInscritos = String.format(locale, "%,d", Integer.parseInt(points.getRegisteredPoints()));
 				points.setRegisteredPoints(puntosInscritos);
