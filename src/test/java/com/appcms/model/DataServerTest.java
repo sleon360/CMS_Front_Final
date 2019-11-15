@@ -43,7 +43,6 @@ import org.springframework.core.ParameterizedTypeReference;
 
 import com.appcms.entity.Banner;
 import com.appcms.entity.CanjeProducto;
-import com.appcms.entity.Categoria;
 import com.appcms.entity.CredencialesEntity;
 import com.appcms.entity.Information;
 import com.appcms.entity.LoginUser;
