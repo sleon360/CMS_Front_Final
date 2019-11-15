@@ -12,6 +12,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.csrf.InvalidCsrfTokenException;
 import org.springframework.security.web.csrf.MissingCsrfTokenException;
+import org.springframework.util.MimeTypeUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -28,10 +29,11 @@ public class CustomAccessDeniedHandler extends AccessDeniedHandlerImpl {
 		    } else {
 		    	response.setStatus(HttpStatus.UNAUTHORIZED.value());
 				response.setCharacterEncoding("UTF-8");
+				response.setContentType(MimeTypeUtils.APPLICATION_JSON_VALUE);
 				
 				AuthenticationResponse authenticationResponse = new AuthenticationResponse();
 				authenticationResponse.setStatus("FAIL");
-				authenticationResponse.setMessage("Actualiza tú página e ingresa nuevamente");
+				authenticationResponse.setMessage("Actualiza tu página e ingresa nuevamente");
 				
 				PrintWriter out = response.getWriter();
 				out.print(new ObjectMapper().writeValueAsString(authenticationResponse));
