@@ -162,6 +162,7 @@ public class Routes {
 
 	@GetMapping("/categoria/{menu}/{submenu}")
 	public ModelAndView menuSubmenu(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu) throws ViewRendererException {
+		String html = viewApp.loadViews("head", "HEADER_CATEGORIAS");
 		Scmenu scmenu = dtserver.loadScmenuByName(menu);
 		Scsubmenu scmenuurlsub = new Scsubmenu();
 		try {
@@ -184,45 +185,75 @@ public class Routes {
 		switch (scmenuurlsub.getTipo()) {
 		case 1:
 			// TIPO INFORMACION
+			html += viewApp.loadViews("CATEGORIAS");
 			scmenuurlsub.setInformationsubmenu(dtserver.loadInformatioSub(scmenuurlsub.getId()));
 			break;
 		case 2:
 			// TIPO PRODUCTOS CON LIKE
+			html += viewApp.loadViews("CATEGORIAS");
 			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosWithoutStock(scmenuurlsub.getId()));
 			break;
 		case 3:
 			// TIPO CON CUPON
+			html += viewApp.loadViews("CATEGORIAS");
 			scmenuurlsub.setProductosLikeLista(dtserver.loadProductos(scmenuurlsub.getId()));
 			break;
 		case 4:
-			// TIPO PRODUCTO E-COMERCE
+			// TIPO PRODUCTO E-COMMERCE 1
+			html += viewApp.loadViews("CATEGORIAS");
 			scmenuurlsub.setProductosLikeLista(dtserver.loadProductos(scmenuurlsub.getId()));
 			break;
 		case 5:
 			// TIPO CANJE CON CATEGORIAS
+			html += viewApp.loadViews("CATEGORIAS");
 			scmenuurlsub.setCategoriaProductoLista(dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId()));
 			break;
 		case 6:
 			// TIPO CANJE CON CATEGORIAS PARA FORMULARIO (TIPO INSCRIPCION)
+			html += viewApp.loadViews("CATEGORIAS");
 			scmenuurlsub.setCategoriaProductoLista(dtserver.loadScsubmenuRubros(scmenuurlsub.getId()));
 			break;
 		case 7:
 			// TIPO CANJE CASHBACK
+			html += viewApp.loadViews("CATEGORIAS");
 			scmenuurlsub.setTarjetasCliente(customerModel.loadUserTarjetas().getTarjetasCliente());
 			break;
 		case 8:
 			// TIPO CANJE DESCUENTOS
+			html += viewApp.loadViews("CATEGORIAS");
 			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosWithoutStock(scmenuurlsub.getId()));
 			scmenuurlsub.setTagsProductos(dtserver.loadTagsProductos());
 			break;
 		case 9:
 			// TIPO VISTA INFORMATION
+			html += viewApp.loadViews("CATEGORIAS");
 			scmenuurlsub.setInformationHtml(dtserver.loadInformationScsubmenu(scmenuurlsub.getId()));
+			break;
+		case 30:
+			// TIPO PRODUCTO E-COMERCE 2
+			html += viewApp.loadViews("CATEGORIA-ECOMMERCE2");
+			scmenuurlsub.setProductosLikeLista(dtserver.loadProductos(scmenuurlsub.getId()));
+			break;
+		case 31:
+			// TIPO PRODUCTO E-COMERCE 3
+			html += viewApp.loadViews("CATEGORIA-ECOMMERCE3");
+			scmenuurlsub.setProductosLikeLista(dtserver.loadProductos(scmenuurlsub.getId()));
+			break;
+		case 32:
+			// TIPO PRODUCTO E-COMERCE 4
+			html += viewApp.loadViews("CATEGORIA-ECOMMERCE4");
+			scmenuurlsub.setProductosLikeLista(dtserver.loadProductos(scmenuurlsub.getId()));
+			break;
+		case 33:
+			// TIPO PRODUCTO E-COMERCE 5
+			html += viewApp.loadViews("CATEGORIA-ECOMMERCE5");
+			scmenuurlsub.setProductosLikeLista(dtserver.loadProductos(scmenuurlsub.getId()));
 			break;
 		default:
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
-		String html = viewApp.loadViews("head", "HEADER_CATEGORIAS", "CATEGORIAS", "footer");
+		
+		html +=  viewApp.loadViews("footer");
 		ModelAndView mav = new ModelAndView(html);
 		mav.addObject("menuurl", scmenu);
 		mav.addObject("submenuurl", scmenuurlsub);
