@@ -19,11 +19,7 @@ public class ProductoCategoria {
 	String colorHover;
 	int tipo; // 1:Productos  2:formulario
 	List<ProductoTipoLike> productos = new ArrayList<>();
-
-	public ProductoCategoria() {
-		super();
-	}
-
+	boolean nominativa;
 
 	public int getId() {
 		return id;
@@ -89,7 +85,14 @@ public class ProductoCategoria {
 		this.productos = productos;
 	}
 	
-	
+	public boolean isNominativa() {
+		return nominativa;
+	}
+
+	public void setNominativa(boolean nominativa) {
+		this.nominativa = nominativa;
+	}
+
 	public boolean equalsProductoTipoLike(List<ProductoTipoLike> f1) {
 		ListIterator<ProductoTipoLike> e1 = f1.listIterator();
 		ListIterator<ProductoTipoLike> e2 = this.getProductos().listIterator();

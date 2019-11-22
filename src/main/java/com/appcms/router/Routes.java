@@ -194,10 +194,8 @@ public class Routes {
 			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosWithoutStock(scmenuurlsub.getId()));
 			break;
 		case 3:
-			// TIPO CON CUPON
-			html += viewApp.loadViews("CATEGORIAS");
-			scmenuurlsub.setProductosLikeLista(dtserver.loadProductos(scmenuurlsub.getId()));
-			break;
+			// TIPO REDIRECCION
+			return new ModelAndView("redirect:" + scmenuurlsub.getLink());
 		case 4:
 			// TIPO PRODUCTO E-COMMERCE 1
 			html += viewApp.loadViews("CATEGORIAS");
@@ -421,24 +419,26 @@ public class Routes {
 		case 5: // TIPO CANJE CON CATEGORIAS
 			// Se valida el nombre del beneficiario
 			String nombreBeneficiario = producto.getNombreAsociado();
-			if (nombreBeneficiario == null) {
-				mav.addObject("canjeExito", false);
-				mav.addObject("errorMessage", "El nombre del beneficiario no puede estar en blanco");
-				break;
+			String rutBeneficiario = producto.getRutAsociado();
+			if (nombreBeneficiario == null && rutBeneficiario == null) {
+				/* Si el nombre del beneficiario y su RUT son nulos, el canje es no nominativo*/
+				CustomerRewardResponse exchangeCategoryResponse = customerModel.realizarCanje(producto.getIdProducto());
+				if (exchangeCategoryResponse.getStatus().equals("OK")) {
+					mav.addObject("canjeExito", true);
+				} else {
+					mav.addObject("canjeExito", false);
+					mav.addObject("errorMessage", exchangeCategoryResponse.getMensaje());
+				}				
 			} else {
+				/* Si el nombre del beneficiario y su RUT no son nulos, el canje es nominativo y hay
+				 * que validar los datos del beneficiario */
+				// Se valida el nombre del beneficiario
 				if (StringUtils.isEmptyOrWhitespace(nombreBeneficiario)) {
 					mav.addObject("canjeExito", false);
 					mav.addObject("errorMessage", "El nombre del beneficiario no puede estar en blanco");
 					break;
 				}
-			}
-			// Se valida el RUT del beneficiario
-			String rutBeneficiario = producto.getRutAsociado();
-			if (rutBeneficiario == null) {
-				mav.addObject("canjeExito", false);
-				mav.addObject("errorMessage", "El RUT del beneficiario no puede estar en blanco");
-				break;
-			} else {
+				// Se valida el RUT del beneficiario
 				if (StringUtils.isEmptyOrWhitespace(rutBeneficiario)) {
 					mav.addObject("canjeExito", false);
 					mav.addObject("errorMessage", "El RUT del beneficiario no puede estar en blanco");
@@ -450,14 +450,14 @@ public class Routes {
 						break;
 					}
 				}
-			}
-			CustomerRewardResponse exchangeCategoryResponse = customerModel.realizarCanje(producto.getIdProducto(),
-					nombreBeneficiario, rutBeneficiario);
-			if (exchangeCategoryResponse.getStatus().equals("OK")) {
-				mav.addObject("canjeExito", true);
-			} else {
-				mav.addObject("canjeExito", false);
-				mav.addObject("errorMessage", exchangeCategoryResponse.getMensaje());
+				CustomerRewardResponse exchangeCategoryResponse = customerModel.realizarCanje(producto.getIdProducto(),
+						nombreBeneficiario, rutBeneficiario);
+				if (exchangeCategoryResponse.getStatus().equals("OK")) {
+					mav.addObject("canjeExito", true);
+				} else {
+					mav.addObject("canjeExito", false);
+					mav.addObject("errorMessage", exchangeCategoryResponse.getMensaje());
+				}
 			}
 			break;
 		case 6:
