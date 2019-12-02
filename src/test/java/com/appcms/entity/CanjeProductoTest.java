@@ -1,17 +1,13 @@
 package com.appcms.entity;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
@@ -29,7 +25,6 @@ public class CanjeProductoTest {
 	@Before
 	public void setUp() throws Exception {
 		canjeProducto=new CanjeProducto(50,"Nombre123","Nombre123",10000);
-		canjeProducto.setCsrf_token("9565bea199c52e8d1e1f7a41c88d2565");
 		canjeProducto.setActionx("Actionx");
 		canjeProducto.setRutAsociado("Nombre123");
 		canjeProducto.setIdProducto(50);
@@ -51,21 +46,6 @@ public class CanjeProductoTest {
         assertEquals(canjeProductoInit.getMonto(), esperado.getMonto());
         assertNotEquals(noesperado.getMonto(),canjeProductoInit.getMonto());
 	}
-
-
-	@Test
-	public final void testGetCsrf_token() throws Exception {
-		CanjeProducto esperado = mock(CanjeProducto.class);     
-		CanjeProducto noesperado = mock(CanjeProducto.class);     
-		
-        when(esperado.getCsrf_token()).thenReturn("9565bea199c52e8d1e1f7a41c88d2565");
-        when(noesperado.getCsrf_token()).thenReturn("000000000000000000000000000000000");
-        
-        assertEquals(canjeProducto.getCsrf_token(), esperado.getCsrf_token());
-   
-        assertNotEquals(noesperado.getCsrf_token(),canjeProducto.getCsrf_token());
-	}
-
 
 	@Test
 	public final void testGetIdProducto() throws Exception {

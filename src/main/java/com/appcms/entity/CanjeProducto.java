@@ -9,8 +9,14 @@ public class CanjeProducto {
 	int monto = 0;
 	String cardKey;
 	String cardNumber;
-	String csrf_token;
 	String actionx;
+	String region;
+	String comuna;
+	String direccion;
+	String nroCalle;
+	String apartamento;
+	String telefono;
+	String correo;
 
 	public CanjeProducto() {
 		super();
@@ -25,14 +31,6 @@ public class CanjeProducto {
 		this.nombreAsociado = nombreAsociado;
 		this.rutAsociado = rutAsociado;
 		this.cantidad = cantidad;
-	}
-
-	public String getCsrf_token() {
-		return csrf_token;
-	}
-
-	public void setCsrf_token(String csrf_token) {
-		this.csrf_token = csrf_token;
 	}
 
 	public int getIdProducto() {
@@ -98,11 +96,61 @@ public class CanjeProducto {
 	public void setCardNumber(String cardNumber) {
 		this.cardNumber = cardNumber;
 	}
+	
+	public String getDireccion() {
+		return direccion;
+	}
 
-	@Override
-	public String toString() {
-		return "CanjeProducto [idProducto=" + idProducto + ", nombreAsociado=" + nombreAsociado + ", rutAsociado="
-				+ rutAsociado + ", cantidad=" + cantidad + ", csrf_token=" + csrf_token + "]";
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
+	}
+
+	public String getRegion() {
+		return region;
+	}
+
+	public void setRegion(String region) {
+		this.region = region;
+	}
+
+	public String getComuna() {
+		return comuna;
+	}
+
+	public void setComuna(String comuna) {
+		this.comuna = comuna;
+	}
+
+	public String getNroCalle() {
+		return nroCalle;
+	}
+
+	public void setNroCalle(String nroCalle) {
+		this.nroCalle = nroCalle;
+	}
+
+	public String getApartamento() {
+		return apartamento;
+	}
+
+	public void setApartamento(String apartamento) {
+		this.apartamento = apartamento;
+	}
+
+	public String getTelefono() {
+		return telefono;
+	}
+
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
+	}
+
+	public String getCorreo() {
+		return correo;
+	}
+
+	public void setCorreo(String correo) {
+		this.correo = correo;
 	}
 
 }

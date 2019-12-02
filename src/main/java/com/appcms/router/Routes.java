@@ -7,8 +7,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
@@ -18,28 +16,19 @@ import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.util.NestedServletException;
-import org.thymeleaf.util.StringUtils;
 
 import com.appcms.entity.CanjeProducto;
-import com.appcms.entity.CustomerRewardResponse;
 import com.appcms.entity.Information;
-import com.appcms.entity.ProductoCategoria;
 import com.appcms.entity.Scmenu;
-import com.appcms.entity.Scotiauser;
 import com.appcms.entity.Scsubmenu;
 import com.appcms.entity.UserCupon;
 import com.appcms.entity.UserGusto;
@@ -51,8 +40,6 @@ import com.cms.views.ViewApp;
 
 @Controller
 public class Routes {
-
-	private final static Logger logger = LoggerFactory.getLogger(Routes.class);
 	
 	@Autowired
 	private ViewApp viewApp;
@@ -63,92 +50,8 @@ public class Routes {
 	@Autowired
 	private CustomerService customerModel;
 
-	public void setHeaderx(ModelAndView mav) {
-		mav.addObject("menuesHeader", dtserver.loadAllScmenu());
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
-		if (!resolver.isAnonymous(auth)) {
-			Customer customer = (Customer) auth.getPrincipal();
-			mav.addObject("usuario", customer.getScotiauser());
-			mav.addObject("points", customerModel.loadUserPoints());
-			// Se agregan los gustos del usuario
-			List<UserGusto> gustos = dtserver.loadGustos();
-			List<UserGusto> gustosCliente = customerModel.loadCustomerGustos();
-			for (int i = 0; i < gustos.size(); i++) {
-				UserGusto gusto = gustos.get(i);
-				for (int j = 0; j < gustosCliente.size(); j++) {
-					UserGusto gustoCliente = gustosCliente.get(j);
-					if (gusto.getId() == gustoCliente.getId()) {
-						gusto.setGustado(true);
-						break;
-					}
-				}
-			}
-			mav.addObject("gustos", gustos);
-		} else {
-			mav.addObject("usuario", new Scotiauser());
-		}
-	}
-
-	@ExceptionHandler(ViewRendererException.class)
-	public ResponseEntity<String> error(ViewRendererException e) {
-		logger.error(e.getMessage());
-		return new ResponseEntity<String>("", HttpStatus.INTERNAL_SERVER_ERROR);
-	}
-	
-	@ExceptionHandler(value = { Exception.class, MultipartException.class, NestedServletException.class,
-			NestedServletException.class, RequestRejectedException.class })
-	@GetMapping("/errores")
-	public String error(HttpServletRequest rq, Exception e) {
-		logger.error(e.getMessage());
-		try {
-			int code = (Integer) rq.getAttribute("javax.servlet.error.status_code");
-			return "redirect:/error/" + code;
-		} catch (Exception ex) {
-			return "redirect:/error/500";
-		}
-
-	}
-
-	@GetMapping("/error/{err}")
-	public ModelAndView errorprint(@PathVariable("err") int err) throws ViewRendererException {
-		String errorMsg = "Error al procesar la solicitud.";
-		int clean = 0;
-		int httpErrorCode = err;
-		try {
-			switch (httpErrorCode) {
-			case 400: {
-				errorMsg = "Http Error Code: 400. Bad Request";
-				break;
-			}
-			case 401: {
-				errorMsg = "Http Error Code: 401. Unauthorized";
-				break;
-			}
-			case 403: {
-				errorMsg = "Http Error Code: 403. Forbidden";
-				clean = 1;
-				break;
-			}
-			case 404: {
-				errorMsg = "Http Error Code: 404. Resource not found";
-				break;
-			}
-			case 500: {
-				errorMsg = "Http Error Code: 500. Internal Server Error";
-				break;
-			}
-			}
-		} catch (Exception ex) {
-			errorMsg = "Http Error Code: 500. Internal Server Error";
-		}
-		ModelAndView mav = new ModelAndView(viewApp.loadViews("head", "error", "footer"));
-		mav.addObject("titulo_error", httpErrorCode);
-		mav.addObject("descripcion_error", errorMsg);
-		mav.addObject("clean", clean);
-		this.setHeaderx(mav);
-		return mav;
-	}
+	@Autowired
+	private CategoryHeaderSetter categoryHeaderSetter;
 
 	@GetMapping("/")
 	public ModelAndView home(HttpServletRequest rq) throws ViewRendererException {
@@ -156,106 +59,7 @@ public class Routes {
 		mav.addObject("banners", dtserver.loadBannerAll(0));
 		mav.addObject("banners_resp", dtserver.loadBannerAll(1));
 		mav.addObject("descuentos_destacados", dtserver.loadscmenuinformationFomScmenu(10));
-		this.setHeaderx(mav);
-		return mav;
-	}
-
-	@GetMapping("/categoria/{menu}/{submenu}")
-	public ModelAndView menuSubmenu(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu) throws ViewRendererException {
-		String html = viewApp.loadViews("head", "HEADER_CATEGORIAS");
-		Scmenu scmenu = dtserver.loadScmenuByName(menu);
-		Scsubmenu scmenuurlsub = new Scsubmenu();
-		try {
-			if (scmenu != null) {
-				for (Scsubmenu scmenuurlsubtemp : scmenu.getSubmenues()) // buscamos el submenu que seleccionó
-				{
-					if (scmenuurlsubtemp.getStrIndex().equalsIgnoreCase(submenu)) {
-						scmenuurlsub = scmenuurlsubtemp;
-						break;
-					}
-				}
-			}
-		} catch (Exception e) {
-			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-		}
-		if (scmenuurlsub.getId() == 0) {
-			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-		}
-		System.out.println("Tipo de submenú:" + scmenuurlsub.getTipo());
-		switch (scmenuurlsub.getTipo()) {
-		case 1:
-			// TIPO INFORMACION
-			html += viewApp.loadViews("CATEGORIAS");
-			scmenuurlsub.setInformationsubmenu(dtserver.loadInformatioSub(scmenuurlsub.getId()));
-			break;
-		case 2:
-			// TIPO PRODUCTOS CON LIKE
-			html += viewApp.loadViews("CATEGORIAS");
-			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosWithoutStock(scmenuurlsub.getId()));
-			break;
-		case 3:
-			// TIPO REDIRECCION
-			return new ModelAndView("redirect:" + scmenuurlsub.getLink());
-		case 4:
-			// TIPO PRODUCTO E-COMMERCE 1
-			html += viewApp.loadViews("CATEGORIAS");
-			scmenuurlsub.setProductosLikeLista(dtserver.loadProductos(scmenuurlsub.getId()));
-			break;
-		case 5:
-			// TIPO CANJE CON CATEGORIAS
-			html += viewApp.loadViews("CATEGORIAS");
-			scmenuurlsub.setCategoriaProductoLista(dtserver.loadCateProductosFromCategoria(scmenuurlsub.getId()));
-			break;
-		case 6:
-			// TIPO CANJE CON CATEGORIAS PARA FORMULARIO (TIPO INSCRIPCION)
-			html += viewApp.loadViews("CATEGORIAS");
-			scmenuurlsub.setCategoriaProductoLista(dtserver.loadScsubmenuRubros(scmenuurlsub.getId()));
-			break;
-		case 7:
-			// TIPO CANJE CASHBACK
-			html += viewApp.loadViews("CATEGORIAS");
-			scmenuurlsub.setTarjetasCliente(customerModel.loadUserTarjetas().getTarjetasCliente());
-			break;
-		case 8:
-			// TIPO CANJE DESCUENTOS
-			html += viewApp.loadViews("CATEGORIAS");
-			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosWithoutStock(scmenuurlsub.getId()));
-			scmenuurlsub.setTagsProductos(dtserver.loadTagsProductos());
-			break;
-		case 9:
-			// TIPO VISTA INFORMATION
-			html += viewApp.loadViews("CATEGORIAS");
-			scmenuurlsub.setInformationHtml(dtserver.loadInformationScsubmenu(scmenuurlsub.getId()));
-			break;
-		case 30:
-			// TIPO PRODUCTO E-COMERCE 2
-			html += viewApp.loadViews("CATEGORIA-ECOMMERCE2");
-			scmenuurlsub.setProductosLikeLista(dtserver.loadProductos(scmenuurlsub.getId()));
-			break;
-		case 31:
-			// TIPO PRODUCTO E-COMERCE 3
-			html += viewApp.loadViews("CATEGORIA-ECOMMERCE3");
-			scmenuurlsub.setProductosLikeLista(dtserver.loadProductos(scmenuurlsub.getId()));
-			break;
-		case 32:
-			// TIPO PRODUCTO E-COMERCE 4
-			html += viewApp.loadViews("CATEGORIA-ECOMMERCE4");
-			scmenuurlsub.setProductosLikeLista(dtserver.loadProductos(scmenuurlsub.getId()));
-			break;
-		case 33:
-			// TIPO PRODUCTO E-COMERCE 5
-			html += viewApp.loadViews("CATEGORIA-ECOMMERCE5");
-			scmenuurlsub.setProductosLikeLista(dtserver.loadProductos(scmenuurlsub.getId()));
-			break;
-		default:
-			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-		}
-		
-		html +=  viewApp.loadViews("footer");
-		ModelAndView mav = new ModelAndView(html);
-		mav.addObject("menuurl", scmenu);
-		mav.addObject("submenuurl", scmenuurlsub);
-		this.setHeaderx(mav);
+		categoryHeaderSetter.setHeaders(mav);
 		return mav;
 	}
 
@@ -317,7 +121,7 @@ public class Routes {
 			scmenuurlsub.setTarjetasCliente(customerModel.loadUserTarjetas().getTarjetasCliente());
 			break;
 		case 8:
-			// TIPO CANJE CON CATEGORIAS
+			// TIPO TIPO CANJE DESCUENTOS
 			scmenuurlsub.setCategoriaProductoLista(
 					dtserver.loadproductoCategoriaConProductos(scmenuurlsub.getId(), categoria));
 			mav.addObject("verProductosCategoria", true);
@@ -327,194 +131,8 @@ public class Routes {
 		}
 		mav.addObject("menuurl", scmenu);
 		mav.addObject("submenuurl", scmenuurlsub);
-		this.setHeaderx(mav);
+		categoryHeaderSetter.setHeaders(mav);
 
-		return mav;
-	}
-
-	@GetMapping("/categoria/{menu}/{submenu}/detalle/{producto}")
-	public ModelAndView menuDetalleProducto(@PathVariable("menu") String menu, @PathVariable("submenu") String submenu,
-			@PathVariable("producto") int producto) throws ViewRendererException {
-		ModelAndView mav = new ModelAndView(viewApp.loadViews("HEAD", "HEADER_CATEGORIAS", "CANJES", "FOOTER"));
-		Scmenu scmenu = dtserver.loadScmenuByName(menu);
-		Scsubmenu scmenuurlsub = new Scsubmenu();
-		try {
-			if (scmenu != null) {
-				for (Scsubmenu scmenuurlsubtemp : scmenu.getSubmenues()) // buscamos el submenu que seleccionó
-				{
-					if (scmenuurlsubtemp.getStrIndex().equalsIgnoreCase(submenu)) {
-						scmenuurlsub = scmenuurlsubtemp;
-						break;
-					}
-				}
-			}
-		} catch (Exception e) {
-			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-		}
-		if (scmenuurlsub.getId() == 0) {
-			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-		}
-
-		scmenuurlsub.setProductosLikeLista(dtserver.loadProductosDetalle(producto));
-		mav.addObject("menuurl", scmenu);
-		mav.addObject("submenuurl", scmenuurlsub);
-		this.setHeaderx(mav);
-		return mav;
-	}
-
-	@PostMapping("/categoria/{menu}/{submenu}/canje")
-	public ModelAndView menuCanje(@ModelAttribute("producto") CanjeProducto producto, @PathVariable("menu") String menu,
-			@PathVariable("submenu") String submenu,
-			@RequestHeader(value = "referer", required = false) final String referer, HttpServletRequest request)
-			throws ViewRendererException {
-		producto.setCantidad(1);
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
-		if (resolver.isAnonymous(auth)) {
-			// Para evitar que una página quede como ?login?login se hace el replace
-			return new ModelAndView("redirect:" + referer.replace("?login", "") + "?login");
-		}
-
-		ModelAndView mav = new ModelAndView(viewApp.loadViews("HEAD", "HEADER_CATEGORIAS", "CANJES", "FOOTER"));
-		Scmenu scmenu = dtserver.loadScmenuByName(menu);
-		Scsubmenu scmenuurlsub = new Scsubmenu();
-		try {
-			if (scmenu != null) {
-				for (Scsubmenu scmenuurlsubtemp : scmenu.getSubmenues()) // buscamos el submenu que seleccionó
-				{
-					if (scmenuurlsubtemp.getStrIndex().equalsIgnoreCase(submenu)) {
-						scmenuurlsub = scmenuurlsubtemp;
-						break;
-					}
-				}
-			}
-		} catch (Exception e) {
-			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-		}
-
-		if (scmenuurlsub.getId() == 0) {
-			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-		}
-		switch (scmenuurlsub.getTipo()) {
-		case 1:
-			// TIPO INFORMACION
-			scmenuurlsub.setTipo(0);
-			break;
-		case 2: // TIPO PRODUCTO CON LIKE
-			scmenuurlsub.setTipo(0);
-			break;
-		case 3: // TIPO CON CUPON
-			// efectuar canje, datos en objeto "producto"
-			mav.addObject("canjeExito", true);
-			break;
-		case 4: // TIPO PRODUCTO E-COMERCE
-			CustomerRewardResponse exchangeResponse = customerModel.realizarCanje(producto.getIdProducto());
-			if (exchangeResponse.getStatus().equals("OK")) {
-				mav.addObject("canjeExito", true);
-			} else {
-				mav.addObject("canjeExito", false);
-				mav.addObject("errorMessage", exchangeResponse.getMensaje());
-			}
-			break;
-		case 5: // TIPO CANJE CON CATEGORIAS
-			// Se valida el nombre del beneficiario
-			String nombreBeneficiario = producto.getNombreAsociado();
-			String rutBeneficiario = producto.getRutAsociado();
-			if (nombreBeneficiario == null && rutBeneficiario == null) {
-				/* Si el nombre del beneficiario y su RUT son nulos, el canje es no nominativo*/
-				CustomerRewardResponse exchangeCategoryResponse = customerModel.realizarCanje(producto.getIdProducto());
-				if (exchangeCategoryResponse.getStatus().equals("OK")) {
-					mav.addObject("canjeExito", true);
-				} else {
-					mav.addObject("canjeExito", false);
-					mav.addObject("errorMessage", exchangeCategoryResponse.getMensaje());
-				}				
-			} else {
-				/* Si el nombre del beneficiario y su RUT no son nulos, el canje es nominativo y hay
-				 * que validar los datos del beneficiario */
-				// Se valida el nombre del beneficiario
-				if (StringUtils.isEmptyOrWhitespace(nombreBeneficiario)) {
-					mav.addObject("canjeExito", false);
-					mav.addObject("errorMessage", "El nombre del beneficiario no puede estar en blanco");
-					break;
-				}
-				// Se valida el RUT del beneficiario
-				if (StringUtils.isEmptyOrWhitespace(rutBeneficiario)) {
-					mav.addObject("canjeExito", false);
-					mav.addObject("errorMessage", "El RUT del beneficiario no puede estar en blanco");
-					break;
-				} else {
-					if (!rutBeneficiario.matches("^\\d{8}-(\\d|k|K)$")) {
-						mav.addObject("canjeExito", false);
-						mav.addObject("errorMessage", "El RUT del beneficiario no es válido. Debe ser de la forma XXXXXXXX-X (sin puntos, con guión");
-						break;
-					}
-				}
-				CustomerRewardResponse exchangeCategoryResponse = customerModel.realizarCanje(producto.getIdProducto(),
-						nombreBeneficiario, rutBeneficiario);
-				if (exchangeCategoryResponse.getStatus().equals("OK")) {
-					mav.addObject("canjeExito", true);
-				} else {
-					mav.addObject("canjeExito", false);
-					mav.addObject("errorMessage", exchangeCategoryResponse.getMensaje());
-				}
-			}
-			break;
-		case 6:
-			// TIPO INCRIPCIÓN DE PUNTOS
-			if (producto.getActionx().equalsIgnoreCase("finish")) {
-				// Se valida el monto a inscribir y la tarjeta de cliente
-				int monto = producto.getMonto();
-				String cardKey = producto.getCardKey();
-				String cardNumber = producto.getCardNumber();
-				if (monto <= 0) {
-					mav.addObject("canjeExito", false);
-					mav.addObject("errorMessage", "La cantidad de puntos a inscribir no es válida");
-				} else if (StringUtils.isEmptyOrWhitespace(cardKey)) {
-					mav.addObject("canjeExito", false);
-					mav.addObject("errorMessage", "La tarjeta seleccionada no es válida");
-				} else {
-					boolean exito = customerModel.inscribirPuntos(producto.getIdProducto(), cardKey, cardNumber, monto);
-					if (exito) {
-						mav.addObject("canjeExito", true);
-					} else {
-						mav.addObject("canjeExito", false);
-						mav.addObject("errorMessage", "Hubo un error inscribiendo puntos");
-					}
-				}
-			} else {
-				producto.setActionx("finish");
-			}
-			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosDetalle(producto.getIdProducto()));
-			ProductoCategoria categoriaProducto = dtserver.loadProductoCategoria(producto.getIdProducto());
-			if (categoriaProducto != null) {
-				scmenuurlsub.getProductosLikeLista().get(0).setImagen(categoriaProducto.getImagen());
-				scmenuurlsub.getProductosLikeLista().get(0).setNombre(categoriaProducto.getNombre());
-			}
-			mav.addObject("producto", producto);
-			break;
-		case 7: // TIPO CANJE CASHBACK
-			break;
-		case 8:
-			// TIPO CANJE DESCUENTOS
-			System.out.println("TIPO 8");
-			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosDetalle(producto.getIdProducto()));
-			CustomerRewardResponse exchangeDirectlyResponse = customerModel
-					.realizarCanjeDirecto(producto.getIdProducto());
-			if (exchangeDirectlyResponse.getStatus().equals("OK")) {
-				mav.addObject("producto", producto);
-				mav.addObject("canjeExito", true);
-			} else {
-				mav.addObject("canjeExito", false);
-				mav.addObject("errorMessage", exchangeDirectlyResponse.getMensaje());
-			}
-			break;
-		default:
-			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-		}
-		mav.addObject("menuurl", scmenu);
-		mav.addObject("submenuurl", scmenuurlsub);
-		this.setHeaderx(mav);
 		return mav;
 	}
 
@@ -633,7 +251,7 @@ public class Routes {
 		}
 		mav.addObject("menuurl", scmenu);
 		mav.addObject("submenuurl", scmenuurlsub);
-		this.setHeaderx(mav);
+		categoryHeaderSetter.setHeaders(mav);
 		return mav;
 	}
 
@@ -646,7 +264,7 @@ public class Routes {
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
 		mav.addObject("informationhtml", informationhtml);
-		this.setHeaderx(mav);
+		categoryHeaderSetter.setHeaders(mav);
 		return mav;
 	}
 
@@ -660,7 +278,7 @@ public class Routes {
 		}
 
 		ModelAndView mav = new ModelAndView(viewApp.loadViews("HEAD", "INFORMATION", "FOOTER"));
-		this.setHeaderx(mav);
+		categoryHeaderSetter.setHeaders(mav);
 		return mav;
 	}
 
@@ -686,20 +304,6 @@ public class Routes {
 			gustos = new String[0];
 		}
 		customerModel.saveCustomerGustos(gustos);
-	}
-
-	@GetMapping("/despegar")
-	public ModelAndView getDespegarLink(@RequestHeader(value = "referer", required = false) final String referer) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		final AuthenticationTrustResolver resolver = new AuthenticationTrustResolverImpl();
-		if (!resolver.isAnonymous(auth)) {
-			String despegarLink = customerModel.getDespegarLink().replace("\n", "").replace("\r", "");
-			;
-			return new ModelAndView("redirect:" + despegarLink);
-		} else {
-			// Para evitar que una página quede como ?login?login se hace el replace
-			return new ModelAndView("redirect:" + referer.replace("?login", "") + "?login");
-		}
 	}
 
 }

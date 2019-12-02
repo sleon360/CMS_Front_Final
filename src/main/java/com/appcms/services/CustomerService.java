@@ -26,6 +26,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import com.appcms.entity.CanjeProducto;
 import com.appcms.entity.CustomerInscripcion;
 import com.appcms.entity.CustomerReward;
 import com.appcms.entity.CustomerRewardResponse;
@@ -278,7 +279,50 @@ public class CustomerService {
 			customerRewardResponse.setMensaje("Ocurrió un error, no se pudo realizar el canje");
 			return customerRewardResponse;
 		}
+	}
+	
+	public CustomerRewardResponse realizarCanjePorCatalogo(CanjeProducto canje) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Customer credencialesEntity = (Customer) auth.getPrincipal();
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
+		Scotiauser scotiauser = credencialesEntity.getScotiauser();
 		
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		map.add("id_producto", Integer.toString(canje.getIdProducto()));
+		String nombreApellidoCliente = scotiauser.getFirstname() + "_" + scotiauser.getLastname();
+		map.add("nombre_beneficiario", nombreApellidoCliente);
+		map.add("rut_beneficiario", scotiauser.getRut());
+		String region = canje.getRegion();
+		if(region == null) {
+			map.add("id_region", "13");
+		} else {
+			map.add("id_region", canje.getRegion());
+			map.add("comuna", canje.getComuna());
+			map.add("direccion", canje.getDireccion());
+			map.add("nro_calle", canje.getNroCalle());
+			map.add("apartamento", canje.getApartamento());
+			map.add("telefono", canje.getTelefono());
+			map.add("correo", canje.getCorreo());
+		}
+		
+
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map,
+				httpHeaders);
+
+		int id = scotiauser.getIdCliente();
+		String url = apiUrl + "/v1/customer/{id}/cupones/catalog-exchange";
+		try {
+			ResponseEntity<CustomerRewardResponse> exchangeResponseEntity = restTemplate.postForEntity(
+					url, request, CustomerRewardResponse.class, id);
+			return exchangeResponseEntity.getBody();
+		} catch(Exception e) {
+			logger.error("Error realizando canje de puntos: " + e.getMessage());
+			CustomerRewardResponse customerRewardResponse = new CustomerRewardResponse();
+			customerRewardResponse.setStatus("FAIL");
+			customerRewardResponse.setMensaje("Ocurrió un error, no se pudo realizar el canje");
+			return customerRewardResponse;
+		}
 	}
 	
 	public CustomerRewardResponse realizarCanje(int idProducto, String nombreBeneficiario, String rutBeneficiario) {

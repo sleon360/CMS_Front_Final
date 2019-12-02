@@ -12,6 +12,7 @@ import org.springframework.context.annotation.ComponentScan;
 	    "com.appcms.router",
 	    "com.appcms.model",
 	    "com.appcms.services",
+	    "com.cms.errors",
 	    "com.cms.views"
 	})
 
