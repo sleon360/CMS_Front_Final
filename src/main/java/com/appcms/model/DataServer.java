@@ -20,6 +20,7 @@ import com.appcms.entity.Banner;
 import com.appcms.entity.Information;
 import com.appcms.entity.ProductoCategoria;
 import com.appcms.entity.ProductoTipoLike;
+import com.appcms.entity.Rifa;
 import com.appcms.entity.Scinformacionsubmenu;
 import com.appcms.entity.Scmenu;
 import com.appcms.entity.StockTicket;
@@ -247,6 +248,15 @@ public class DataServer {
 			return tagsProductosResponseEntity.getBody();
 		} catch (Exception e) {
 			return new ArrayList<>();
+		}
+	}
+
+	public Rifa loadSubmenuRifa(int id) {
+		String url = apiUrl + "/get/scmenuSubmenu/" + id + "/rifa";
+		try {
+			return restTemplate.getForObject(url, Rifa.class);
+		} catch (Exception e) {
+			throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}	
 

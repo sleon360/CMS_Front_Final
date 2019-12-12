@@ -63,8 +63,9 @@ public class RouteCategoria {
 		if (scmenuurlsub.getId() == 0) {
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
-		System.out.println("Tipo de submenú:" + scmenuurlsub.getTipo());
-		switch (scmenuurlsub.getTipo()) {
+		ModelAndView mav = new ModelAndView();
+		int tipoSubmenu =  scmenuurlsub.getTipo();
+		switch (tipoSubmenu) {
 		case 1:
 			// TIPO INFORMACION
 			html += viewApp.loadViews("CATEGORIAS");
@@ -158,13 +159,24 @@ public class RouteCategoria {
 			// TIPO CANJE POR CATÁLOGO 5
 			html += viewApp.loadViews("CATEGORIA-CATALOGO5");
 			scmenuurlsub.setProductosLikeLista(dtserver.loadProductos(scmenuurlsub.getId()));
+			
+			break;
+		case 40:
+		case 41:
+		case 42:
+		case 43:
+		case 44:
+			// TIPO RIFA
+			int tipoRifa = tipoSubmenu - 39;
+			html += viewApp.loadViews("CATEGORIA-RIFA" + tipoRifa);
+			mav.addObject("rifa", dtserver.loadSubmenuRifa(scmenuurlsub.getId()));
 			break;
 		default:
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
 		
 		html +=  viewApp.loadViews("FOOTER");
-		ModelAndView mav = new ModelAndView(html);
+		mav.setViewName(html);
 		mav.addObject("menuurl", scmenu);
 		mav.addObject("submenuurl", scmenuurlsub);
 		categoryHeaderSetter.setHeaders(mav);
