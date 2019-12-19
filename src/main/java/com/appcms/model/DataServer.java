@@ -252,7 +252,7 @@ public class DataServer {
 	}
 
 	public Rifa loadSubmenuRifa(int id) {
-		String url = apiUrl + "/get/scmenuSubmenu/" + id + "/rifa";
+		String url = apiUrl + "/get/scsubmenu/" + id + "/rifa";
 		try {
 			return restTemplate.getForObject(url, Rifa.class);
 		} catch (Exception e) {
