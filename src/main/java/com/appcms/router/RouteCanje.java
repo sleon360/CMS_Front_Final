@@ -184,7 +184,6 @@ public class RouteCanje {
 		case 8:
 			// TIPO CANJE DESCUENTOS
 			html += viewApp.loadViews("CANJES");
-			System.out.println("TIPO 8");
 			scmenuurlsub.setProductosLikeLista(dtserver.loadProductosDetalle(producto.getIdProducto()));
 			CustomerRewardResponse exchangeDirectlyResponse = customerModel
 					.realizarCanjeDirecto(producto.getIdProducto());

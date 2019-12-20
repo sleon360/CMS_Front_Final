@@ -141,7 +141,7 @@ public class CustomerService {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
 		
-		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(apiUrl + "/v1/customer/transactions")
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(apiUrl + "/v1/customer/" + credencialesEntity.getScotiauser().getIdCliente() + "/transactions")
 		        .queryParam("year", year);
 		if (nextCursor != null) {
 			builder.queryParam("next_cursor", nextCursor);
