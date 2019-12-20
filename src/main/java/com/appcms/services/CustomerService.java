@@ -2,7 +2,6 @@ package com.appcms.services;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -25,6 +24,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.appcms.entity.CanjeProducto;
 import com.appcms.entity.CustomerInscripcion;
@@ -33,19 +33,19 @@ import com.appcms.entity.CustomerRewardResponse;
 import com.appcms.entity.Scotiauser;
 import com.appcms.entity.Tarjetas;
 import com.appcms.entity.UserCartola;
-import com.appcms.entity.UserCartolaMovimiento;
 import com.appcms.entity.UserCupon;
 import com.appcms.entity.UserGusto;
 import com.appcms.entity.customer.Customer;
-import com.appcms.entity.points.ExpiringPoints;
-import com.appcms.entity.points.Points;
+import com.appcms.entity.user.points.ExpiringPoints;
+import com.appcms.entity.user.points.Points;
+import com.appcms.entity.user.transactions.TransactionsData;
 
 @Service
 public class CustomerService {
 
 	private String apiUrl;	
-	SimpleDateFormat formatter;
-	Locale locale;
+	private SimpleDateFormat formatter;
+	private Locale locale;
 	
 	private final static Logger logger = LoggerFactory.getLogger(CustomerService.class);
 	
@@ -120,19 +120,6 @@ public class CustomerService {
 		/* SE RECUPERAN LOS PUNTOS DE CLIENTE */
 		Points points = this.loadUserPoints();
 
-		/* SE RECUPERAN LOS MOVIMIENTOS DE CLIENTE */
-		List<UserCartolaMovimiento> movimientos = new ArrayList<>();
-		int year = Calendar.getInstance().get(Calendar.YEAR);
-		try {
-			ResponseEntity<List<UserCartolaMovimiento>> movementsResponseEntity = restTemplate.exchange(
-					apiUrl + "/v1/customer/transactions?year=" + year, HttpMethod.GET,
-					new HttpEntity<Object>(httpHeaders), new ParameterizedTypeReference<List<UserCartolaMovimiento>>() {
-					});
-			movimientos = movementsResponseEntity.getBody();
-		} catch (Exception e) {
-			logger.error("Error cargando la cartola del cliente: " + e.getMessage());
-			movimientos.clear();
-		}
 		// Se coloca la fecha actual a la cartola
 		Date date = new Date(System.currentTimeMillis());
 		String fechaActual = formatter.format(date);
@@ -145,8 +132,32 @@ public class CustomerService {
 		miCartola.setPuntosPorVencer(points.getExpiringPoints().getPoints());
 		miCartola.setFechaVencimiento(points.getExpiringPoints().getExpirationDate());
 		miCartola.setPuntosInscritos(points.getRegisteredPoints());
-		miCartola.setMovimientos(movimientos);
 		return miCartola;
+	}
+	
+	public TransactionsData loadUserTransactions(int year, String nextCursor) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Customer credencialesEntity = (Customer) auth.getPrincipal();
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
+		
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(apiUrl + "/v1/customer/transactions")
+		        .queryParam("year", year);
+		if (nextCursor != null) {
+			builder.queryParam("next_cursor", nextCursor);
+		}
+		
+		/* SE RECUPERAN LOS MOVIMIENTOS DE CLIENTE */
+		TransactionsData transactionsData = new TransactionsData();
+		try {
+			ResponseEntity<TransactionsData> movementsResponseEntity = restTemplate.exchange(
+					builder.toUriString(), HttpMethod.GET, new HttpEntity<Object>(httpHeaders), TransactionsData.class);
+			transactionsData = movementsResponseEntity.getBody();
+		} catch (Exception e) {
+			logger.error("Error cargando la cartola del cliente: " + e.getMessage());
+			transactionsData.setTransactions(new ArrayList<>());
+		}
+		return transactionsData;
 	}
 	
 	public List<UserCupon> loadCupones() {

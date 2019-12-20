@@ -1,8 +1,9 @@
-package com.appcms.entity;
+package com.appcms.entity.user.transactions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
-public class UserCartolaMovimiento {
+public class Transaction {
 	
 	String date;
 	
@@ -10,12 +11,12 @@ public class UserCartolaMovimiento {
 	
 	String type;
 	
-	@JsonProperty("card_id")
+	@JsonProperty(value = "card_id", access = Access.WRITE_ONLY)
 	String cardId;
 	
 	int points;
 	
-	@JsonProperty("points_balance")
+	@JsonProperty(value = "points_balance", access = Access.WRITE_ONLY)
 	int pointsBalance;
 
 	public String getDate() {
