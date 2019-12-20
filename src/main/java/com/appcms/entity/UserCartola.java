@@ -1,33 +1,14 @@
 package com.appcms.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class UserCartola {
-	String nombre;
-	String apellido;
-	String strFecha;
-	String puntosDisponibles;
-	String puntosPorVencer;
-	String fechaVencimiento;
-	String puntosInscritos;
-	List<UserCartolaMovimiento> movimientos = new ArrayList<>();
 	
-	public UserCartola() {
-		super();
-	}
-
-	public UserCartola(String nombre, String apellido, String strFecha, String puntosDisponibles, String puntosPorVencer,
-			String fechaVencimiento, List<UserCartolaMovimiento> movimientos) {
-		super();
-		this.nombre = nombre;
-		this.apellido = apellido;
-		this.strFecha = strFecha;
-		this.puntosDisponibles = puntosDisponibles;
-		this.puntosPorVencer = puntosPorVencer;
-		this.fechaVencimiento = fechaVencimiento;
-		this.movimientos = movimientos;
-	}
+	private String nombre;
+	private String apellido;
+	private String strFecha;
+	private String puntosDisponibles;
+	private String puntosPorVencer;
+	private String fechaVencimiento;
+	private String puntosInscritos;
 
 	public String getNombre() {
 		return nombre;
@@ -83,14 +64,6 @@ public class UserCartola {
 
 	public void setPuntosInscritos(String puntosInscritos) {
 		this.puntosInscritos = puntosInscritos;
-	}
-
-	public List<UserCartolaMovimiento> getMovimientos() {
-		return movimientos;
-	}
-
-	public void setMovimientos(List<UserCartolaMovimiento> movimientos) {
-		this.movimientos = movimientos;
 	}
 
 }

@@ -47,10 +47,10 @@ import com.appcms.entity.Scsubmenu;
 import com.appcms.entity.StockTicket;
 import com.appcms.entity.TagProducto;
 import com.appcms.entity.UserCartola;
-import com.appcms.entity.UserCartolaMovimiento;
 import com.appcms.entity.UserCupon;
 import com.appcms.entity.UserGusto;
-import com.appcms.entity.points.Points;
+import com.appcms.entity.user.points.Points;
+import com.appcms.entity.user.transactions.Transaction;
 import com.appcms.front.FronendApplication;
 import com.appcms.router.Routes;
 

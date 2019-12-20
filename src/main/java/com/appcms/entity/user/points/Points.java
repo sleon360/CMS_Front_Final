@@ -1,4 +1,4 @@
-package com.appcms.entity.points;
+package com.appcms.entity.user.points;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
