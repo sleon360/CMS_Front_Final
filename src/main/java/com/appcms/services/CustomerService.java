@@ -159,7 +159,6 @@ public class CustomerService {
 		}
 		return transactionsData;
 	}
-	
 	public List<UserCupon> loadCupones() {
 		HttpHeaders headers = new HttpHeaders();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
