@@ -9,14 +9,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class BannerTest {
-
 	
 	private Banner banner;
 	
 	
 	@Before
 	public void setUp() throws Exception {
-		banner=new Banner(1, "/url/route/lista","https://localhost", true);
 		banner=new Banner();
 		banner.setBlank(true);
 		banner.setOrden(1);

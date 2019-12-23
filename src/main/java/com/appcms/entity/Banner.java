@@ -7,17 +7,6 @@ public class Banner {
 	boolean blank;
 	int responsive;
 	
-	public Banner() {
-	}
-	
-	public Banner(int orden, String ruta, String url, boolean blank) {
-		super();
-		this.orden = orden;
-		this.ruta = ruta;
-		this.url = url;
-		this.blank = blank;
-	}
-	
 	public int getOrden() {
 		return orden;
 	}
