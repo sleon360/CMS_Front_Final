@@ -84,7 +84,6 @@ public class RouteRifa {
 			// TIPO RIFA
 			int tipoRifa = tipoSubmenu - 39;
 			html += viewApp.loadViews("DETALLE-RIFA" + tipoRifa);
-			System.out.println("ID de submenú:" + scmenuurlsub.getId());
 			mav.addObject("rifa", dtserver.loadSubmenuRifa(scmenuurlsub.getId()));
 			break;
 		default:
