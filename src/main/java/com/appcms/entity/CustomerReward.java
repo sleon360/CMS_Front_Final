@@ -5,10 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class CustomerReward {
 
 	@JsonProperty("id_customer_reward")
-	int customer_reward_id;
+	private int idCustomerReward;
 	
 	@JsonProperty("id_customer")
-	int customer_id;
+	private int idCustomer;
 	
 	@JsonProperty("id_producto")
 	int order_id;
@@ -23,23 +23,20 @@ public class CustomerReward {
 	int id_jos_ticket;
 	int tipo_reward;
 
-	public CustomerReward() {}
-	
-
-	public int getCustomer_reward_id() {
-		return customer_reward_id;
+	public int getIdCustomerReward() {
+		return idCustomerReward;
 	}
 
-	public void setCustomer_reward_id(int customer_reward_id) {
-		this.customer_reward_id = customer_reward_id;
+	public void setIdCustomerReward(int idCustomerReward) {
+		this.idCustomerReward = idCustomerReward;
 	}
 
-	public int getCustomer_id() {
-		return customer_id;
+	public int getIdCustomer() {
+		return idCustomer;
 	}
 
-	public void setCustomer_id(int customer_id) {
-		this.customer_id = customer_id;
+	public void setIdCustomer(int idCustomer) {
+		this.idCustomer = idCustomer;
 	}
 
 	public int getOrder_id() {

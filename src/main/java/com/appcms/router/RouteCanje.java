@@ -75,7 +75,8 @@ public class RouteCanje {
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
 		String html = viewApp.loadViews("HEAD", "HEADER_CATEGORIAS");
-		switch (scmenuurlsub.getTipo()) {
+		int tipoSubmenu = scmenuurlsub.getTipo();
+		switch (tipoSubmenu) {
 		case 1:
 			// TIPO INFORMACION
 			html += viewApp.loadViews("CANJES");
@@ -92,58 +93,46 @@ public class RouteCanje {
 			break;
 		case 4: // TIPO PRODUCTO E-COMERCE
 			html += viewApp.loadViews("CANJES");
-			CustomerRewardResponse exchangeResponse = customerModel.realizarCanje(producto.getIdProducto());
-			if (exchangeResponse.getStatus().equals("OK")) {
-				mav.addObject("canjeExito", true);
-			} else {
-				mav.addObject("canjeExito", false);
-				mav.addObject("errorMessage", exchangeResponse.getMensaje());
-			}
+			CustomerRewardResponse customerRewardResponseEcommerce = customerModel.realizarCanje(producto.getIdProducto());
+			mav.addObject("customerRewardResponse", customerRewardResponseEcommerce);
 			break;
 		case 5: // TIPO CANJE CON CATEGORIAS
 			html += viewApp.loadViews("CANJES");
 			// Se valida el nombre del beneficiario
 			String nombreBeneficiario = producto.getNombreAsociado();
 			String rutBeneficiario = producto.getRutAsociado();
+			CustomerRewardResponse customerRewardResponse = new CustomerRewardResponse();
 			if (nombreBeneficiario == null && rutBeneficiario == null) {
 				/* Si el nombre del beneficiario y su RUT son nulos, el canje es no nominativo*/
-				CustomerRewardResponse exchangeCategoryResponse = customerModel.realizarCanje(producto.getIdProducto());
-				if (exchangeCategoryResponse.getStatus().equals("OK")) {
-					mav.addObject("canjeExito", true);
-				} else {
-					mav.addObject("canjeExito", false);
-					mav.addObject("errorMessage", exchangeCategoryResponse.getMensaje());
-				}				
+				customerRewardResponse = customerModel.realizarCanje(producto.getIdProducto());	
 			} else {
 				/* Si el nombre del beneficiario y su RUT no son nulos, el canje es nominativo y hay
 				 * que validar los datos del beneficiario */
 				// Se valida el nombre del beneficiario
 				if (StringUtils.isEmptyOrWhitespace(nombreBeneficiario)) {
-					mav.addObject("canjeExito", false);
-					mav.addObject("errorMessage", "El nombre del beneficiario no puede estar en blanco");
+					customerRewardResponse.setStatus("FAIL");
+					customerRewardResponse.setMensaje("El nombre del beneficiario no puede estar en blanco");
+					mav.addObject("customerRewardResponse", customerRewardResponse);
 					break;
 				}
 				// Se valida el RUT del beneficiario
 				if (StringUtils.isEmptyOrWhitespace(rutBeneficiario)) {
-					mav.addObject("canjeExito", false);
-					mav.addObject("errorMessage", "El RUT del beneficiario no puede estar en blanco");
+					customerRewardResponse.setStatus("FAIL");
+					customerRewardResponse.setMensaje("El RUT del beneficiario no puede estar en blanco");
+					mav.addObject("customerRewardResponse", customerRewardResponse);
 					break;
 				} else {
 					if (!rutBeneficiario.matches("^\\d{8}-(\\d|k|K)$")) {
-						mav.addObject("canjeExito", false);
-						mav.addObject("errorMessage", "El RUT del beneficiario no es válido. Debe ser de la forma XXXXXXXX-X (sin puntos, con guión");
+						customerRewardResponse.setStatus("FAIL");
+						customerRewardResponse.setMensaje("El RUT del beneficiario no es válido. Debe ser de la forma XXXXXXXX-X (sin puntos, con guión");
+						mav.addObject("customerRewardResponse", customerRewardResponse);
 						break;
 					}
 				}
-				CustomerRewardResponse exchangeCategoryResponse = customerModel.realizarCanje(producto.getIdProducto(),
+				customerRewardResponse = customerModel.realizarCanje(producto.getIdProducto(),
 						nombreBeneficiario, rutBeneficiario);
-				if (exchangeCategoryResponse.getStatus().equals("OK")) {
-					mav.addObject("canjeExito", true);
-				} else {
-					mav.addObject("canjeExito", false);
-					mav.addObject("errorMessage", exchangeCategoryResponse.getMensaje());
-				}
 			}
+			mav.addObject("customerRewardResponse", customerRewardResponse);
 			break;
 		case 6:
 			// TIPO INCRIPCIÓN DE PUNTOS
@@ -196,59 +185,15 @@ public class RouteCanje {
 			}
 			break;
 		case 30:
-			// TIPO CANJE ECOMMERCE2
-			html += viewApp.loadViews("CANJE-ECOMMERCE2");
-			CustomerRewardResponse exchangeResponseEcommerce2 = customerModel.realizarCanje(producto.getIdProducto());
-			if (exchangeResponseEcommerce2.getStatus().equals("OK")) {
-				mav.addObject("canjeExito", true);
-			} else {
-				mav.addObject("canjeExito", false);
-				mav.addObject("errorMessage", exchangeResponseEcommerce2.getMensaje());
-			}
-			break;
 		case 31:
-			// TIPO CANJE ECOMMERCE3
-			html += viewApp.loadViews("CANJE-ECOMMERCE3");
-			CustomerRewardResponse exchangeResponseEcommerce3 = customerModel.realizarCanje(producto.getIdProducto());
-			if (exchangeResponseEcommerce3.getStatus().equals("OK")) {
-				mav.addObject("canjeExito", true);
-			} else {
-				mav.addObject("canjeExito", false);
-				mav.addObject("errorMessage", exchangeResponseEcommerce3.getMensaje());
-			}
-			break;
 		case 32:
-			// TIPO CANJE ECOMMERC4
-			html += viewApp.loadViews("CANJE-ECOMMERCE4");
-			CustomerRewardResponse exchangeResponseEcommerce4 = customerModel.realizarCanje(producto.getIdProducto());
-			if (exchangeResponseEcommerce4.getStatus().equals("OK")) {
-				mav.addObject("canjeExito", true);
-			} else {
-				mav.addObject("canjeExito", false);
-				mav.addObject("errorMessage", exchangeResponseEcommerce4.getMensaje());
-			}
-			break;
 		case 33:
-			// TIPO CANJE ECOMMERCE5
-			html += viewApp.loadViews("CANJE-ECOMMERCE5");
-			CustomerRewardResponse exchangeResponseEcommerce5 = customerModel.realizarCanje(producto.getIdProducto());
-			if (exchangeResponseEcommerce5.getStatus().equals("OK")) {
-				mav.addObject("canjeExito", true);
-			} else {
-				mav.addObject("canjeExito", false);
-				mav.addObject("errorMessage", exchangeResponseEcommerce5.getMensaje());
-			}
-			break;
 		case 34:
-			// TIPO CANJE ECOMMERCE6
-			html += viewApp.loadViews("CANJE-ECOMMERCE6");
-			CustomerRewardResponse exchangeResponseEcommerce6 = customerModel.realizarCanje(producto.getIdProducto());
-			if (exchangeResponseEcommerce6.getStatus().equals("OK")) {
-				mav.addObject("canjeExito", true);
-			} else {
-				mav.addObject("canjeExito", false);
-				mav.addObject("errorMessage", exchangeResponseEcommerce6.getMensaje());
-			}
+			int tipoEcommerce = scmenuurlsub.getTipo() - 28;
+			// TIPO CANJE ECOMMERCE
+			html += viewApp.loadViews("CANJE-ECOMMERCE" + tipoEcommerce);
+			CustomerRewardResponse customerRewardResponseEcommerceNew = customerModel.realizarCanje(producto.getIdProducto());
+			mav.addObject("customerRewardResponse", customerRewardResponseEcommerceNew);
 			break;
 		case 35:
 		case 36:
@@ -256,17 +201,10 @@ public class RouteCanje {
 		case 38:
 		case 39:
 			// TIPO CANJE POR CATÁLOGO
-			int tipoCatalogo = scmenuurlsub.getTipo() - 34;
+			int tipoCatalogo = tipoSubmenu - 34;
 			html += viewApp.loadViews("CANJE-CATALOGO" + tipoCatalogo);
-			CustomerRewardResponse exchangeByCatalogProduct = customerModel
-					.realizarCanjePorCatalogo(producto);
-			if (exchangeByCatalogProduct.getStatus().equals("OK")) {
-				mav.addObject("producto", producto);
-				mav.addObject("canjeExito", true);
-			} else {
-				mav.addObject("canjeExito", false);
-				mav.addObject("errorMessage", exchangeByCatalogProduct.getMensaje());
-			}
+			CustomerRewardResponse customerRewardResponseCatalogo = customerModel.realizarCanjePorCatalogo(producto);
+			mav.addObject("customerRewardResponse", customerRewardResponseCatalogo);
 			break;
 		default:
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);

@@ -15,8 +15,8 @@ public class CustomerRewardTest {
 	@Before
 	public void setUp() throws Exception {
 		customerReward=new CustomerReward();
-		customerReward.setCustomer_id(100);
-		customerReward.setCustomer_reward_id(500);
+		customerReward.setIdCustomer(100);
+		customerReward.setIdCustomerReward(500);
 		customerReward.setDate_added("10-10-2019");
 		customerReward.setDate_vencimiento("11-11-2019");
 		customerReward.setDescription("CUSTOMER DESCRIPTION REWARD");
@@ -50,23 +50,23 @@ public class CustomerRewardTest {
 	}*/
 
 	@Test
-	public final void testGetCustomer_reward_id() throws Exception {
+	public final void testgetIdCustomerReward() throws Exception {
 		CustomerReward esperado = mock(CustomerReward.class);
 		CustomerReward noesperado = mock(CustomerReward.class);
-		when(esperado.getCustomer_reward_id()).thenReturn(500);
-		when(noesperado.getCustomer_reward_id()).thenReturn(300);
-		assertEquals(customerReward.getCustomer_reward_id(), esperado.getCustomer_reward_id());
-		assertNotEquals(noesperado.getCustomer_reward_id(), customerReward.getCustomer_reward_id());
+		when(esperado.getIdCustomerReward()).thenReturn(500);
+		when(noesperado.getIdCustomerReward()).thenReturn(300);
+		assertEquals(customerReward.getIdCustomerReward(), esperado.getIdCustomerReward());
+		assertNotEquals(noesperado.getIdCustomerReward(), customerReward.getIdCustomerReward());
 	}
 
 	@Test
-	public final void testGetCustomer_id() throws Exception {
+	public final void testgetIdCustomer() throws Exception {
 		CustomerReward esperado = mock(CustomerReward.class);
 		CustomerReward noesperado = mock(CustomerReward.class);
-		when(esperado.getCustomer_id()).thenReturn(100);
-		when(noesperado.getCustomer_id()).thenReturn(300);
-		assertEquals(customerReward.getCustomer_id(), esperado.getCustomer_id());
-		assertNotEquals(noesperado.getCustomer_id(), customerReward.getCustomer_id());
+		when(esperado.getIdCustomer()).thenReturn(100);
+		when(noesperado.getIdCustomer()).thenReturn(300);
+		assertEquals(customerReward.getIdCustomer(), esperado.getIdCustomer());
+		assertNotEquals(noesperado.getIdCustomer(), customerReward.getIdCustomer());
 	}
 
 	@Test

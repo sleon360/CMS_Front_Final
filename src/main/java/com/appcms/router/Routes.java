@@ -187,6 +187,7 @@ public class Routes {
 			List<UserCupon> giftCards = new ArrayList<UserCupon>();
 			List<UserCupon> entradasCine = new ArrayList<UserCupon>();
 			List<UserCupon> panoramas = new ArrayList<UserCupon>();
+			List<UserCupon> rifas = new ArrayList<UserCupon>();
 			SimpleDateFormat currentDateFormatCupones = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			SimpleDateFormat newDateFormatCupones = new SimpleDateFormat("yyyy-MM-dd");
 			for (int i = 0; i < cupones.size(); i++) {
@@ -215,6 +216,9 @@ public class Routes {
 				case 4:
 					panoramas.add(cupon);
 					break;
+				case 5:
+					rifas.add(cupon);
+					break;
 				default:
 					break;
 				}
@@ -222,6 +226,7 @@ public class Routes {
 			mav.addObject("giftCards", giftCards);
 			mav.addObject("entradasCine", entradasCine);
 			mav.addObject("panoramas", panoramas);
+			mav.addObject("rifas", rifas);
 			break;
 		case 23:
 			// TIPO MIS GUSTOS

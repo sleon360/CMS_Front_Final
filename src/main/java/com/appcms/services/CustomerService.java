@@ -416,4 +416,34 @@ public class CustomerService {
 			return false;
 		}				
 	}
+	
+	public CustomerRewardResponse realizarCanjeTipoRifa(int idRifa, int[] numeros) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Customer credencialesEntity = (Customer) auth.getPrincipal();
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("AuthorizationCustomer", credencialesEntity.getJwt());
+
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		map.add("id_rifa", Integer.toString(idRifa));
+		for (int numero : numeros) {
+			map.add("numeros", numero + "");
+		}		
+
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map,
+				httpHeaders);
+
+		int id = credencialesEntity.getScotiauser().getIdCliente();
+		String url = apiUrl + "/v1/customer/{id}/rifa/jugar";
+		try {
+			ResponseEntity<CustomerRewardResponse> exchangeResponseEntity = restTemplate.postForEntity(
+					url, request, CustomerRewardResponse.class, id);
+			return exchangeResponseEntity.getBody();
+		} catch(Exception e) {
+			logger.error("Error realizando canje de puntos por rifa: " + e.getMessage());
+			CustomerRewardResponse customerRewardResponse = new CustomerRewardResponse();
+			customerRewardResponse.setStatus("FAIL");
+			customerRewardResponse.setMensaje("Ocurrió un error, no se pudo realizar el canje");
+			return customerRewardResponse;
+		}
+	}
 }
