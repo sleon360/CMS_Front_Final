@@ -255,19 +255,15 @@ public class RouteRifa {
 			int tipoRifa = tipoSubmenu - 39;
 			html += viewApp.loadViews("CANJE-RIFA" + tipoRifa);
 	        List<Integer> numerosAsArray = Arrays.stream(numeros).boxed().collect(Collectors.toList());
+	        CustomerRewardResponse customerRewardResponse = new CustomerRewardResponse();
 	        if (numerosAsArray.contains(0)) {
-	        	mav.addObject("canjeExito", false);
-	        	mav.addObject("errorMessage", "Al menos uno de los números seleccionados no es válido");
+	        	customerRewardResponse.setStatus("FAIL");
+	        	customerRewardResponse.setMensaje("Al menos uno de los números seleccionados no es válido");
 	        } else {
 	        	Rifa rifa = dtserver.loadSubmenuRifa(scmenuurlsub.getId());
-	        	CustomerRewardResponse customerRewardResponse = customerService.realizarCanjeTipoRifa(rifa.getIdRifa(), numeros);
-	        	if (customerRewardResponse.getStatus().equals("OK")) {
-					mav.addObject("canjeExito", true);
-				} else {
-					mav.addObject("canjeExito", false);
-					mav.addObject("errorMessage", customerRewardResponse.getMensaje());
-				}
-	        }			
+	        	customerRewardResponse = customerService.realizarCanjeTipoRifa(rifa.getIdRifa(), numeros);
+	        }
+	        mav.addObject("customerRewardResponse", customerRewardResponse);
 			break;
 		default:
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);

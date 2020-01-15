@@ -17,6 +17,14 @@ public class Rifa {
 	
 	private String imagen;
 	
+	@JsonProperty("icono_animado")
+	private String iconoAnimado;
+	
+	private String fondo;
+	
+	@JsonProperty("fondo_modal")
+	private String fondoModal;
+	
 	@JsonProperty("cantidad_numeros")
 	private int cantidadNumeros;
 
@@ -26,6 +34,8 @@ public class Rifa {
 	@JsonProperty("condiciones_legales")
 	private String condicionesLegales;
 	
+	private boolean estado;
+	
 	@JsonProperty("fecha_creacion")
 	private String fechaCreacion;
 
@@ -34,7 +44,7 @@ public class Rifa {
 	
 	@JsonProperty("costos_rifa")
 	private List<CostoRifa> costosRifa;
-	
+
 	public int getIdRifa() {
 		return idRifa;
 	}
@@ -42,7 +52,7 @@ public class Rifa {
 	public void setIdRifa(int idRifa) {
 		this.idRifa = idRifa;
 	}
-	
+
 	public String getNombre() {
 		return nombre;
 	}
@@ -75,6 +85,30 @@ public class Rifa {
 		this.imagen = imagen;
 	}
 
+	public String getIconoAnimado() {
+		return iconoAnimado;
+	}
+
+	public void setIconoAnimado(String iconoAnimado) {
+		this.iconoAnimado = iconoAnimado;
+	}
+
+	public String getFondo() {
+		return fondo;
+	}
+
+	public void setFondo(String fondo) {
+		this.fondo = fondo;
+	}
+
+	public String getFondoModal() {
+		return fondoModal;
+	}
+
+	public void setFondoModal(String fondoModal) {
+		this.fondoModal = fondoModal;
+	}
+
 	public int getCantidadNumeros() {
 		return cantidadNumeros;
 	}
@@ -97,6 +131,14 @@ public class Rifa {
 
 	public void setCondicionesLegales(String condicionesLegales) {
 		this.condicionesLegales = condicionesLegales;
+	}
+
+	public boolean isEstado() {
+		return estado;
+	}
+
+	public void setEstado(boolean estado) {
+		this.estado = estado;
 	}
 
 	public String getFechaCreacion() {
@@ -122,5 +164,5 @@ public class Rifa {
 	public void setCostosRifa(List<CostoRifa> costosRifa) {
 		this.costosRifa = costosRifa;
 	}
-	
+
 }
