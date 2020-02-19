@@ -23,7 +23,6 @@ import com.appcms.entity.ProductoTipoLike;
 import com.appcms.entity.Rifa;
 import com.appcms.entity.Scinformacionsubmenu;
 import com.appcms.entity.Scmenu;
-import com.appcms.entity.StockTicket;
 import com.appcms.entity.TagProducto;
 import com.appcms.entity.UserGusto;
 import com.appcms.entity.customer.Customer;
@@ -211,15 +210,6 @@ public class DataServer {
 		} catch(Exception e) {
 			throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
 		}		
-	}
-
-	public StockTicket loadStockTicket(String empresa) {
-		String url = apiUrl + "/get/stockticket/" + empresa;
-		try {
-			return restTemplate.getForObject(url, StockTicket.class);
-		} catch(Exception e) {
-			return new StockTicket();
-		}
 	}
 
 	public List<UserGusto> loadGustos() {
