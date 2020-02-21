@@ -18,6 +18,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import com.appcms.entity.Banner;
 import com.appcms.entity.Information;
+import com.appcms.entity.PopUp;
 import com.appcms.entity.ProductoCategoria;
 import com.appcms.entity.ProductoTipoLike;
 import com.appcms.entity.Rifa;
@@ -247,6 +248,18 @@ public class DataServer {
 			return restTemplate.getForObject(url, Rifa.class);
 		} catch (Exception e) {
 			throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	public PopUp loadPopUp() {
+		String url = apiUrl + "/get/home-pop-up";
+		try {
+			return restTemplate.getForObject(url, PopUp.class);
+		} catch (Exception e) {
+			/* Si el servicio falla, se retorna un pop up inactivo */
+			PopUp popUp = new PopUp();
+			popUp.setActivo(false);
+			return popUp;
 		}
 	}	
 

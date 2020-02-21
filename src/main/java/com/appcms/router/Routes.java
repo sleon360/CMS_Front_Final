@@ -59,6 +59,7 @@ public class Routes {
 		mav.addObject("banners", dtserver.loadBannerAll(0));
 		mav.addObject("banners_resp", dtserver.loadBannerAll(1));
 		mav.addObject("descuentos_destacados", dtserver.loadscmenuinformationFomScmenu(10));
+		mav.addObject("popUp", dtserver.loadPopUp());
 		categoryHeaderSetter.setHeaders(mav);
 		return mav;
 	}
