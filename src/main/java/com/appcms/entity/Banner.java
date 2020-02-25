@@ -7,6 +7,9 @@ public class Banner {
 	private String url;
 	private boolean blank;
 	private int responsive;
+	private int tipo;
+	private String html;
+	
 	
 	public int getOrden() {
 		return orden;
@@ -46,6 +49,22 @@ public class Banner {
 	
 	public void setResponsive(int responsive) {
 		this.responsive = responsive;
+	}
+
+	public int getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(int tipo) {
+		this.tipo = tipo;
+	}
+
+	public String getHtml() {
+		return html;
+	}
+
+	public void setHtml(String html) {
+		this.html = html;
 	}
 	
 }
