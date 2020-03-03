@@ -18,12 +18,12 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import com.appcms.entity.Banner;
 import com.appcms.entity.Information;
+import com.appcms.entity.PopUp;
 import com.appcms.entity.ProductoCategoria;
 import com.appcms.entity.ProductoTipoLike;
 import com.appcms.entity.Rifa;
 import com.appcms.entity.Scinformacionsubmenu;
 import com.appcms.entity.Scmenu;
-import com.appcms.entity.StockTicket;
 import com.appcms.entity.TagProducto;
 import com.appcms.entity.UserGusto;
 import com.appcms.entity.customer.Customer;
@@ -213,15 +213,6 @@ public class DataServer {
 		}		
 	}
 
-	public StockTicket loadStockTicket(String empresa) {
-		String url = apiUrl + "/get/stockticket/" + empresa;
-		try {
-			return restTemplate.getForObject(url, StockTicket.class);
-		} catch(Exception e) {
-			return new StockTicket();
-		}
-	}
-
 	public List<UserGusto> loadGustos() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Customer credencialesEntity = (Customer) auth.getPrincipal();
@@ -257,6 +248,18 @@ public class DataServer {
 			return restTemplate.getForObject(url, Rifa.class);
 		} catch (Exception e) {
 			throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	public PopUp loadPopUp() {
+		String url = apiUrl + "/get/home-pop-up";
+		try {
+			return restTemplate.getForObject(url, PopUp.class);
+		} catch (Exception e) {
+			/* Si el servicio falla, se retorna un pop up inactivo */
+			PopUp popUp = new PopUp();
+			popUp.setActivo(false);
+			return popUp;
 		}
 	}	
 

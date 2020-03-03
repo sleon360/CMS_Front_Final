@@ -1,6 +1,5 @@
 package com.appcms.model;
 
-
 import static org.mockito.Mockito.mock;
 
 import java.net.URI;
@@ -44,7 +43,6 @@ import com.appcms.entity.Scinformacionsubmenu;
 import com.appcms.entity.Scmenu;
 import com.appcms.entity.Scotiauser;
 import com.appcms.entity.Scsubmenu;
-import com.appcms.entity.StockTicket;
 import com.appcms.entity.TagProducto;
 import com.appcms.entity.UserCartola;
 import com.appcms.entity.UserCupon;
