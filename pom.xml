@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.app.front</groupId>
 	<artifactId>scclubfront</artifactId>
-	<version>3.0.0</version>
+	<version>4.0.0</version>
 	<packaging>war</packaging>
 	<name>frontend</name>
 	<description>CMS Lealtad360</description>
